@@ -3,7 +3,7 @@ if (!class_exists('starfish')) { die(); }
 
 class mysql
 {
-	private $connection = false;
+	public  $connection = false;
 	private $lastQuery  = '';
     
 	private $db_host = 'localhost';

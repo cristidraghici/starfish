@@ -96,8 +96,23 @@ class mysql
     
 	function fetch($q)
 	{
-		return @mysql_fetch_array($q);
+		return @mysql_fetch_array($q, MYSQL_ASSOC);
 	}
+    function nr($q)
+    {
+        return (int)@mysql_num_rows($q);
+    }
+    function fields($q)
+    {
+        $cols = array();
+        $total = @mysql_num_fields($q);
+        for ($a=0; $a<$total; $a++)
+        {
+            $cols[] = @mysql_field_name($q, $a);
+        }
+        
+        return $cols;
+    }
 	
 	
 	function eecho($query)

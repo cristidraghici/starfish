@@ -48,6 +48,10 @@ class starfish
 			
             return self::$config;
         }
+		elseif (is_string($array))
+		{
+			return self::$config[$array];
+		}
         
         return false;
     }

@@ -49,7 +49,7 @@ class http
         $this->request['path'] = $str;
     }
     
-    function send_request()
+    function send_request($headers=false)
     {
         if ($this->connect())
         {
@@ -64,6 +64,11 @@ class http
                 "\r\n"
             );
             
+			if ($headers == true)
+			{
+				$this->result = substr($this->result, strpos($this->result,"\r\n\r\n")+4);
+			}
+			
             while(!@feof($this->socket))
             {
                 $this->result .= @fgets($this->socket, 2048);

@@ -217,7 +217,7 @@ class starfish
         
         return self::cleanInputs($params);
     }
-    public static function session($name, $value = null)
+    public static function session($name = null, $value = null)
     {
     
         static $session_active = false;
@@ -246,9 +246,14 @@ class starfish
             $session_active = true;
         }
         
-        if (func_num_args() === 1)
+        $args = func_num_args();
+        if ($args === 1)
         {
             return (isset($_SESSION[$name]) ? $_SESSION[$name] : null);
+        }
+        elseif ($args === 0)
+        {
+            return (is_array($_SESSION) ? $_SESSION : null);
         }
         
         $_SESSION[$name] = $value;

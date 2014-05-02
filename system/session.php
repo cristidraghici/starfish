@@ -24,7 +24,7 @@ class session
 				$this->prefix = starfish::$config['session']; 
 			}
 			
-			session_start();
+			@session_start();
 			$this->session = $_SESSION;
 			session_write_close();
 		}

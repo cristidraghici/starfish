@@ -554,7 +554,7 @@ class starfish
             {
                 $all = self::$routing[$method];
                 $routes = array_keys($all);
-                
+				
                 // Get the proper function
                 foreach ($routes as $key=>$check)
                 {
@@ -568,6 +568,7 @@ class starfish
                         
                         $callback = $route['callback'];
                         $list = $route['params'];
+						
                         foreach ($list as $key=>$value)
                         {
                             $params[$value] = $match[$key+1];

@@ -41,10 +41,24 @@ class starfish
         {
             self::$config = array_merge(self::$config, $array);
 			
-			if (!isset(self::$config['objects']))
-			{
-				self::$config['objects'] = self::$config['root'] . 'objects/';
-			}
+            // Default required values
+            $root       = __DIR__ . '/';   
+            $default    = array(
+                'root'      => $root,
+                'objects'   => $root.'objects/',
+                'tpl'       => $root.'template/',
+                'friendly'  => false,
+                'debug'     => false,
+                'session'   => 'starfish'
+            );
+            
+            foreach ($default as $key=>$value)
+            {
+                if (!isset(self::$config[$key]))
+                {
+                    self::$config[$key] = $value;
+                }
+            }
 			
             return self::$config;
         }
@@ -52,6 +66,7 @@ class starfish
 		{
 			return self::$config[$array];
 		}
+        
         
         return false;
     }

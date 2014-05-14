@@ -3,88 +3,6 @@ if (!class_exists('starfish')) { die(); }
 
 class http
 {
-    public $config  = array();
-    public $request = array();
-    
-    private $errorNo   = 0;
-    private $errorStr  = '';
-    
-    private $socket;
-    public $result  = '';
-    
-    function http($timeout=30, $contenttype='application/xml', $agent='PHP HTTP Client')
-    {
-        $this->config = array(
-            'timeout'       => $timeout,
-            'contenttype'   => $contenttype,
-            'agent'         => $agent
-        );
-    }
-    
-    function init($host, $port=80, $data=null)
-    {
-        $this->request = array(
-            'host' => $host,
-            'port' => $port,
-            'data' => $data,
-            'path' => '/'
-        );
-    }
-    
-    function connect()
-    {
-        $this->socket = @fsockopen($this->request['host'], $this->request['port'], $this->errorNo, $this->errorStr, $this->config['timeout'] );
-        if (!$this->socket)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    
-    function path($str)
-    {
-        $this->request['path'] = $str;
-    }
-    
-    function send_request($headers=false)
-    {
-        if ($this->connect())
-        {
-            @fwrite($this->socket,
-                "POST ".$this->request['path']." HTTP/1.0\r\n".
-                "Host:".$this->request['host'].":".$this->request['port']."\r\n".
-                "User-Agent: ".$this->config['agent']."\r\n".
-                "Content-Type: ".$this->config['contenttype']."\r\n".
-                "Content-Length: ".strlen( $this->request['data'] ).
-                "\r\n".
-                "\r\n".$this->request['data'].
-                "\r\n"
-            );
-            
-			if ($headers == true)
-			{
-				$this->result = substr($this->result, strpos($this->result,"\r\n\r\n")+4);
-			}
-			
-            while(!@feof($this->socket))
-            {
-                $this->result .= @fgets($this->socket, 2048);
-            }
-            @fclose($this->socket);
-            
-            return $this->result;
-        }
-        
-        return false;
-    }
-}
-
-
-class http2
-{
     public $config   = array();
     public $request  = array();
     public $response = array();
@@ -94,6 +12,11 @@ class http2
     /** Init the script */
     public function http()
     {
+        $this->response['request_headers'] = '';
+        $this->response['headers'] = '';
+        $this->response['body'] = '';
+        $this->response['status'] = false;
+        
         $this->config('timeout', 30);
         $this->config('content_type', 'application/xml');
         $this->config('agent', 'PHP Starfish HTTP Client');
@@ -101,6 +24,19 @@ class http2
     // Shortway for setting GET requests request configuration
     public function url($string)
     {
+        $info = @parse_url($string);
+        $port = isset($info['port']) ? $info['port'] : ($info['scheme'] == 'http') ? 80 : 443;
+        
+        $this->request('host', $info['host']);
+        
+        $this->request('path', $info['path']);
+        $this->request('port', $port);
+        
+        if (isset($info['query']))
+        {
+            $this->request('data', $info['query']);
+        }
+        
         return true;
     }
     public function page($host, $port=80, $method="GET", $path='/', $data=array())
@@ -122,7 +58,22 @@ class http2
     }
     public function request($name, $value)
     {
+        // Fixes
+        if ($name == 'method') { $value = strtoupper($value); }
+        if ($name == 'data') {
+            if (gettype($value) == 'array') {
+                $new = '';
+                foreach ($value as $key=>$value) {
+                    $new .= "&".$key."=".$value;
+                }
+                
+                $value = $new;
+            }
+        }
+        
+        // Set the info
         $this->request[$name] = $value;
+        
         return true;
     }
     
@@ -130,26 +81,30 @@ class http2
     {
         if ($this->connect())
         {
-            @fwrite($this->socket,
-                $this->request['method']." ".$this->request['path']." HTTP/1.0\r\n".
-                "Host:".$this->request['host'].":".$this->request['port']."\r\n".
+            $this->response['request_headers'] =
+                $this->request['method']." ".$this->request['path']." HTTP/1.1\r\n".
+                "Host: ".$this->request['host'].":".$this->request['port']."\r\n".
                 "User-Agent: ".$this->config['agent']."\r\n".
                 "Content-Type: ".$this->config['content_type']."\r\n".
-                "Content-Length: ".strlen( $this->request['data'] ).
+                "Content-Length: ".strlen( $this->request['data'] )."\r\n".
+                'Connection: close'.
                 "\r\n".
                 "\r\n".$this->request['data'].
-                "\r\n"
-            );
+                "\r\n";
+                
+            @fwrite($this->socket, $this->response['request_headers']);
             
+            $result = '';
             while(!@feof($this->socket))
             {
-                $this->response['result'] .= @fgets($this->socket, 2048);
-            }
+                $result .= @fgets($this->socket, 2048);
+            }            
+            $this->response['result'] = $result;
             $this->disconnect();
             
-            $pos = strpos($this->response['result'], "\r\n\r\n") + 4;
-            $this->response['headers'] = substr($this->response['result'], 0, $pos);
-            $this->response['body']    = substr($this->response['result'], $pos);
+            $pos = @strpos($this->response['result'], "\r\n\r\n") + 4;
+            $this->response['headers'] = @substr($this->response['result'], 0, $pos);
+            $this->response['body']    = @substr($this->response['result'], $pos);
             $this->response['status']  = true;
             
             return $this->response['body'];
@@ -162,7 +117,9 @@ class http2
     /** Internal functionality */
     private function connect()
     {
-        $this->socket = @fsockopen($this->request['host'], $this->request['port'], $this->response['no'], $this->response['str'], $this->config['timeout'] );
+        $host = ($this->request['port'] == 443) ? 'ssl://'.$this->request['host'] : $this->request['host'];
+        
+        $this->socket = @fsockopen($host, $this->request['port'], $this->response['no'], $this->response['str'], $this->config['timeout'] );
         if (!$this->socket)
         {
             return false;

@@ -650,6 +650,11 @@ class starfish
 	/** Registry type object calling */
     public static function obj($name)
     {
+        if (isset(self::$config['obj-alias'][$name]))
+        {
+            $name = self::$config['obj-alias'][$name];
+        }
+        
         if (!isset(self::$objects[$name]))
         {
             /*

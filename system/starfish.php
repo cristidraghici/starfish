@@ -10,7 +10,6 @@ class starfish
     /** Init the class */
     public static function init()
     {
-        
         return true;
     }
 }

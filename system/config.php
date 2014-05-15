@@ -1,4 +1,5 @@
 <?php
+if (!isset($path)) { die(); }
 
 trait config
 {

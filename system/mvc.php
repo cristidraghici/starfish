@@ -10,7 +10,7 @@ trait mvc
 	}
 	public static function m($name)
 	{
-		return starfish::obj('model-'$name);
+		return starfish::obj('model-'.$name);
 	}
 	public static function v($name, $data=array())
 	{

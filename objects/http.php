@@ -25,11 +25,14 @@ class http
     public function url($string)
     {
         $info = @parse_url($string);
+        
+        $host = isset($info['host']) ? $info['host'] : '';
         $port = isset($info['port']) ? $info['port'] : ($info['scheme'] == 'http') ? 80 : 443;
+        $path = isset($info['path']) ? $info['path'] : '';
         
-        $this->request('host', $info['host']);
+        $this->request('host', $host);
         
-        $this->request('path', $info['path']);
+        $this->request('path', $path);
         $this->request('port', $port);
         
         if (isset($info['query']))

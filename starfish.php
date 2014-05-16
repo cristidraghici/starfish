@@ -14,18 +14,26 @@
 
 if (!class_exists('starfish'))
 {
-    $path = __DIR__ . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR;
-    
-    // Traits
-    require_once( $path . 'config.php'); 
-    require_once( $path . 'variables.php'); 
-    require_once( $path . 'registry.php'); 
-    require_once( $path . 'routing.php'); 
-    require_once( $path . 'mvc.php'); 
-    require_once( $path . 'exec.php');
-    
-    // The main file
-    require_once( $path . 'starfish.php');
-    starfish::init();
+    if (PHP_VERSION_ID >= 50400)
+    {
+        $path = __DIR__ . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR;
+        
+        // Traits
+        require_once( $path . 'config.php'); 
+        require_once( $path . 'variables.php'); 
+        require_once( $path . 'registry.php'); 
+        require_once( $path . 'routing.php'); 
+        require_once( $path . 'mvc.php'); 
+        require_once( $path . 'exec.php');
+        require_once( $path . 'errors.php');
+        
+        // The main file
+        require_once( $path . '_starfish.php');
+        starfish::init();
+    }
+    else
+    {
+        die('Minimum PHP 5.4 is required.');
+    }
 }
 ?>

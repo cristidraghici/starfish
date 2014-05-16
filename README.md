@@ -1,8 +1,10 @@
 # Starfish
 
-Starfish is a one file minimum SINGLETON-Registry and Routes microframework primarily desiged to serve JSON content and use objects.
+Starfish is a minimum Registry and Routes microframework primarily desiged to serve JSON content and use objects.
 
-Along the main file, other objects are available to extend its functionality. These objects can be accesed from separate files or their content can be copied inside the main file.
+Along the main file and the system files, other objects are available to extend its functionality. These objects can be accesed from separate files or their content can be copied inside the main file.
+
+Minimum **PHP 5.4** is required.
 
 ## Specifications
 

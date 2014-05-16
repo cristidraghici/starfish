@@ -16,7 +16,6 @@ Starfish main files must have the following begining:
 ```php
 <?php
 include('starfish.php');
-starfish::singleton();
 starfish::config(array(
 	// Basic configuration
     'site_url' => 'http://'.$_SERVER['HTTP_HOST'].'/',

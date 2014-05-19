@@ -5,18 +5,15 @@
 */
 if (!class_exists('starfish')) { die(); }
 
-define("METHOD_POST", 1);
-define("METHOD_PUT", 2);
-define("METHOD_GET", 3);
-
 class curl
 {
-	private $timeout = 10;
-    private $debug = false;
-    private $advDebug = false;
-	
-	public function get($url, $data = null, $method = METHOD_GET)
-	{
+    private $timeout = 10;
+    public  $apiKey = '';
+    public  $requestContentType = 'json';
+    public  $debugInfo = '';
+    
+    public function get($url, $data, $method='get')
+    {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Don't print the result
@@ -25,50 +22,77 @@ class curl
         curl_setopt($curl, CURLOPT_FAILONERROR, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0); // Don't verify SSL connection
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0); // "" ""
-        //curl_setopt($curl, CURLOPT_USERPWD, $this->apiKey);
-        //curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: application/json")); // Send as JSON
+        if (strlen($this->apiKey) > 0)
+        {
+            curl_setopt($curl, CURLOPT_USERPWD, $this->apiKey);
+            curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        }
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: " . $this->type() )); // Send as JSON
+        /*
         if ($this->advDebug)
 		{
             curl_setopt($curl, CURLOPT_HEADER, true); // Display headers
             curl_setopt($curl, CURLOPT_VERBOSE, true); // Display communication with server
         }
-        if ($method == METHOD_POST)
-		{
-            curl_setopt($curl, CURLOPT_POST, true);
+        */
+        
+        switch (strtolower($method))
+        {
+            case 'delete':
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+                break;
+            
+            case 'put':
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+                break;
+            
+            case 'post':
+                curl_setopt($curl, CURLOPT_POST, true);
+                break;
+            
+            default:
+            case 'get':
+                $method = 'get';
+                break;
         }
-		else if ($method == METHOD_PUT)
-		{
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-        }
-        if(!is_null($data) && ($method == METHOD_POST || $method == METHOD_PUT))
+        
+        if(!is_null($data) && $method != 'get')
 		{
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         }
-		
+        
         try {
             $return = curl_exec($curl);
             $this->responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 			
-            if($this->debug || $this->advDebug)
-			{
-                echo "<pre>"; print_r(curl_getinfo($curl)); echo "</pre>";
-            }
+            $this->debugInfo = curl_getinfo($curl);
         }
 		catch(Exception $ex)
 		{
-            if($this->debug || $this->advDebug)
-			{
-                echo "<br>cURL error num: ".curl_errno($curl);
-                echo "<br>cURL error: ".curl_error($curl);
-            }
-            echo "Error on cURL";
+            $this->debugInfo = array(
+                'no'    => curl_errno($curl),
+                'error' => curl_error($curl)
+            );
+            
             $return = null;
         }
 		
         curl_close($curl);
 		
         return $return;
+    }
+    
+    public function type()
+    {
+        switch ($this->requestContentType)
+        {
+            default:
+            case 'json':
+                return 'application/json';
+                break;
+        }
+        
+        return false;
     }
 }
 ?>

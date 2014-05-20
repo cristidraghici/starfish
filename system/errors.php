@@ -3,6 +3,22 @@ if (!isset($path)) { die(); }
 
 trait errors
 {
+	public static function outputErrorClean($string)
+    {
+        // Clean the output
+        $string = str_replace(
+            array("<br />", "\n", "<b>", "</b>"),
+            " ",
+            $string
+        );
+        $string = str_replace('&quot;', '"', $string);
+        
+        // Remove double spaces
+        $string = preg_replace('/\n+|\t+|\s+/', ' ', $string);
+        $string = trim($string);
+        
+        return $string;
+    }
     public static function error($code, $callback=null)
     {
         $code = (string) $code;

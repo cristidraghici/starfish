@@ -3,6 +3,16 @@ if (!isset($path)) { die(); }
 
 trait variables
 {
+	public static function set($target, $value)
+	{
+		return starfish::regVar($target, $value);
+	}
+	
+	public static function get($target)
+	{
+		return starfish::regVar($target);
+	}
+
     public static function regVar($target, $value=null)
     {
         if ($value != null)

@@ -13,6 +13,11 @@ trait exec
         starfish::$exec['requestBody']      = self::request_body();
         starfish::$exec['pathParts']        = self::pathParts( starfish::$exec['path'] );
         
+		if (isset(starfish::$config['date_default_timezone']))
+		{
+			date_default_timezone_set(starfish::$config['date_default_timezone']);
+		}
+		
         return true;
     }
     

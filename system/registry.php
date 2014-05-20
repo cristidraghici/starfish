@@ -84,13 +84,20 @@ trait registry
 	public static function object_exists($file, $path='./', $class=null)
 	{
 		if ($class == null) { $class = $file; }
-	
+		
+		// If in the registry
+		if (isset(starfish::$objects[$class])) { return starfish::$objects[$class]; }
+		
+		// If not an object yet
+		if (class_exists($class)) { return starfish::object_store($class, new $class); }
+		
+		// If it's in a different file
 		if (file_exists( $path . DIRECTORY_SEPARATOR . $file . '.php' ))
 		{
 			include( $path . DIRECTORY_SEPARATOR . $file . '.php' );
 			if (class_exists($class))
 			{
-				return new $class;
+				return starfish::object_store($class, new $class);
 			}
 			else
 			{

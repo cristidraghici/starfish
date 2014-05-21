@@ -11,6 +11,10 @@ trait variables
 	{
 		return starfish::regVar($target);
 	}
+	public static function aget($array, $target)
+	{
+		return starfish::regArr($array, $target);
+	}
 
     public static function regVar($target, $value=null)
     {

@@ -27,28 +27,6 @@ class starfish
         config::init();
         exec::init();
         
-        // Build aliases
-        $aliases = self::$config['aliases'];
-        if (is_array($aliases) && count($aliases) > 0)
-        {
-            foreach ($aliases as $key=>$value)
-            {
-                class_alias('starfish', $value);
-            }
-        }
-        
-        // Display errors
-        if (self::$config['debug'] == false)
-        {
-			error_reporting(0);
-			@ini_set('display_errors', 'off');
-        }
-        else
-        {
-            error_reporting(E_ALL | E_STRICT);
-			@ini_set('display_errors', 'on');
-        }
-        
         return true;
     }
     public static function singleton() { self::init(); }

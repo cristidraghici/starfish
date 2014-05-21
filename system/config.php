@@ -33,7 +33,7 @@ trait config
         {
             foreach ($aliases as $key=>$value)
             {
-                class_alias('starfish', $value);
+                if (!class_exists($value) ) { class_alias('starfish', $value); }
             }
         }
         

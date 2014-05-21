@@ -12,6 +12,12 @@ class curl
     public  $requestContentType = 'json';
     public  $debugInfo = '';
     
+    public function curl()
+    {
+		if (!extension_loaded('curl')) { starfish::error(400, "PHP required extension - curl - not loaded."); }
+        return true;
+    }
+    
     public function get($url, $data, $method='get')
     {
         $curl = curl_init();

@@ -10,7 +10,8 @@ class postgresql
     
     function postgresql()
     {
-        $this->init();
+		if (!extension_loaded('pgsql')) { starfish::error(400, "PHP required extension - pgsql - not loaded."); }
+		
         starfish::$config['obj-alias']['pg'] = __CLASS__;
         starfish::$config['obj-alias']['pgsql'] = __CLASS__;
         starfish::$config['obj-alias']['postres'] = __CLASS__;
@@ -22,7 +23,7 @@ class postgresql
     // Init the object, make the connection
     public static function init()
     {
-        $constring = 'host='.starfish::$config['db']['db_host'].' port='.starfish::$config['db']['db_port'].' dbname='.starfish::$config['db']['db_db'].' user='.starfish::$config['db']['db_user'].'  password='.starfish::$config['db']['db_pass'];
+        $constring = 'host='.starfish::$config['db']['host'].' port='.starfish::$config['db']['port'].' dbname='.starfish::$config['db']['name'].' user='.starfish::$config['db']['user'].'  password='.starfish::$config['db']['pass'];
         
         $link = @pg_connect ($constring); 
 		if (!$link)

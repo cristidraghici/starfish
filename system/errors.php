@@ -42,7 +42,19 @@ trait errors
         
         #$message = "{$code} {$message}";
         
-        exit ($message);
+        echo $message;
+        
+        if (starfish::$config['debug'] == true) { starfish::backtrace(); }
+        
+        exit;
+    }
+    
+    public static function backtrace()
+    {
+        echo PHP_EOL;
+        print_r(debug_backtrace());
+        
+        return true;
     }
 }
 

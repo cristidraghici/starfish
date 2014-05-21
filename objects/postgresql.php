@@ -3,10 +3,8 @@ if (!class_exists('starfish')) { die(); }
 
 class postgresql
 {
-    private static $instance;
-    
-    public static $errors;
-    private static $connected = false;
+    public $errors;
+    public $connected = false;
     
     function postgresql()
     {
@@ -21,7 +19,7 @@ class postgresql
     
     
     // Init the object, make the connection
-    public static function init()
+    public function init()
     {
         $constring = 'host='.starfish::$config['db']['host'].' port='.starfish::$config['db']['port'].' dbname='.starfish::$config['db']['name'].' user='.starfish::$config['db']['user'].'  password='.starfish::$config['db']['pass'];
         
@@ -32,24 +30,24 @@ class postgresql
 		}
         else
         {
-            $this->$connected = true;
+            $this->connected = true;
         }
         
         return true;
     }
     
     // Shows the given query
-    public static function eecho($query)
+    public function eecho($query)
     {
         starfish::error(400, $query);
     }
     
     
     // Read all the results from the query
-    public static function a($query, $identif_string="")
+    public function a($query, $identif_string="")
     {
         $return = array();
-        if ($this->$connected == false) { $this->init(); }
+        if ($this->connected == false) { $this->init(); }
          
             // Query the database
             $result = $this->q($query);
@@ -110,7 +108,7 @@ class postgresql
     }
     
     // Return the first result of the query
-    public static function aq($query)
+    public function aq($query)
     {
         $result = $this->a($query);
         return $result[0];
@@ -118,11 +116,11 @@ class postgresql
     
     
     // Execute the query
-    public static function q($query)
+    public function q($query)
     {
         if (strlen($query) > 0)
         {
-            if ($this->$connected == false) { $this->init(); }
+            if ($this->connected == false) { $this->init(); }
             
             $result = pg_query($query);
             return $result;
@@ -131,9 +129,9 @@ class postgresql
         return false;
     }
     // Returns the number count(*)-ed results
-    public static function nr($query)
+    public function nr($query)
     {        
-        if ($this->$connected == false) { $this->init(); }
+        if ($this->connected == false) { $this->init(); }
         
         $counted = 0;
         
@@ -149,9 +147,9 @@ class postgresql
         return $counted;
     }
     // Inserts the line and returnes the ID of the last entry
-    public static function ins($q)
+    public function ins($q)
     {
-        if ($this->$connected == false) { $this->init(); }
+        if ($this->connected == false) { $this->init(); }
         
         $result = pg_query($q);
         $row = pg_fetch_row($result);
@@ -169,7 +167,7 @@ class postgresql
     // Deletes a certain row from the database
     public static function del($q)
     {
-        if ($this->$connected == false) { $this->init(); }
+        if ($this->connected == false) { $this->init(); }
         
         $result = pg_query($q);
         if (!$result)
@@ -186,7 +184,7 @@ class postgresql
     
     
     
-    public static function sql_from_function($pg_function, $values, $overwrite=array())
+    public function sql_from_function($pg_function, $values, $overwrite=array())
     {
         $query = "select ";
         
@@ -200,7 +198,7 @@ class postgresql
         return $query;
     }
     
-    public static function sql_values_from_function($pg_function, $values, $overwrite=array())
+    public function sql_values_from_function($pg_function, $values, $overwrite=array())
     {
         // stabileste tipurile de date din functie
         $types = $this->sql_from_function_types($pg_function);
@@ -305,7 +303,7 @@ class postgresql
         return $string;
     }
     
-    public static function sql_from_function_types($string)
+    public function sql_from_function_types($string)
     {
         $array = array();
         // clean comments from function

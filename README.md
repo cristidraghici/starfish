@@ -20,11 +20,8 @@ starfish::config(array(
 	// Basic configuration
     'site_url' => 'http://'.$_SERVER['HTTP_HOST'].'/',
     'friendly' => false,
-	'root'	   => './starfish/',
-	'objects'  => './objects/',
-	'tpl'	   => './template/',
     'debug'    => false,
-	'session'  => 'FS',
+	'session'  => 'session',
 	
 	/*
 	Other configuration variables depeding on the objects you decide to include.
@@ -87,4 +84,6 @@ To help MVC development **Starfish PHP Microframework** implements starfish::c()
 
 ## Example applications
 
-* Quick PostIT notes;
+[API Tester](https://github.com/cristidraghici/api-tester)
+[PHP Check Domain](https://github.com/cristidraghici/php-check-domain)
+[PostIT](https://github.com/cristidraghici/PostIT)

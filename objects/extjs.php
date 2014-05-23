@@ -121,13 +121,22 @@ class extjs
     }
     
     // Make the limit string
-    function limitprops($params)
+    function limitprops($params=array())
     {
         $limits = '';
         
-        if (is_numeric($params['start'])) { $start = $params['start']; }
-        if (is_numeric($params['page']))  { $page  = $params['page']; }
-        if (is_numeric($params['limit'])) { $limit = $params['limit']; }
+        if (count($params) > 0)
+        {
+            if (is_numeric($params['start'])) { $start = $params['start']; }
+            if (is_numeric($params['page']))  { $page  = $params['page']; }
+            if (is_numeric($params['limit'])) { $limit = $params['limit']; }
+        }
+        else
+        {
+            if (is_numeric(starfish::params('start'))) { $start = starfish::params('start'); }
+            if (is_numeric(starfish::params('page')))  { $page  = starfish::params('page'); }
+            if (is_numeric(starfish::params('limit'))) { $limit = starfish::params('limit'); }
+        }
         
         if (is_numeric($limit) && is_numeric($start)) { $limits = ' limit '.$limit.' offset '.$start; }
         

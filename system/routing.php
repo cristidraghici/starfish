@@ -53,7 +53,6 @@ trait routing
                     $check = trim($check, '/');
                     $check = '#^'.str_replace('*', '([^\/]*)', $check).'$#is';
                     
-                    #echo $path . ' - ' . $check . ' - '. preg_match($check, $path, $match) . ' - '. $match[1] ."<br>\n";
                     if (preg_match($check, $path, $match))
                     {
                         $route = $all[$routes[$key]];

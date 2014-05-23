@@ -213,7 +213,7 @@ class postgresql
         $string = "(";
         foreach ($types as $key=>$value)
         {
-            if ($values[$key] == 'null' || $values[$key] == '')
+            if (!isset($values[$key]) || $values[$key] == 'null' || $values[$key] == '')
             {
                 $string .= 'null,';
             }

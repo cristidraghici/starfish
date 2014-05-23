@@ -10,7 +10,7 @@ trait exec
         starfish::$exec['params']   = self::params();
         starfish::$exec['ip']       = self::ip();
         starfish::$exec['requestHeaders']   = self::request_headers();
-        starfish::$exec['requestBody']      = self::request_body();
+        starfish::$exec['requestBody']      = self::request_body(true);
         starfish::$exec['pathParts']        = self::pathParts( starfish::$exec['path'] );
         
 		if (isset(starfish::$config['date_default_timezone']))

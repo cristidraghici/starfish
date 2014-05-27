@@ -22,6 +22,22 @@ class error
         
         return $string;
     }
+    
+    public function err($target, $value, $class="")
+    {
+		$errors = starfish::session('errors');
+		
+		$errors[$target] = array(
+			'target'=>$target,
+			'value'=>$value,
+            'class'=>$class
+		);
+		$errors = array_values($errors);
+		
+		starfish::session('errors', $errors);
+        
+        return true;
+	}
 }
 
 ?>

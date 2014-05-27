@@ -27,9 +27,13 @@ if (!class_exists('starfish'))
         require_once( $path . 'exec.php');
         require_once( $path . 'errors.php');
         
+        
         // The main file
         require_once( $path . '_starfish.php');
         starfish::init();
+        
+        // Include the aliases
+        require_once( $path . '_aliases.php');
     }
     else
     {

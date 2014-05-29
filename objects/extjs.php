@@ -191,12 +191,10 @@ class extjs
     */
     function listAllModels($dir, $replace)
     {
-        $dir = starfish::$config['root'] . $dir;
-        
-        $content = starfish::obj('files')->all($dir);
+        $content = starfish::obj('files')->filesFromDir($dir);
         
         $string = '[';
-        foreach ($content['files'] as $key=>$value)
+        foreach ($content as $key=>$value)
         {
             $extension  = starfish::obj('files')->extension($value);
             $name       = substr($value, 0, -(strlen($extension)+1) );

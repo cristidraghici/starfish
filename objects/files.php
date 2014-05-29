@@ -7,13 +7,16 @@ class files
 	function all($root = './')
 	{
 		$files  = array('folders'=>array(), 'files'=>array());
-		if (is_dir($root)) {
+        
+		if (is_dir($root))
+        {
 			if ($dir_handler = opendir($root)) 
 			{
 				while (($file = readdir($dir_handler)) !== false) 
 				{
 					if ($file != '.' && $file != '..')
 					{
+                        echo $root . $file . "<br>\n";
 						if (filetype($root . $file) == 'file')
 						{
 							$files['files'][] = $root . $file;
@@ -29,6 +32,57 @@ class files
 		}
 		return $files;
 	} 
+    
+    function dirToArray($dir)
+    {
+    
+        $result = array();
+        
+        $cdir = scandir($dir);
+        foreach ($cdir as $key => $value)
+        {
+            if (!in_array($value,array(".","..")))
+            {
+                if (is_dir($dir . DIRECTORY_SEPARATOR . $value))
+                {
+                    $result[$value] = starfish::obj('files')->dirToArray($dir . DIRECTORY_SEPARATOR . $value);
+                }
+                else
+                {
+                    $result[] = $value;
+                }
+            }
+        }
+        
+        return $result;
+    }
+    
+    function filesFromDir($dir)
+    {
+        $result = array();
+        
+        $cdir = scandir($dir);
+        foreach ($cdir as $key => $value)
+        {
+            if (!in_array($value,array(".","..")))
+            {
+                if (is_dir($dir . DIRECTORY_SEPARATOR . $value))
+                {
+                    $list = starfish::obj('files')->filesFromDir($dir . DIRECTORY_SEPARATOR . $value);
+                    foreach ($list as $k=>$v)
+                    {
+                        $result[$k] = $dir . DIRECTORY_SEPARATOR . $value . DIRECTORY_SEPARATOR . $v;
+                    }
+                }
+                else
+                {
+                    $result[$value] = $value;
+                }
+            }
+        }
+        
+        return array_values($result);
+    }
     
     # recursively remove a directory
     function rrmdir($dir)

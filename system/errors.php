@@ -52,7 +52,9 @@ trait errors
     public static function backtrace()
     {
         echo PHP_EOL;
+        echo '<pre>';
         print_r(debug_backtrace());
+        echo '</pre>';
         
         return true;
     }

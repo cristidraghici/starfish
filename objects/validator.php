@@ -121,7 +121,7 @@ class validator
                             break;
                         
                         case 'numeric':
-                            if ($valid[$key] == 1 && !is_numeric($value) && $value2 == true)
+                            if ($valid[$key] == 1 && (!is_numeric($value) && strlen($value) > 0) && $value2 == true)
                             {
 								if (strlen($rules[$key]['errortxt']) > 0)
 								{
@@ -134,7 +134,7 @@ class validator
                                 $valid[$key] = 0;
                                 $valid_overall = 0;
                             }
-                            if ($valid[$key] == 1 && is_numeric($value) && $value2 == false)
+                            if ($valid[$key] == 1 && (is_numeric($value) && strlen($value) > 0) && $value2 == false)
                             {
 								if (strlen($rules[$key]['errortxt']) > 0)
 								{

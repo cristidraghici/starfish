@@ -43,7 +43,7 @@ if (!class_exists('starfish'))
     }
     else
     {
-        die('Your PHP version is outdated. Please install 5.4 minimum.');
+        die('Minimum PHP 5.4 is required.');
     }
     
     // Init the framework

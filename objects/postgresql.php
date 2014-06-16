@@ -222,6 +222,7 @@ class postgresql
                 switch ($value)
                 {
                     case 'integer[]':
+                    case 'bigint[]':
                     case 'numeric[]':
                         //$string .= "null,";
                         if (is_array($values[$key]) && count($values[$key]) > 0)
@@ -289,6 +290,7 @@ class postgresql
                         break;
                     case 'numeric':
                     case 'integer':
+                    case 'bigint':
                     case 'float':
                         $string .= floatval($values[$key]).",";
                         break;

@@ -10,13 +10,14 @@
  * @link    http://opensource.org/licenses/MIT
  */
 
-/** Entry point: file aggregator */
-
+/*
+ * Entry point of Starfish PHP Framework: file aggregator
+*/
 if (!class_exists('starfish'))
 {
     $path = __DIR__ . DIRECTORY_SEPARATOR . 'system' . DIRECTORY_SEPARATOR;
+    # List with the names of the files containing the traits
     $files = array(
-        // Traits
         'config.php',
         'variables.php',
         'registry.php',
@@ -28,28 +29,26 @@ if (!class_exists('starfish'))
     
     if (PHP_VERSION_ID >= 50400)
     {
-        /*
-        * The minimum PHP 5.4 requirement is met.
-        */
-        
-        // Include the system files
+        # The minimum PHP 5.4 requirement is met.
+        # Include the system files
         foreach ($files as $value)
         {
             require_once( $path . $value);
         }
         
-        // Include the main file
+        # Include the main file
         require_once( $path . '_starfish.php');
     }
     else
     {
+        # Die if traits cannot be used
         die('Minimum PHP 5.4 is required.');
     }
     
-    // Init the framework
+    # Init the framework
     starfish::init();
     
-    // Include the aliases
+    # Include the aliases
     require_once( $path . '_aliases.php');
 }
 ?>

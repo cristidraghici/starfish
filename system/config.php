@@ -9,6 +9,7 @@ trait config
         $root       = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $default    = array(
             'root'      => $root,
+            'app'       => $root,
             'objects'   => $root.'objects' . DIRECTORY_SEPARATOR,
             'tpl'       => $root.'template' . DIRECTORY_SEPARATOR,
             'friendly'  => false,
@@ -73,6 +74,12 @@ trait config
         
         
         return false;
+    }
+    
+    public static function app($path)
+    {
+        $path = realpath($path) . DIRECTORY_SEPARATOR;
+        starfish::$config['app'] = $path;
     }
 }
 

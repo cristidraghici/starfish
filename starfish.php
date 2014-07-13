@@ -12,7 +12,7 @@
  * @link    http://opensource.org/licenses/MIT
  */
 
-/*
+/**
  * Entry point of Starfish PHP Framework: this acts like a Registry for all the other objects used
  * 
  * @package starfish
@@ -20,16 +20,16 @@
  */
 class starfish
 {
-	/*
+	/**
 	 * Declare used variables
 	 *
 	 * $config 		- configuration variables
 	 * $variables 	- variable values set throughout the application and accessible from anywhere
 	 * $objects 	- a list of objects 
 	 */
-	public $config;
-	public $variables;
-	private $objects;
+	public static $config;
+	public static $variables;
+	private static $objects;
 	
 	##################
 	# Framework functions
@@ -38,7 +38,7 @@ class starfish
 	/**
 	 * Init the framework
 	 */
-	public function init()
+	public static function init()
 	{
 		
 		return self;
@@ -50,7 +50,7 @@ class starfish
 	 * @param string $name The name of the module for which the configuration is stored
 	 * @param array $parameters The array with configuration values to be stored
 	 */
-	public function config($name, $parameters)
+	public static function config($name, $parameters)
 	{
 		if (!is_array( self::$config[$name] ))
 		{
@@ -70,9 +70,9 @@ class starfish
 	 * Set a variable
 	 *
 	 * @param string $name The name of the value to store
-	 * @param any $value The value of the parameter to store
+	 * @param mixed $value The value of the parameter to store
 	 */
-	public function set($name, $value)
+	public static function set($name, $value)
 	{
 		self::$variables[$name] = $value;
 		
@@ -84,13 +84,29 @@ class starfish
 	 *
 	 * @param string $name The name of the variable to retrive
 	 */
-	public function get($name)
+	public static function get($name)
 	{
 		return self::$variables[$name];
 	}
 	
+	##################
+	# Objects
+	##################
+	
+	/**
+	 * The main object function
+	 *
+	 * @param string $name The name of the object to access or create
+	 * @param array $config The configuration for the created object
+	 */
+	public static function obj($name, $config=array())
+	{
+		return self::$objects[$name];
+	}
 }
 
-// Init the framework
+/**
+ * Instantiate the framework
+ */
 $starfish &= new starfish();
 ?>

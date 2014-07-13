@@ -40,6 +40,21 @@ class starfish
 	 */
 	public static function init()
 	{
+		// Set the path for Starfish
+		$path = self::config('_starfish', array(
+			'root' => @realpath(__DIR__) . DIRECTORY_SEPARATOR
+		));
+		
+		// Create the initial objects list
+		self::$objects = array(
+			'parameters'=>array(
+				'instance'		=> null,
+				'configuration'	=> array(
+					'path'	=> $path . 'system/parameters.php',
+					'class'	=> 'parameters'
+				)
+			)
+		);
 		
 		return self;
 	}
@@ -101,12 +116,56 @@ class starfish
 	 */
 	public static function obj($name, $config=array())
 	{
-		return self::$objects[$name];
+		// Object does not exist
+		if (!is_object( self::$objects[$name]['instance'] ))
+		{
+			// Set the configuration
+			if (count($config) > 0)
+			{
+				if (!is_array( self::$objects[$name]['configuration'] ))
+				{
+					self::$objects[$name]['configuration'] = $config;
+				}
+				else
+				{
+					self::$objects[$name]['configuration'] = array_merge(self::$objects[$name]['configuration'], $config);
+				}
+			}
+			
+			// Instantiate the object, if possible
+			$class = self::$objects[$name]['configuration']['class'];
+			$path  = self::$objects[$name]['configuration']['path'];
+			
+			// include the path file, if class does not exist
+			if (!class_exists($class) && file_exists($path))
+			{
+				require_once( $path ); 
+			}
+			
+			// create the object, if needed
+			if (class_exists($class))
+			{
+				self::$objects[$name]['instance'] = new $class;
+				
+				return self::$objects[$name]['instance'];
+			}			
+		}
+		// Object exists
+		else if (is_object( self::$objects[$name]['instance'] ))
+		{
+			return self::$objects[$name]['instance'];
+		}
+		
+		return false;
 	}
 }
 
 /**
- * Instantiate the framework
+ * Instantiate the framework. Minimum PHP 5.3 required.
  */
+if (PHP_VERSION_ID >= 50300)
+{
+	die("Starfish PHP Framework minimum requirements: PHP 5.3");
+}
 $starfish &= new starfish();
 ?>

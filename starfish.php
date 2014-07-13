@@ -27,11 +27,15 @@ class starfish
 	 * $variables 	- variable values set throughout the application and accessible from anywhere
 	 * $objects 	- a list of objects 
 	 */
-	private $config;
-	private $variables;
+	public $config;
+	public $variables;
 	private $objects;
 	
-	/*
+	##################
+	# Framework functions
+	##################
+	
+	/**
 	 * Init the framework
 	 */
 	public function init()
@@ -40,7 +44,7 @@ class starfish
 		return self;
 	}
 	
-	/*
+	/**
 	 * Configuration function
 	 *
 	 * @param string $name The name of the module for which the configuration is stored
@@ -62,7 +66,7 @@ class starfish
 	# Variables
 	##################
 	
-	/*
+	/**
 	 * Set a variable
 	 *
 	 * @param string $name The name of the value to store
@@ -75,7 +79,7 @@ class starfish
 		return $value;
 	}
 	
-	/*
+	/**
 	 * Get a variable
 	 *
 	 * @param string $name The name of the variable to retrive

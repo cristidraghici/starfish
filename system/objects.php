@@ -72,7 +72,7 @@ class objects
 		{
 			return starfish::obj($name, array(
 				'path' => $path
-				'class'=> $name,
+				'class'=> $class,
 				'type' => $type
 			));
 		}

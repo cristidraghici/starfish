@@ -40,6 +40,9 @@ class starfish
 	 */
 	public static function init()
 	{
+		// Set the default debug value
+		self::config('_starfish', 'debug', false);
+		
         // Establish the default timezone
 		$config = self::config('_starfish', 'date_default_timezone', (self::config('_starfish', 'date_default_timezone') != null) ? self::config('_starfish', 'date_default_timezone') : "UTC" );
         @date_default_timezone_set( $config );
@@ -88,6 +91,13 @@ class starfish
 				)
 			)
 		);
+		
+		// Include the framework configuration file
+		$file = self::config('_starfish', 'root') . DIRECTORY_SEPARATOR . 'config.php';
+		if (file_exists( $file )) { require_once( $file ); }
+		
+		// Apply the settings inside the custom configuration array
+		// --> todo
 		
 		// Proper initialization
 		self::obj('parameters')->init();
@@ -283,4 +293,7 @@ if (PHP_VERSION_ID >= 50300)
 }
 // Create an instance
 $starfish &= new starfish();
+
+// Init the framework
+starfish::init();
 ?>

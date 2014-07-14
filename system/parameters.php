@@ -109,6 +109,21 @@ class parameters
         self::$cache['method'] = $method;
         return $method;
     }
+	
+	/**
+	 * Request method
+	 */
+    public static function request_protocol()
+    {
+        // If string exists in cache, return it
+        if (isset(self::$cache['request_protocol'])) { return self::$cache['request_protocol']; }
+
+        // Create the string in cache and return it
+		$request_protocol = $_SERVER['SERVER_PROTOCOL'];
+
+        self::$cache['request_protocol'] = $request_protocol;
+        return $request_protocol;
+    }
 
 	/**
 	 * Get the request content type

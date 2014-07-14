@@ -44,6 +44,9 @@ class starfish
 		$config = self::config('_starfish', 'date_default_timezone', (self::config('_starfish', 'date_default_timezone') != null) ? self::config('_starfish', 'date_default_timezone') : "UTC" );
         @date_default_timezone_set( $config );
         
+		// Set the path for the application
+		$path = self::config('_starfish', 'app', './');
+		
 		// Set the path for Starfish Framework files
 		$path = self::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);
 		
@@ -53,7 +56,8 @@ class starfish
 				'instance'		=> null,
 				'configuration'	=> array(
 					'path'	=> $path . 'system/errors.php',
-					'class'	=> 'errors'
+					'class'	=> 'errors',
+					'type'	=> 'core'
 				)
 			),
             
@@ -61,7 +65,8 @@ class starfish
 				'instance'		=> null,
 				'configuration'	=> array(
 					'path'	=> $path . 'system/objects.php',
-					'class'	=> 'objects'
+					'class'	=> 'objects',
+					'type'	=> 'core'
 				)
 			),
             
@@ -69,7 +74,8 @@ class starfish
 				'instance'		=> null,
 				'configuration'	=> array(
 					'path'	=> $path . 'system/parameters.php',
-					'class'	=> 'parameters'
+					'class'	=> 'parameters',
+					'type'	=> 'core'
 				)
 			),
             
@@ -77,10 +83,15 @@ class starfish
 				'instance'		=> null,
 				'configuration'	=> array(
 					'path'	=> $path . 'system/routes.php',
-					'class'	=> 'routes'
+					'class'	=> 'routes',
+					'type'	=> 'core'
 				)
 			)
 		);
+		
+		// Proper initialization
+		self::obj('parameters')->init();
+		self::obj('objects')->init();
 		
 		return self;
 	}
@@ -209,29 +220,35 @@ class starfish
 	 * The main object function
 	 *
 	 * @param string $name The name of the object to access or create
-	 * @param array $config The configuration for the created object
+	 * @param array $config The configuration for the created object. Parameters: path, class, type(enum: core|app)
 	 */
 	public static function obj($name, $config=array())
 	{
+		// Ensure that the object type exists
+		// core - in ./system folder
+		// objects - in ./objects folder
+		// app - in the application folder
+		$config['type'] = (isset($config['type']) && in_array($config['type'], array('core', 'objects', 'app')) ) ? $config['type'] : 'app';
+		
 		// Object does not exist
-		if (!is_object( self::$objects[$name]['instance'] ))
+		if (!is_object( self::$objects[ $config['type'] ][$name]['instance'] ))
 		{
 			// Set the configuration
 			if (count($config) > 0)
 			{
-				if (!is_array( self::$objects[$name]['configuration'] ))
+				if (!is_array( self::$objects[ $config['type'] ][$name]['configuration'] ))
 				{
-					self::$objects[$name]['configuration'] = $config;
+					self::$objects[ $config['type'] ][$name]['configuration'] = $config;
 				}
 				else
 				{
-					self::$objects[$name]['configuration'] = array_merge(self::$objects[$name]['configuration'], $config);
+					self::$objects[ $config['type'] ][$name]['configuration'] = array_merge(self::$objects[ $config['type'] ][$name]['configuration'], $config);
 				}
 			}
 			
 			// Instantiate the object, if possible
-			$class = self::$objects[$name]['configuration']['class'];
-			$path  = self::$objects[$name]['configuration']['path'];
+			$class = self::$objects[ $config['type'] ][$name]['configuration']['class'];
+			$path  = self::$objects[ $config['type'] ][$name]['configuration']['path'];
 			
 			// include the path file, if class does not exist
 			if (!class_exists($class) && file_exists($path))
@@ -242,15 +259,15 @@ class starfish
 			// create the object, if needed
 			if (class_exists($class))
 			{
-				self::$objects[$name]['instance'] = new $class;
+				self::$objects[ $config['type'] ][$name]['instance'] = new $class;
 				
-				return self::$objects[$name]['instance'];
+				return self::$objects[ $config['type'] ][$name]['instance'];
 			}			
 		}
 		// Object exists
-		else if (is_object( self::$objects[$name]['instance'] ))
+		else if (is_object( self::$objects[ $config['type'] ][$name]['instance'] ))
 		{
-			return self::$objects[$name]['instance'];
+			return self::$objects[ $config['type'] ][$name]['instance'];
 		}
 		
 		return false;

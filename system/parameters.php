@@ -13,7 +13,7 @@ class parameters
 	 * Declare used variables
 	 *
 	 * $cache 		- Cache information for usage without running the function
-	 */
+	 */ 
     private static $cache;
     
     

@@ -5,7 +5,7 @@ if (!class_exists('starfish')) { die(); }
  * Handler for errors
  *
  * @package starfish
- * @subpackage starfish.system.objects
+ * @subpackage starfish.system.errors
  *
  * @todo This is a basic error handler. Needs to be developed futher soon.
  */

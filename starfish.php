@@ -185,6 +185,12 @@ class starfish
 	 */
 	public static function get($name)
 	{
+        // Give a standard form to the variable name
+        $type = @gettype($name);
+        if ($type == 'array') { @ksort($name); }
+        $name = @serialize($name);
+        
+        // Get the variable
 		return self::$variables[$name];
 	}
 	

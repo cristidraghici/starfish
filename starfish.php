@@ -40,18 +40,40 @@ class starfish
 	 */
 	public static function init()
 	{
-		// Set the path for Starfish
-		$path = self::config('_starfish', array(
-			'root' => @realpath(__DIR__) . DIRECTORY_SEPARATOR
-		));
+		// Set the path for Starfish Framework files
+		$path = self::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);
 		
 		// Create the initial objects list
 		self::$objects = array(
+			'errors'=>array(
+				'instance'		=> null,
+				'configuration'	=> array(
+					'path'	=> $path . 'system/errors.php',
+					'class'	=> 'errors'
+				)
+			),
+            
+			'objects'=>array(
+				'instance'		=> null,
+				'configuration'	=> array(
+					'path'	=> $path . 'system/objects.php',
+					'class'	=> 'objects'
+				)
+			),
+            
 			'parameters'=>array(
 				'instance'		=> null,
 				'configuration'	=> array(
 					'path'	=> $path . 'system/parameters.php',
 					'class'	=> 'parameters'
+				)
+			),
+            
+			'routes'=>array(
+				'instance'		=> null,
+				'configuration'	=> array(
+					'path'	=> $path . 'system/routes.php',
+					'class'	=> 'routes'
 				)
 			)
 		);
@@ -62,22 +84,76 @@ class starfish
 	/**
 	 * Configuration function
 	 *
-	 * @param string $name The name of the module for which the configuration is stored
-	 * @param array $parameters The array with configuration values to be stored
+	 * @param string $module Module name
+	 * @param mixed  $names The names of the configuration options to return or to store
+	 * @param mixed  $values The values to store
 	 */
-	public static function config($name, $parameters=array())
-	{
-		if (!is_array( self::$config[$name] ))
-		{
-			self::$config[$name] = $parameters;
-		}
-		else
-		{
-			self::$config[$name] = array_merge(self::$config[$name], $parameters);
-		}
-		
-		return true;
-	}
+	public static function config($module, $names, $values=null)
+    {
+        // Initial values to work with
+        $return = null;
+        $config &= isset(self::$config[$module]) ? self::$config[$module] : array();
+        $type   = array(
+            'names' => gettype($names),
+            'values'=> gettype($values)
+        );
+        
+        // Return values
+        if ($type['values'] == null)
+        {
+            // One name
+            if ($type['names'] == 'string')
+            {
+                $return = $config[ $names ];
+            }
+            // More names
+            elseif ($type['names'] == 'array')
+            {
+                foreach ($names as $key=>$value)
+                {
+                    $return[ $value ] = isset($config[ $value ]) ? $config[ $value ] : null;
+                }
+            }
+        }
+        // Set some values
+        else
+        {
+            // One value
+            if ($type['values'] == 'string')
+            {
+                // One value, one name
+                if ($type['names'] == 'string')
+                {
+                    $config[ $names ] = $values;
+                }
+                // One value, more names
+                elseif ($type['names'] == 'array')
+                {
+                    foreach ($names as $key=>$value)
+                    {
+                        $config[ $value ] = $values;
+                    }
+                }
+            }
+            // More values
+            elseif ($type['values'] == 'array')
+            {
+                // Ensure that the $names is an array
+                if ($type['names'] != 'array') { $names = array($names); }
+                
+                // Assign the values
+                $names = array_values($names);
+                $values = array_values($values);
+                
+                for ($a=0; $a++; $a<count($names))
+                {
+                    $config[$names[$a]] = $values[$a];
+                }
+            }
+        }
+        
+        return $return;
+    }
 	
 	##################
 	# Variables
@@ -86,11 +162,17 @@ class starfish
 	/**
 	 * Set a variable
 	 *
-	 * @param string $name The name of the value to store
+	 * @param mixed $name The name of the value to store
 	 * @param mixed $value The value of the parameter to store
 	 */
 	public static function set($name, $value)
 	{
+        // Give a standard form to the variable name
+        $type = @gettype($name);
+        if ($type == 'array') { @ksort($name); }
+        $name = @serialize($name);
+        
+        // Store the variable
 		self::$variables[$name] = $value;
 		
 		return $value;
@@ -171,6 +253,4 @@ if (PHP_VERSION_ID >= 50300)
 }
 // Create an instance
 $starfish &= new starfish();
-// Include the aliases file
-require_once ( starfish::config() );
 ?>

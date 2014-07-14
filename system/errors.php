@@ -40,6 +40,7 @@ class errors
         return true;
     }
 }
+
 /**
 * Aliases used by class for easier programming
 */

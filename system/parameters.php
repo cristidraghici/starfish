@@ -356,7 +356,7 @@ class parameters
         if (isset(self::$cache['file'][$name])) { return self::$cache['file'][$name]; }
 
         // Create the string in cache and return it
-        self::$cache['file'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) ? null;
+        self::$cache['file'][$name] = $_FILES[$name];
 
 
         return self::$cache['file'][$name];

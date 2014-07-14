@@ -40,6 +40,10 @@ class starfish
 	 */
 	public static function init()
 	{
+        // Establish the default timezone
+		$config = self::config('_starfish', 'date_default_timezone', (self::config('_starfish', 'date_default_timezone') != null) ? self::config('_starfish', 'date_default_timezone') : "UTC" );
+        @date_default_timezone_set( $config );
+        
 		// Set the path for Starfish Framework files
 		$path = self::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);
 		
@@ -125,6 +129,7 @@ class starfish
                 if ($type['names'] == 'string')
                 {
                     $config[ $names ] = $values;
+                    $return[ $names ] = $values;
                 }
                 // One value, more names
                 elseif ($type['names'] == 'array')
@@ -132,6 +137,7 @@ class starfish
                     foreach ($names as $key=>$value)
                     {
                         $config[ $value ] = $values;
+                        $return[ $value ] = $values;
                     }
                 }
             }
@@ -148,6 +154,7 @@ class starfish
                 for ($a=0; $a++; $a<count($names))
                 {
                     $config[$names[$a]] = $values[$a];
+                    $return[ $names[$a] ] = $values[$a];
                 }
             }
         }

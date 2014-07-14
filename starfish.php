@@ -65,7 +65,7 @@ class starfish
 	 * @param string $name The name of the module for which the configuration is stored
 	 * @param array $parameters The array with configuration values to be stored
 	 */
-	public static function config($name, $parameters)
+	public static function config($name, $parameters=array())
 	{
 		if (!is_array( self::$config[$name] ))
 		{
@@ -75,6 +75,8 @@ class starfish
 		{
 			self::$config[$name] = array_merge(self::$config[$name], $parameters);
 		}
+		
+		return true;
 	}
 	
 	##################
@@ -167,5 +169,8 @@ if (PHP_VERSION_ID >= 50300)
 {
 	die("Starfish PHP Framework minimum requirements: PHP 5.3");
 }
+// Create an instance
 $starfish &= new starfish();
+// Include the aliases file
+require_once ( starfish::config() );
 ?>

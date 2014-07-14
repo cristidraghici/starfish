@@ -35,7 +35,7 @@ class files
 	 * @param string $content The content of the file
 	 * @param string $type The type of writing to execute
 	 */
-	public static function r($path, $content, $type='w')
+	public static function w($path, $content, $type='w')
 	{
 		return true;
 	}

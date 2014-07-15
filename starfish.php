@@ -103,6 +103,15 @@ class starfish
 		self::obj('parameters')->init();
 		self::obj('objects')->init();
 		
+		// Register aliases
+		if (isset( self::config('_starfish', 'aliases') ) && is_array( self::config('_starfish', 'aliases') ))
+		{
+			foreach (self::config('_starfish', 'aliases') as $key=>$value)
+			{
+				class_alias('starfish', $value);
+			}
+		}
+		
 		return self;
 	}
 	

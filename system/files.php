@@ -13,10 +13,10 @@ class files
 	/**
 	 * Init the object
 	 */
-    public static function init()
-    {
-		
-    }
+	public static function init()
+	{
+		    
+	}
 	
 	/**
 	 * Read the content of a file

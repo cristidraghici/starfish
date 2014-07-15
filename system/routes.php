@@ -18,8 +18,8 @@ class routes
 	 * $routes - Routes stored
 	 * $wildcards - Formats that resource the parametes can take
 	 */
-    private static $routes;
-    private static $wildcards = array(
+	private static $routes;
+	private static $wildcards = array(
 		'num' 		=> '([0-9]+)',
 		'alpha' 	=> '([0-9A-Za-z_\-]+)',
 		'hex' 		=> '([0-9A-Fa-f]+)',
@@ -31,9 +31,9 @@ class routes
 	/**
 	 * Init the object
 	 */
-    public static function init()
-    {
-    }
+	public static function init()
+	{
+	}
 	
 	/**
 	 * Establish a route

@@ -43,10 +43,10 @@ class starfish
 		// Set the default debug value
 		self::config('_starfish', 'debug', false);
 		
-        // Establish the default timezone
+		// Establish the default timezone
 		$config = self::config('_starfish', 'date_default_timezone', (self::config('_starfish', 'date_default_timezone') != null) ? self::config('_starfish', 'date_default_timezone') : "UTC" );
-        @date_default_timezone_set( $config );
-        
+		@date_default_timezone_set( $config );
+		
 		// Set the path for the application
 		$path = self::config('_starfish', 'app', './');
 		
@@ -114,74 +114,74 @@ class starfish
 	 * @param mixed  $values The values to store
 	 */
 	public static function config($module, $names, $values=null)
-    {
-        // Initial values to work with
-        $return = null;
-        $config &= isset(self::$config[$module]) ? self::$config[$module] : array();
-        $type   = array(
-            'names' => gettype($names),
-            'values'=> gettype($values)
-        );
+	{
+		// Initial values to work with
+		$return = null;
+		$config &= isset(self::$config[$module]) ? self::$config[$module] : array();
+		$type   = array(
+		    'names' => gettype($names),
+		    'values'=> gettype($values)
+		);
         
-        // Return values
-        if ($type['values'] == null)
-        {
-            // One name
-            if ($type['names'] == 'string')
-            {
-                $return = $config[ $names ];
-            }
-            // More names
-            elseif ($type['names'] == 'array')
-            {
-                foreach ($names as $key=>$value)
-                {
-                    $return[ $value ] = isset($config[ $value ]) ? $config[ $value ] : null;
-                }
-            }
-        }
-        // Set some values
-        else
-        {
-            // One value
-            if ($type['values'] == 'string')
-            {
-                // One value, one name
-                if ($type['names'] == 'string')
-                {
-                    $config[ $names ] = $values;
-                    $return[ $names ] = $values;
-                }
-                // One value, more names
-                elseif ($type['names'] == 'array')
-                {
-                    foreach ($names as $key=>$value)
-                    {
-                        $config[ $value ] = $values;
-                        $return[ $value ] = $values;
-                    }
-                }
-            }
-            // More values
-            elseif ($type['values'] == 'array')
-            {
-                // Ensure that the $names is an array
-                if ($type['names'] != 'array') { $names = array($names); }
-                
-                // Assign the values
-                $names = array_values($names);
-                $values = array_values($values);
-                
-                for ($a=0; $a++; $a<count($names))
-                {
-                    $config[$names[$a]] = $values[$a];
-                    $return[ $names[$a] ] = $values[$a];
-                }
-            }
-        }
+		// Return values
+		if ($type['values'] == null)
+		{
+			// One name
+			if ($type['names'] == 'string')
+			{
+				$return = $config[ $names ];
+			}
+			// More names
+			elseif ($type['names'] == 'array')
+			{
+				foreach ($names as $key=>$value)
+				{
+					$return[ $value ] = isset($config[ $value ]) ? $config[ $value ] : null;
+				}
+			}
+		}
+		// Set some values
+		else
+		{
+			// One value
+			if ($type['values'] == 'string')
+			{
+				// One value, one name
+				if ($type['names'] == 'string')
+				{
+					$config[ $names ] = $values;
+					$return[ $names ] = $values;
+				}
+				// One value, more names
+				elseif ($type['names'] == 'array')
+				{
+					foreach ($names as $key=>$value)
+					{
+						$config[ $value ] = $values;
+						$return[ $value ] = $values;
+					}
+				}
+			}
+			// More values
+			elseif ($type['values'] == 'array')
+			{
+				// Ensure that the $names is an array
+				if ($type['names'] != 'array') { $names = array($names); }
+				
+				// Assign the values
+				$names = array_values($names);
+				$values = array_values($values);
+				
+				for ($a=0; $a++; $a<count($names))
+				{
+					$config[$names[$a]] = $values[$a];
+					$return[ $names[$a] ] = $values[$a];
+				}
+			}
+		}
         
-        return $return;
-    }
+		return $return;
+	}
 	
 	##################
 	# Variables
@@ -195,12 +195,12 @@ class starfish
 	 */
 	public static function set($name, $value)
 	{
-        // Give a standard form to the variable name
-        $type = @gettype($name);
-        if ($type == 'array') { @ksort($name); }
-        $name = @serialize($name);
-        
-        // Store the variable
+		// Give a standard form to the variable name
+		$type = @gettype($name);
+		if ($type == 'array') { @ksort($name); }
+		$name = @serialize($name);
+		
+		// Store the variable
 		self::$variables[$name] = $value;
 		
 		return $value;
@@ -213,12 +213,12 @@ class starfish
 	 */
 	public static function get($name)
 	{
-        // Give a standard form to the variable name
-        $type = @gettype($name);
-        if ($type == 'array') { @ksort($name); }
-        $name = @serialize($name);
-        
-        // Get the variable
+		// Give a standard form to the variable name
+		$type = @gettype($name);
+		if ($type == 'array') { @ksort($name); }
+		$name = @serialize($name);
+		
+		// Get the variable
 		return self::$variables[$name];
 	}
 	

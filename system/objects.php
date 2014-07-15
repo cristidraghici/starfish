@@ -12,12 +12,12 @@ class objects
 	/**
 	 * Init the object
 	 */
-    public static function init()
-    {
-        // Set the path for Starfish Framework objects
+	public static function init()
+	{
+		// Set the path for Starfish Framework objects
 		self::config('_starfish', 'root_objects', self::config('_starfish', 'root') . DIRECTORY_SEPARATOR . 'objects' );
 		self::config('_starfish', 'app_objects',  self::config('_starfish', 'app') . DIRECTORY_SEPARATOR . 'application' );
-    }
+	}
 	
 	/**
 	 * The main function

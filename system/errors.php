@@ -13,7 +13,7 @@ class errors
 {
     public static function err($code, $message='Page error')
     {
-		// Ensure the code is a string
+	// Ensure the code is a string
         $code = (string) $code;
         
         // set the response code
@@ -23,7 +23,7 @@ class errors
             (int) $code
         );
 		
-		// set the response message
+	// set the response message
         $message = "{$code} {$message}";
         echo $message;
         

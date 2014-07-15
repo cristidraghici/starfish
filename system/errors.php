@@ -11,6 +11,13 @@ if (!class_exists('starfish')) { die(); }
  */
 class errors
 {
+    
+    /**
+     * Main error function
+     * 
+     * @param string $code Code of the error
+     * @param string $message Body of the error
+     */
     public static function err($code, $message='Page error')
     {
 	// Ensure the code is a string
@@ -30,6 +37,9 @@ class errors
         if (starfish::config('_starfish', 'debug') == true) { starfish::backtrace(); exit; }
     }
 	
+    /**
+     * Show the backtrace for the error
+     */
     public static function backtrace()
     {
         echo PHP_EOL;

@@ -73,9 +73,9 @@ class routes
 				array_shift($matched);
 				
 				// if :all wildcard, split result by "/"
-				if(strpos($regex, $_wildcardTypes['all']) !== FALSE)
+				if(strpos($regex, self::$wildcards['all']) !== FALSE)
 				{
-				  $matched = explode('/', $matched[0]);
+					$matched = explode('/', $matched[0]);
 				}
 				
 				// callback home with found params

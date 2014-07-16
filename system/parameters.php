@@ -346,6 +346,50 @@ class parameters
 	}
 
 	/**
+	 * Session parameters. session_write_close() used for speeding up asynchronous JSON content delivery
+	 *
+	 * 0 args - store the content of the session into the session variable cache
+	 * 1 args - return the content of the specified name
+	 * 2 args - set a value for the specified name
+	 *
+	 * @param string $name Name of the variable to retrieve or set
+	 * @param mixed $value Value of the variable to set
+	 *
+	 * @return mixed Value of the specified variable inside the session
+	 */
+	public static function session()
+	{
+		$args = func_get_args();
+		
+		switch (count($args))
+		{
+			case 0:
+				session_start();
+				self::$cache['session'] = $_SESSION;
+				session_write_close();
+				
+				return true;
+			
+				break; // for structured coding
+			case 1:
+				return self::$cache['session'][ $args[0] ];
+				
+				break; // for structure coding
+			
+			case 2:
+				self::$cache['session'][ $args[0] ] = $args[1];
+				
+				session_start();
+				$_SESSION[ $args[0] ] = $args[1];
+				session_write_close();
+				
+				return $args[1];
+			
+				break; // for structure coding
+		}
+	}
+	
+	/**
 	 * File parameters
 	 *
 	 * @param mixed $name The name of the variable to retrieve
@@ -374,5 +418,6 @@ function put()      	{ return call_user_func_array(array('parameters', 'put'),  
 function delete()	{ return call_user_func_array(array('parameters', 'delete'),    func_get_args()); }
 function head() 	{ return call_user_func_array(array('parameters', 'head'),    	func_get_args()); }
 function options()  	{ return call_user_func_array(array('parameters', 'options'),   func_get_args()); }
+function session()  	{ return call_user_func_array(array('parameters', 'session'),   func_get_args()); }
 function file()     	{ return call_user_func_array(array('parameters', 'file'),      func_get_args()); }
 ?>

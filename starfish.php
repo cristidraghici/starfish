@@ -100,8 +100,8 @@ class starfish
 		// --> todo
 		
 		// Proper initialization
-		self::obj('parameters')->init();
-		self::obj('objects')->init();
+		self::obj('parameters');
+		self::obj('objects');
 		
 		// Register aliases
 		if (isset( self::config('_starfish', 'aliases') ) && is_array( self::config('_starfish', 'aliases') ))
@@ -278,9 +278,17 @@ class starfish
 			// create the object, if needed
 			if (class_exists($class))
 			{
-				self::$objects[ $config['type'] ][$name]['instance'] = new $class;
+				// Create the object
+				var $object = new $class;
 				
-				return self::$objects[ $config['type'] ][$name]['instance'];
+				// Run the init method, if it exists
+				if (method_exists($object, 'init')) { $object->init(); }
+				
+				// Store the object
+				self::$objects[ $config['type'] ][$name]['instance'] = $object;
+				
+				// Return the object
+				return $object;
 			}			
 		}
 		// Object exists

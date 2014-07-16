@@ -24,6 +24,8 @@ class parameters
 	{
 		self::request_content_type();
 		self::request_body();
+		
+		self::session();
 	}
 
 	/**

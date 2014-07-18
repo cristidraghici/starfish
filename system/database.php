@@ -12,9 +12,11 @@ class database
 	/**
 	 * Declare used variables
 	 *
-	 * $connections - The list of resources stored as connections
+	 * $connections - The list of information regarding connections
+	 * $resources - The list of resources stored as connections
 	 */
 	private static $connections = array();
+	private static $resources = array();
 	
 	/**
 	 * Init the object. Connect to any database in the configuration, if needed
@@ -32,10 +34,10 @@ class database
 	{
 		if (count(self::$connections) == 0)
 		{
-			return true;
+			return false;
 		}
 		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -60,16 +62,24 @@ class database
 	 */
 	public static function connection($name)
 	{
+        $connection = null;
+        
 		if (isset(self::$connections[$name]))
 		{
-			return self::$connections[$name];
+			$connection = self::$connections[$name];
 		}
 		
 		// If only one connection, return it
 		if (count(self::$connections) == 0)
 		{
-			return array_values(self::$connections)[0];
+			$connection = array_values(self::$connections)[0];
 		}
+        
+        // Init the object, if the connection is needed
+        if (isset($connection) && !isset(self::$resources[$connection]))
+        {
+            self::$resources[$connection] = $connection->init();
+        }
 		
 		return false;
 	}

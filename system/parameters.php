@@ -98,8 +98,8 @@ class parameters
 		}
 		else
 		{
-			$method = isset(self::post('_method')) ? self::post('_method') : $method;
-			$method = isset(self::get('_method')) ? self::get('_method') : $method;
+			$method = (self::post('_method') != null) ? self::post('_method') : $method;
+			$method = (self::get('_method') != null) ? self::get('_method') : $method;
 		}
 		
 		// Ensure method is within allowed methods
@@ -252,7 +252,7 @@ class parameters
 		if (isset(self::$cache['get'][$name])) { return self::$cache['get'][$name]; }
 		
 		// Create the string in cache and return it
-		self::$cache['get'][$name] = isset($_GET[$name]) ? self::sanitize($_GET[$name]) ? null;
+		self::$cache['get'][$name] = isset($_GET[$name]) ? self::sanitize($_GET[$name]) : null;
 		
 		return self::$cache['get'][$name];
 	}
@@ -271,11 +271,11 @@ class parameters
 		switch (self::request_content_type())
 		{
 			case 'json':
-				self::$cache['post'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) ? null;
+				self::$cache['post'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;
 				break;
 			
 			default:
-				self::$cache['post'][$name] = isset($_POST[$name]) ? self::sanitize($_POST[$name]) ? null;
+				self::$cache['post'][$name] = isset($_POST[$name]) ? self::sanitize($_POST[$name]) : null;
 		}
 		
 		
@@ -293,7 +293,7 @@ class parameters
 		if (isset(self::$cache['put'][$name])) { return self::$cache['put'][$name]; }
 	
 		// Create the string in cache and return it
-		self::$cache['put'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) ? null;;
+		self::$cache['put'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;;
 	
 		return self::$cache['put'][$name];
 	}
@@ -309,7 +309,7 @@ class parameters
 		if (isset(self::$cache['delete'][$name])) { return self::$cache['delete'][$name]; }
 	
 		// Create the string in cache and return it
-		self::$cache['delete'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) ? null;;
+		self::$cache['delete'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;;
 	
 	
 		return self::$cache['delete'][$name];
@@ -326,7 +326,7 @@ class parameters
 		if (isset(self::$cache['head'][$name])) { return self::$cache['head'][$name]; }
 	
 		// Create the string in cache and return it
-		self::$cache['head'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) ? null;;
+		self::$cache['head'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;;
 	
 		return self::$cache['head'][$name];
 	}
@@ -342,7 +342,7 @@ class parameters
 		if (isset(self::$cache['options'][$name])) { return self::$cache['options'][$name]; }
 	
 		// Create the string in cache and return it
-		self::$cache['options'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) ? null;;
+		self::$cache['options'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;;
 	
 		return self::$cache['options'][$name];
 	}
@@ -421,5 +421,4 @@ function delete()	{ return call_user_func_array(array('parameters', 'delete'),  
 function head() 	{ return call_user_func_array(array('parameters', 'head'),    	func_get_args()); }
 function options()  	{ return call_user_func_array(array('parameters', 'options'),   func_get_args()); }
 function session()  	{ return call_user_func_array(array('parameters', 'session'),   func_get_args()); }
-function file()     	{ return call_user_func_array(array('parameters', 'file'),      func_get_args()); }
 ?>

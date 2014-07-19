@@ -2,14 +2,18 @@
 /**
  * Starfish PHP Framework is a minimum Registry microframework primarily desiged to serve JSON content and use objects.
  *
- * @author  Cristi DRAGHICI
- * @link    http://blog.draghici.net
- * @version 0.3a
+ * @author  	Cristi DRAGHICI
+ * @link    	http://blog.draghici.net
+ * @version 	0.3a
  * 
- * @see     Parts from Dispatch PHP micro-framework were used.
- * @link    https://github.com/noodlehaus/dispatch
- * @license MIT
- * @link    http://opensource.org/licenses/MIT
+ * @see     	Parts from Dispatch PHP micro-framework were used.
+ * @link    	https://github.com/noodlehaus/dispatch
+ *
+ * @see 	Simplon Router
+ * @link    	https://github.com/fightbulc/simplon_router
+ *
+ * @license 	MIT
+ * @link    	http://opensource.org/licenses/MIT
  */
 
 /**
@@ -23,13 +27,44 @@ class starfish
 	/**
 	 * Declare used variables
 	 *
-	 * $config 		- configuration variables
+	 * $initialized - boolean Needs to be true for Starfish to run
+	 * $config 	- configuration variables
 	 * $variables 	- variable values set throughout the application and accessible from anywhere
+	 * 
 	 * $objects 	- a list of objects 
+	 * $instances 	- a list of objects instantiated
 	 */
-	public static $config;
+	private static $initialized = false;
+	
+	public static $config = array(
+		// Establish the default timezone
+		'date_default_timezone' => 'UTC',
+		
+		// Set the default debug value
+		'debug' => false,
+		
+		// Set the path for the application
+		'app' => './',
+	);
 	public static $variables;
-	private static $objects;
+	
+	private static $objects = array(
+		'errors'=>array(
+			'path'	=> 'system/errors.php',
+			'class'	=> 'errors'
+		),
+	
+		'parameters'=>array(
+			'path'	=> 'system/parameters.php',
+			'class'	=> 'parameters'
+		),
+	
+		'routes'=>array(
+			'path'	=> 'system/routes.php',
+			'class'	=> 'routes'
+		)
+	);
+	private static $instances;
 	
 	##################
 	# Framework functions
@@ -40,71 +75,15 @@ class starfish
 	 */
 	public static function init()
 	{
-		// Set the default debug value
-		self::config('_starfish', 'debug', false);
+		// Initialization
+		self::$initialized = true;
 		
 		// Establish the default timezone
 		$config = self::config('_starfish', 'date_default_timezone', (self::config('_starfish', 'date_default_timezone') != null) ? self::config('_starfish', 'date_default_timezone') : "UTC" );
 		@date_default_timezone_set( $config );
 		
-		// Set the path for the application
-		$path = self::config('_starfish', 'app', './');
-		
-		// Set the path for Starfish Framework files
-		$path = self::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);
-		
-		// Create the initial objects list
-		self::$objects = array(
-			'errors'=>array(
-				'instance'		=> null,
-				'configuration'	=> array(
-					'path'	=> $path . 'system/errors.php',
-					'class'	=> 'errors',
-					'type'	=> 'core'
-				)
-			),
-            
-			'objects'=>array(
-				'instance'		=> null,
-				'configuration'	=> array(
-					'path'	=> $path . 'system/objects.php',
-					'class'	=> 'objects',
-					'type'	=> 'core'
-				)
-			),
-            
-			'parameters'=>array(
-				'instance'		=> null,
-				'configuration'	=> array(
-					'path'	=> $path . 'system/parameters.php',
-					'class'	=> 'parameters',
-					'type'	=> 'core'
-				)
-			),
-            
-			'routes'=>array(
-				'instance'		=> null,
-				'configuration'	=> array(
-					'path'	=> $path . 'system/routes.php',
-					'class'	=> 'routes',
-					'type'	=> 'core'
-				)
-			)
-		);
-		
-		// Include the framework configuration file
-		$file = self::config('_starfish', 'root') . DIRECTORY_SEPARATOR . 'config.php';
-		if (file_exists( $file )) { require_once( $file ); }
-		
-		// Apply the settings inside the custom configuration array
-		// --> todo
-		
-		// Proper initialization
-		self::obj('parameters');
-		self::obj('objects');
-		
 		// Register aliases
-		if (isset( self::config('_starfish', 'aliases') ) && is_array( self::config('_starfish', 'aliases') ))
+		if (self::config('_starfish', 'aliases') != null && is_array( self::config('_starfish', 'aliases') ))
 		{
 			foreach (self::config('_starfish', 'aliases') as $key=>$value)
 			{
@@ -112,7 +91,28 @@ class starfish
 			}
 		}
 		
-		return self;
+		// Set the path for Starfish Framework files
+		$path = self::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);
+		
+			// Update the initial object list paths
+			foreach (self::$objects as $key=>$value)
+			{
+				self::$objects[$key]['path'] = $path . $value['path'];
+			}
+			
+			// Set the path for Starfish Framework objects		
+			self::config('_starfish', 'core_objects', $path . 'system' );
+			
+			if ( self::config('_starfish', 'root_objects') == null) { self::config('_starfish', 'root_objects', $path . 'objects' ); }
+			if ( self::config('_starfish', 'app_objects') == null) { self::config('_starfish', 'app_objects',  $path . 'application' ); }
+		
+			// Apply the settings inside the custom configuration array
+			// --> todo
+		
+		// Proper initialization
+		self::obj('parameters');
+		
+		return null;
 	}
 	
 	/**
@@ -126,7 +126,8 @@ class starfish
 	{
 		// Initial values to work with
 		$return = null;
-		$config &= isset(self::$config[$module]) ? self::$config[$module] : array();
+		
+		$config = isset(self::$config[$module]) ? self::$config[$module] : array();
 		$type   = array(
 		    'names' => gettype($names),
 		    'values'=> gettype($values)
@@ -158,15 +159,15 @@ class starfish
 				// One value, one name
 				if ($type['names'] == 'string')
 				{
-					$config[ $names ] = $values;
-					$return[ $names ] = $values;
+					self::$config[$module][ $names ] = $values;
+					$return = $values;
 				}
 				// One value, more names
 				elseif ($type['names'] == 'array')
 				{
 					foreach ($names as $key=>$value)
 					{
-						$config[ $value ] = $values;
+						self::$config[$module][ $value ] = $values;
 						$return[ $value ] = $values;
 					}
 				}
@@ -183,12 +184,12 @@ class starfish
 				
 				for ($a=0; $a++; $a<count($names))
 				{
-					$config[$names[$a]] = $values[$a];
+					self::$config[$module][$names[$a]] = $values[$a];
 					$return[ $names[$a] ] = $values[$a];
 				}
 			}
 		}
-        
+		
 		return $return;
 	}
 	
@@ -204,6 +205,9 @@ class starfish
 	 */
 	public static function set($name, $value)
 	{
+		// Check framework initialization
+		if (self::$initialized == false) { die('starfish::init() command must be run within your script!'); }
+		
 		// Give a standard form to the variable name
 		$type = @gettype($name);
 		if ($type == 'array') { @ksort($name); }
@@ -222,6 +226,9 @@ class starfish
 	 */
 	public static function get($name)
 	{
+		// Check framework initialization
+		if (self::$initialized == false) { die('starfish::init() command must be run within your script!'); }
+		
 		// Give a standard form to the variable name
 		$type = @gettype($name);
 		if ($type == 'array') { @ksort($name); }
@@ -239,78 +246,81 @@ class starfish
 	 * The main object function
 	 *
 	 * @param string $name The name of the object to access or create
-	 * @param array $config The configuration for the created object. Parameters: path, class, type(enum: core|app)
+	 * @param array $configuration The configuration for the created object. Parameters: path, class
 	 */
-	public static function obj($name, $config=array())
-	{
-		// Ensure that the object type exists
-		// core - in ./system folder
-		// objects - in ./objects folder
-		// app - in the application folder
-		$config['type'] = (isset($config['type']) && in_array($config['type'], array('core', 'objects', 'app')) ) ? $config['type'] : 'app';
+	public static function obj($name, $configuration=array())
+	{		
+		// Check framework initialization
+		if (self::$initialized == false) { die('starfish::init() command must be run within your script!'); }
 		
-		// Object does not exist
-		if (!is_object( self::$objects[ $config['type'] ][$name]['instance'] ))
+		// Object exists
+		if (isset(self::$instances[ $name ]) && is_object( self::$instances[ $name ] ))
 		{
-			// Set the configuration
-			if (count($config) > 0)
+			return self::$instances[ $name ];
+		}
+		else
+		{
+			// Check if a configuration already exists
+			if ( is_array(self::$objects[$name]) )
 			{
-				if (!is_array( self::$objects[ $config['type'] ][$name]['configuration'] ))
+				$configuration = array_merge( self::$objects[$name], $configuration );
+			}
+			
+			// Name of the class
+			$class = isset( self::$objects[$name]['class'] ) ? self::$objects[$name]['class'] : $name;
+			
+			// Include the files, if needed
+			if (!class_exists($class))
+			{
+				$path = isset( self::$objects[$name]['path'] ) ? self::$objects[$name]['path'] : null;
+				
+				if ($path != null)
 				{
-					self::$objects[ $config['type'] ][$name]['configuration'] = $config;
+					require_once( $path );
 				}
 				else
 				{
-					self::$objects[ $config['type'] ][$name]['configuration'] = array_merge(self::$objects[ $config['type'] ][$name]['configuration'], $config);
+					$core	 	= self::config('_starfish', 'core_objects') . DIRECTORY_SEPARATOR . $name .'.php';
+					$objects 	= self::config('_starfish', 'root_objects') . DIRECTORY_SEPARATOR . $name .'.php';
+					$application 	= self::config('_starfish', 'app_objects') . DIRECTORY_SEPARATOR . $name .'.php';
+					
+					if (file_exists($core)) { require_once( $core ); }
+					else if (file_exists($objects)) { require_once( $objects ); }
+					else if (file_exists($application)) { require_once( $application ); }
 				}
 			}
 			
-			// Instantiate the object, if possible
-			$class = self::$objects[ $config['type'] ][$name]['configuration']['class'];
-			$path  = self::$objects[ $config['type'] ][$name]['configuration']['path'];
-			
-			// include the path file, if class does not exist
-			if (!class_exists($class) && file_exists($path))
-			{
-				require_once( $path ); 
-			}
-			
-			// create the object, if needed
+			// Create the class
 			if (class_exists($class))
 			{
 				// Create the object
-				var $object = new $class;
+				$object = new $class;
 				
 				// Run the init method, if it exists
 				if (method_exists($object, 'init')) { $object->init(); }
 				
 				// Store the object
-				self::$objects[ $config['type'] ][$name]['instance'] = $object;
+				self::$instances[$name] = $object;
 				
 				// Return the object
 				return $object;
-			}			
-		}
-		// Object exists
-		else if (is_object( self::$objects[ $config['type'] ][$name]['instance'] ))
-		{
-			return self::$objects[ $config['type'] ][$name]['instance'];
+			}
 		}
 		
-		return false;
+		return null;
 	}
 }
 
 /**
+* Aliases used by class for easier programming
+*/
+function obj()   { return call_user_func_array(array('starfish', 'obj'),    func_get_args()); }
+
+/**
  * Instantiate the framework. Minimum PHP 5.3 required.
  */
-if (PHP_VERSION_ID >= 50300)
+if (PHP_VERSION_ID <= 50300)
 {
 	die("Starfish PHP Framework minimum requirements: PHP 5.3");
 }
-// Create an instance
-$starfish &= new starfish();
-
-// Init the framework
-starfish::init();
 ?>

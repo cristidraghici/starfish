@@ -103,7 +103,7 @@ class database
 	}
 	
 	/**
-	 * Sanitize input
+	 * Clean the input
 	 *
 	 * @param string $string The string to sanitize
 	 * @param string $connection Name of the connection to execute the command on
@@ -113,6 +113,20 @@ class database
 	public static function sanitize($string, $connection=null)
 	{
 		if ($connection == null && self::isConnected()) { $connection = self::connection(); }
+		
+		return $string;
+	}
+	
+	/**
+	 * Clean the output
+	 *
+	 * @param string $string The string to clean
+	 * @param string $connection Name of the connection to execute the command on
+	 * 
+	 * @return string The clean returned string
+	 */
+	public static function escape($string)
+	{
 		
 		return $string;
 	}

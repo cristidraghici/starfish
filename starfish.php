@@ -37,14 +37,16 @@ class starfish
 	private static $initialized = false;
 	
 	public static $config = array(
-		// Establish the default timezone
-		'date_default_timezone' => 'UTC',
-		
-		// Set the default debug value
-		'debug' => false,
-		
-		// Set the path for the application
-		'app' => './',
+		'_starfish'=>array(
+			// Establish the default timezone
+			'date_default_timezone' => 'UTC',
+			
+			// Set the default debug value
+			'debug' => false,
+			
+			// Set the path for the application
+			'app' => './',
+		)
 	);
 	public static $variables;
 	
@@ -99,13 +101,12 @@ class starfish
 			{
 				self::$objects[$key]['path'] = $path . $value['path'];
 			}
-			
 			// Set the path for Starfish Framework objects		
-			self::config('_starfish', 'core_objects', $path . 'system' );
+			self::config('_starfish', 'core_objects', $path . 'system'  . DIRECTORY_SEPARATOR);
 			
-			if ( self::config('_starfish', 'root_objects') == null) { self::config('_starfish', 'root_objects', $path . 'objects' ); }
-			if ( self::config('_starfish', 'app_objects') == null) { self::config('_starfish', 'app_objects',  $path . 'application' ); }
-		
+			if ( self::config('_starfish', 'root_objects') == null) { self::config('_starfish', 'root_objects', $path . 'objects' . DIRECTORY_SEPARATOR ); }
+			if ( self::config('_starfish', 'app_objects') == null) { self::config('_starfish', 'app_objects',  $path . 'application' . DIRECTORY_SEPARATOR ); }
+			
 			// Apply the settings inside the custom configuration array
 			// --> todo
 		
@@ -132,12 +133,12 @@ class starfish
 		    'names' => gettype($names),
 		    'values'=> gettype($values)
 		);
-        
+		
 		// Return values
-		if ($type['values'] == null)
+		if ($type['values'] == 'NULL')
 		{
 			// One name
-			if ($type['names'] == 'string')
+			if ($type['names'] == 'string' && isset($config[ $names ]) )
 			{
 				$return = $config[ $names ];
 			}
@@ -261,7 +262,7 @@ class starfish
 		else
 		{
 			// Check if a configuration already exists
-			if ( is_array(self::$objects[$name]) )
+			if ( isset(self::$objects[$name]) && is_array(self::$objects[$name]) )
 			{
 				$configuration = array_merge( self::$objects[$name], $configuration );
 			}

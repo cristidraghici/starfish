@@ -13,8 +13,13 @@ starfish::init();
 /**
  * The script itself
  */
+// With parameter
+starfish::obj('routes')->on('get', '/:alpha', function($param) {
+	echo 'With param:' . starfish::obj('scramble')->encode($param);
+});
+
 // The default path
-starfish::obj('routes')->on('get', '/', function() {
+starfish::obj('routes')->on('get', '/:all', function() {
 	echo 'Stuff is working well!';
 });
 

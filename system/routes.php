@@ -48,11 +48,7 @@ class routes
 		$path = self::compile($path);
 		
 		// Store the route, by making sure there are no conflicts
-		self::$routes[ $method . $path ] = array(
-			'method' 	=> $method,
-			'path'		=> $path,
-			'callback' 	=> $callback
-		);
+		self::$routes[ $method ] [ $path ] = $callback;
 	}
 	
 	/**
@@ -60,29 +56,34 @@ class routes
 	 */
 	public static function run()
 	{
-		foreach (self::$routes as $key=>$value)
+		// called method() from ./system/parameters
+		$method = method();
+		
+		if (isset(self::$routes[$method]) && is_array(self::$routes[$method]))
 		{
-			$method = $value['method'];
-			$regex = $value['path'];
-			$callback = $value['callback'];
-			
-			// called path() from ./system/parameters.php
-			if (preg_match('/' . $regex . '/ui', path(), $matched))
+			foreach (self::$routes[$method] as $key=>$value)
 			{
-				// leave out the match
-				array_shift($matched);
+				$regex = $key;
+				$callback = $value;
 				
-				// if :all wildcard, split result by "/"
-				if(strpos($regex, self::$wildcards['all']) !== FALSE)
+				// called path() from ./system/parameters.php
+				if (preg_match('/' . $regex . '/ui', path(), $matched))
 				{
-					$matched = explode('/', $matched[0]);
+					// leave out the match
+					array_shift($matched);
+					
+					// if :all wildcard, split result by "/"
+					if(strpos($regex, self::$wildcards['all']) !== FALSE)
+					{
+						$matched = explode('/', $matched[0]);
+					}
+					
+					// callback home with found params
+					call_user_func_array($callback, $matched);
+					
+					// and we stop
+					return true;
 				}
-				
-				// callback home with found params
-				call_user_func_array($callback, $matched);
-				
-				// and we stop
-				return true;
 			}
 		}
 		

@@ -9,8 +9,10 @@
  * @see     	Parts from Dispatch PHP micro-framework were used.
  * @link    	https://github.com/noodlehaus/dispatch
  *
- * @see 	Simplon Router
+ * @see 	    Simplon Router
  * @link    	https://github.com/fightbulc/simplon_router
+ *
+ * @see         http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage
  *
  * @license 	MIT
  * @link    	http://opensource.org/licenses/MIT
@@ -28,7 +30,9 @@ class starfish
 	 * Declare used variables
 	 *
 	 * $initialized - boolean Needs to be true for Starfish to run
-	 * $config 	- configuration variables
+     *
+	 * $config 	    - configuration variables
+     * $contants    - Starfish "constants": framework specific values for later use
 	 * $variables 	- variable values set throughout the application and accessible from anywhere
 	 * 
 	 * $objects 	- a list of objects 
@@ -42,12 +46,13 @@ class starfish
 			'date_default_timezone' => 'UTC',
 			
 			// Set the default debug value
-			'debug' => false,
+			'debug' => true,
 			
 			// Set the path for the application
 			'app' => './',
 		)
 	);
+	public static $contants;
 	public static $variables;
 	
 	private static $objects = array(
@@ -78,12 +83,40 @@ class starfish
 	public static function init()
 	{
 		// Initialization
-		self::$initialized = true;
+        if (self::$initialized == true) { die('starfish::init() can be run only once!'); }
+        {
+            self::$initialized = true;
+        }
 		
+        // Set the debugger
+        if (starfish::config('_starfish', 'debug') == false)
+        {
+			error_reporting(0);
+			@ini_set('display_errors', false);
+        }
+        else
+        {
+            error_reporting(E_ALL | E_STRICT);
+			@ini_set('display_errors', true);
+        }
+        
 		// Establish the default timezone
-		$config = self::config('_starfish', 'date_default_timezone', (self::config('_starfish', 'date_default_timezone') != null) ? self::config('_starfish', 'date_default_timezone') : "UTC" );
+		$config = self::config('_starfish', 'date_default_timezone', "UTC", false );
 		@date_default_timezone_set( $config );
 		
+        // Establish the operating system
+        if (strncasecmp(PHP_OS, 'WIN', 3) == 0) 
+        {
+            self::$constants['operating_system'] = 'Win';
+        }
+        else
+        {
+            self::$constants['operating_system'] = 'Non';
+        }
+        
+        // Get and store more operating system information
+        self::$constants['php_uname'] = php_uname();
+        
 		// Register aliases
 		if (self::config('_starfish', 'aliases') != null && is_array( self::config('_starfish', 'aliases') ))
 		{
@@ -104,11 +137,14 @@ class starfish
 			// Set the path for Starfish Framework objects		
 			self::config('_starfish', 'core_objects', $path . 'system'  . DIRECTORY_SEPARATOR);
 			
-			if ( self::config('_starfish', 'root_objects') == null) { self::config('_starfish', 'root_objects', $path . 'objects' . DIRECTORY_SEPARATOR ); }
-			if ( self::config('_starfish', 'app_objects') == null) { self::config('_starfish', 'app_objects',  $path . 'application' . DIRECTORY_SEPARATOR ); }
+			self::config('_starfish', 'root_objects', $path . 'objects' . DIRECTORY_SEPARATOR, false );
+			self::config('_starfish', 'app_objects',  $path . 'application' . DIRECTORY_SEPARATOR, false );
 			
-			// Apply the settings inside the custom configuration array
-			// --> todo
+			// Set the path for Starfish storage		
+			self::config('_starfish', 'storage', $path . 'storage'  . DIRECTORY_SEPARATOR, false);
+        
+			// Set the path for Starfish root storage		
+			self::config('_starfish', 'root_storage', $path . 'storage'  . DIRECTORY_SEPARATOR);
 		
 		// Proper initialization
 		self::obj('parameters');
@@ -122,12 +158,13 @@ class starfish
 	 * @param string $module Module name
 	 * @param mixed  $names The names of the configuration options to return or to store
 	 * @param mixed  $values The values to store
+     * @param boolean $override Defaults to: true. If false, then the new value is not set if one already exists
 	 */
-	public static function config($module, $names, $values=null)
+	public static function config($module, $names, $values=null, $override=true)
 	{
 		// Initial values to work with
 		$return = null;
-		
+        
 		$config = isset(self::$config[$module]) ? self::$config[$module] : array();
 		$type   = array(
 		    'names' => gettype($names),
@@ -160,16 +197,30 @@ class starfish
 				// One value, one name
 				if ($type['names'] == 'string')
 				{
-					self::$config[$module][ $names ] = $values;
-					$return = $values;
+                    if ($override == false && isset(self::$config[$module][ $names ]))
+                    {
+                        $return = self::$config[$module][ $names ];
+                    }
+                    else
+                    {
+                        self::$config[$module][ $names ] = $values;
+                        $return = $values;
+                    }
 				}
 				// One value, more names
 				elseif ($type['names'] == 'array')
 				{
 					foreach ($names as $key=>$value)
 					{
-						self::$config[$module][ $value ] = $values;
-						$return[ $value ] = $values;
+                        if ($override == false && isset(self::$config[$module][ $value ]))
+                        {
+                            $return = self::$config[$module][ $value ];
+                        }
+                        else
+                        {
+                            self::$config[$module][ $value ] = $values;
+                            $return[ $value ] = $values;
+                        }
 					}
 				}
 			}
@@ -185,8 +236,15 @@ class starfish
 				
 				for ($a=0; $a++; $a<count($names))
 				{
-					self::$config[$module][$names[$a]] = $values[$a];
-					$return[ $names[$a] ] = $values[$a];
+                    if ($override == false && isset(self::$config[$module][$names[$a]]))
+                    {
+                        $return[ $names[$a] ] = self::$config[$module][$names[$a]];
+                    }
+                    else
+                    {
+                        self::$config[$module][$names[$a]] = $values[$a];
+                        $return[ $names[$a] ] = $values[$a];
+                    }
 				}
 			}
 		}

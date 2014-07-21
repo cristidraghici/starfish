@@ -4,9 +4,7 @@
  */
 // Require the needed files
 require_once('../../starfish.php');
-
-// Make a configuration
-starfish::config('_starfish', 'app_objects', @realpath(__DIR__) . DIRECTORY_SEPARATOR . 'application');
+require_once('config.php');
 
 // Initiate Starfish
 starfish::init();

@@ -6,6 +6,7 @@
 require_once('../../starfish.php');
 
 // Make a configuration
+starfish::config('_starfish', 'app_objects', @realpath(__DIR__) . DIRECTORY_SEPARATOR . 'application');
 
 // Initiate Starfish
 starfish::init();
@@ -15,7 +16,7 @@ starfish::init();
  */
 // With parameter
 starfish::obj('routes')->on('get', '/:alpha', function($param) {
-	echo 'With param:' . starfish::obj('scramble')->encode($param);
+	echo 'With param: ' . starfish::obj('scramble')->decode( starfish::obj('scramble')->encode($param) );
 });
 
 // The default path

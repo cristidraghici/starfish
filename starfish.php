@@ -32,7 +32,7 @@ class starfish
 	 * $initialized - boolean Needs to be true for Starfish to run
      *
 	 * $config 	    - configuration variables
-     * $contants    - Starfish "constants": framework specific values for later use
+     * $constants    - Starfish "constants": framework specific values for later use
 	 * $variables 	- variable values set throughout the application and accessible from anywhere
 	 * 
 	 * $objects 	- a list of objects 
@@ -50,9 +50,12 @@ class starfish
 			
 			// Set the path for the application
 			'app' => './',
+			
+			// Set the path for the application
+			'session' => 'starfish',
 		)
 	);
-	public static $contants;
+	public static $constants;
 	public static $variables;
 	
 	private static $objects = array(

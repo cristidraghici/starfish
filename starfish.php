@@ -377,6 +377,7 @@ class starfish
 * Aliases used by class for easier programming
 */
 function obj()   { return call_user_func_array(array('starfish', 'obj'),    func_get_args()); }
+function config()   { return call_user_func_array(array('starfish', 'config'),    func_get_args()); }
 
 /**
  * Instantiate the framework. Minimum PHP 5.3 required.

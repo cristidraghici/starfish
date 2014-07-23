@@ -36,19 +36,32 @@ class routes
         }
 
         /**
-	 * Establish a route
+	 * Establish a route / Run the routing function
 	 *
 	 * @param string $method Method used to access the resource
 	 * @param string $path Resource path
 	 * @param mixed $callback What to do when the route has been accessed
+	 * 
+	 * or
+	 * 
+	 * no parametes at all
 	 */
-        public static function on($method, $path, $callback)
+        public static function on()
         {
-                $method = strtoupper($method);
-                $path = self::compile($path);
+                $args = func_get_args();
+                
+                if (count($args) == 3)
+                {
+                        $method = strtoupper($args[0]);
+                        $path = self::compile($args[1]);
 
-                // Store the route, by making sure there are no conflicts
-                self::$routes[ $method ] [ $path ] = $callback;
+                        // Store the route, by making sure there are no conflicts
+                        self::$routes[ $method ] [ $path ] = $args[2];
+                }
+                else
+                {
+                        self::run();
+                }
         }
 
         /**
@@ -116,4 +129,9 @@ class routes
         }
 
 }
+
+/**
+* Aliases used by class for easier programming
+*/
+function on() { return call_user_func_array(array('routes', 'on'),    func_get_args()); }
 ?>

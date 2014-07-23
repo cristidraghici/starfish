@@ -51,6 +51,34 @@ starfish::obj('routes')->run();
 ?>
 ```
 
+* Here is a smaller version, using helper functions:
+
+```php
+<?php
+/** Starfish initial commands */
+
+// Require the needed files
+require_once('starfish.php');
+// Initiate Starfish
+init();
+
+/** The script itself */
+
+// With parameter
+on('get', '/:alpha', function($param) {
+        echo 'With param: ' .$param;
+});
+
+// The default path
+on('get', '/:all', function() {
+        echo 'Stuff is working well!';
+});
+
+// Execute the router
+on();
+?>
+```
+
 ## Other software used
 
 ### As mentioned inside the starfish.php document

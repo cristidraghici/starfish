@@ -8,7 +8,7 @@
 
 * .htaccess file content example:
 
-```php
+```apache
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /starfish/

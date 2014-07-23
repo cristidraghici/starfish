@@ -1,12 +1,13 @@
-![Starfish PHP Framework](/storage/starfish.png "Starfish PHP Framework")
 
-# Starfish
+
+# ![Starfish PHP Framework](/storage/starfish.png "Starfish PHP Framework") Starfish
 
 **Starfish PHP Framework** is a minimum Registry microframework primarily desiged to serve JSON content and use objects.
 
 ## Router examples
 
 * .htaccess file content example:
+
         ```php
         <IfModule mod_rewrite.c>
         RewriteEngine On
@@ -63,6 +64,7 @@ Parts of code or inspiration was obtained from the following software:
 ### Bootstrap and jQuery in examples
 
 * Bootstrap
+
         ```html
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -75,6 +77,7 @@ Parts of code or inspiration was obtained from the following software:
         ```
 
 * jQuery
+
         ```html
         <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
         <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>

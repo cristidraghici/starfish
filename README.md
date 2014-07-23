@@ -1,8 +1,51 @@
 # Starfish
 
-**Starfish** is a minimum Registry microframework primarily desiged to serve JSON content and use objects.
+**Starfish PHP Framework** is a minimum Registry microframework primarily desiged to serve JSON content and use objects.
 
-## Uses Bootstrap and jQuery
+## Router examples
+
+* This is an example of how to define an action based on the route accessed:
+
+```php
+<?php
+/**
+ * Starfish initial commands
+ */
+// Require the needed files
+require_once('starfish.php');
+
+// Initiate Starfish
+starfish::init();
+
+/**
+ * The script itself
+ */
+// With parameter
+starfish::obj('routes')->on('get', '/:alpha', function($param) {
+	echo 'With param: ' . $param;
+});
+
+// The default path
+starfish::obj('routes')->on('get', '/:all', function() {
+	echo 'Stuff is working well!';
+});
+
+// Execute the router
+starfish::obj('routes')->run();
+?>
+```
+
+## Other software used
+
+### As mentioned inside the starfish.php document
+
+Parts of code or inspiration was obtained from the following software.
+
+* [Dispatch PHP micro-framework](https://github.com/noodlehaus/dispatch)
+* [Simplon Router](https://github.com/fightbulc/simplon_router)
+* [Stackoverflow Answers](http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage)
+
+### Bootstrap and jQuery in examples
 
 * Bootstrap
 ```html

@@ -398,6 +398,23 @@ class starfish
                 
                 return false;
         }
+        
+        /**
+	 * To a redirect
+	 *
+	 * @param string $path The path to redirect to
+	 * @param string $code Code of the redirect
+	 * @param string $condition True condition to make the redirect
+	 */
+        public static function redirect($path, $code = 302, $condition = true) 
+        {
+                if (!$condition) { return; }
+
+                if (substr($path, 0, 2) == './') { $path = self::config('_starfish', 'site_url') . substr($path, 2); }
+
+                @header("Location: {$path}", true, $code);
+                exit;
+        }
 }
 
 /**
@@ -405,6 +422,7 @@ class starfish
 */
 function obj()   { return call_user_func_array(array('starfish', 'obj'),    func_get_args()); }
 function config()   { return call_user_func_array(array('starfish', 'config'),    func_get_args()); }
+function redirect()   { return call_user_func_array(array('starfish', 'redirect'),    func_get_args()); }
 
 /**
  * Instantiate the framework. Minimum PHP 5.3 required.

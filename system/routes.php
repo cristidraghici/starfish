@@ -50,7 +50,7 @@ class routes
 		// Store the route, by making sure there are no conflicts
 		self::$routes[ $method ] [ $path ] = $callback;
 	}
-	
+        
 	/**
 	 * Run the routing
 	 */

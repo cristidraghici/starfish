@@ -9,100 +9,101 @@ if (!class_exists('starfish')) { die(); }
  */
 class database
 {
-	/**
+        /**
 	 * Declare used variables
 	 *
 	 * $connections - The list of information regarding connections
 	 * $resources - The list of resources stored as connections
 	 */
-	private static $connections = array();
-	private static $resources = array();
-	
-	/**
+        private static $connections = array();
+        private static $resources = array();
+
+        /**
 	 * Init the object. Connect to any database in the configuration, if needed
 	 */
-	public static function init()
-	{
-	}
-	
-	/**
+        public static function init()
+        {
+        }
+
+        /**
 	 * Check whether a connection is active. The main usage of this function is for input sanitization
 	 *
 	 * @return boolean Returns true if a connection has been established
 	 */
-	public static function isConnected()
-	{
-		if (count(self::$connections) == 0)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
+        public static function isConnected()
+        {
+                if (count(self::$connections) == 0)
+                {
+                        return false;
+                }
+
+                return true;
+        }
+
+        /**
 	 * Create a connection
 	 *
-	 * @param string $type The type of connection: mysql | postgres
+	 * @param string $type The type of connection: mysql | postgres | textdb
 	 * @param string $name The name of the connection to be accessed throughout the code
+	 * @param mixed $parameters The parameters used in creating the connection
 	 *
 	 * @return boolean Return whether the connection was successful or not
 	 */
-	public static function connect($type, $name, $parameters)
-	{
-		
-	}
-	
-	/**
+        public static function connect($type, $name, $parameters)
+        {
+                
+        }
+
+        /**
 	 * Return a connection
 	 *
 	 * @param string $name The name of the connection to be accessed
 	 *
 	 * @return resource Return the connection
 	 */
-	public static function connection($name)
-	{
-        $connection = null;
-        
-		if (isset(self::$connections[$name]))
-		{
-			$connection = self::$connections[$name];
-		}
-		
-		// If only one connection, return it
-		if (count(self::$connections) == 0)
-		{
-			$connection = array_values(self::$connections)[0];
-		}
-        
-        // Init the object, if the connection is needed
-        if (isset($connection) && !isset(self::$resources[$connection]))
+        public static function connection($name)
         {
-            self::$resources[$connection] = $connection->init();
+                $connection = null;
+
+                if (isset(self::$connections[$name]))
+                {
+                        $connection = self::$connections[$name];
+                }
+
+                // If only one connection, return it
+                if (count(self::$connections) == 0)
+                {
+                        $connection = array_values(self::$connections)[0];
+                }
+
+                // Init the object, if the connection is needed
+                if (isset($connection) && !isset(self::$resources[$connection]))
+                {
+                        self::$resources[$connection] = $connection->init();
+                }
+
+                return false;
         }
-		
-		return false;
-	}
-	
-	/**
+
+        /**
 	 * Disconnect
 	 *
 	 * @param string $name The name of the connection to disconnect from
 	 *
 	 * @return boolean Return whether the connection was successful or not
 	 */
-	public static function disconnect($name)
-	{
-		// Disconnect, if connection exists
-		if (isset(self::$connections[$name]))
-		{
-			return true;
-		}
-		
-		return false;
-	}
-	
-	/**
+        public static function disconnect($name)
+        {
+                // Disconnect, if connection exists
+                if (isset(self::$connections[$name]))
+                {
+                        return true;
+                }
+
+                return false;
+        }
+
+        /**
 	 * Clean the input
 	 *
 	 * @param string $string The string to sanitize
@@ -110,14 +111,14 @@ class database
 	 * 
 	 * @return string The sanitized returned string
 	 */
-	public static function sanitize($string, $connection=null)
-	{
-		if ($connection == null && self::isConnected()) { $connection = self::connection(); }
-		
-		return $string;
-	}
-	
-	/**
+        public static function sanitize($string, $connection=null)
+        {
+                if ($connection == null && self::isConnected()) { $connection = self::connection(); }
+
+                return $string;
+        }
+
+        /**
 	 * Clean the output
 	 *
 	 * @param string $string The string to clean
@@ -125,13 +126,12 @@ class database
 	 * 
 	 * @return string The clean returned string
 	 */
-	public static function escape($string)
-	{
-		
-		return $string;
-	}
-	
-	/**
+        public static function escape($string)
+        {
+                return $string;
+        }
+
+        /**
 	 * Execute a query
 	 *
 	 * @param string $query The query to execute
@@ -139,13 +139,13 @@ class database
 	 *
 	 * @return resource The output of the query
 	 */
-	public static function query($query, $connection=null)
-	{
-		if ($connection == null && self::isConnected()) { $connection = self::connection(); }
-		
-	}
-	
-	/**
+        public static function query($query, $connection=null)
+        {
+                if ($connection == null && self::isConnected()) { $connection = self::connection(); }
+
+        }
+
+        /**
 	 * Fetch the query info
 	 *
 	 * @param resource $resource The query to execute
@@ -153,13 +153,13 @@ class database
 	 *
 	 * @return array The fetched results
 	 */
-	public static function info($query, $connection=null)
-	{
-		if ($connection == null && self::isConnected()) { $connection = self::connection(); }
-		
-	}
-	
-	/**
+        public static function info($query, $connection=null)
+        {
+                if ($connection == null && self::isConnected()) { $connection = self::connection(); }
+
+        }
+
+        /**
 	 * Fetch the results
 	 *
 	 * @param resource $resource The query to execute
@@ -167,23 +167,23 @@ class database
 	 *
 	 * @return array The fetched results
 	 */
-	public static function fetch($resource, $connection=null)
-	{
-		if ($connection == null && self::isConnected()) { $connection = self::connection(); }
-		
-	}
-	
-	/**
+        public static function fetch($resource, $connection=null)
+        {
+                if ($connection == null && self::isConnected()) { $connection = self::connection(); }
+
+        }
+
+        /**
 	 * Free results
 	 *
 	 * @param resource $resource The query to execute
 	 * @param string $connection Name of the connection to execute the command on
 	 */
-	public static function free($resource, $connection=null)
-	{
-		if ($connection == null && self::isConnected()) { $connection = self::connection(); }
-		
-	}
+        public static function free($resource, $connection=null)
+        {
+                if ($connection == null && self::isConnected()) { $connection = self::connection(); }
+
+        }
 }
 
 /**

@@ -51,6 +51,9 @@ class starfish
                         // Set the path for the application
                         'app' => './',
 
+                        // Set the name of the application
+                        'name' => 'starfish',
+                        
                         // Set the path for the application
                         'session' => 'starfish',
                         
@@ -374,6 +377,26 @@ class starfish
                 }
 
                 return null;
+        }
+        
+        /**
+	 * Store an exising object inside the registry
+	 *
+	 * @param string $name The name of the object to store
+	 * @param object $object The object itself
+	 * 
+	 * @return boolean Returns whether the object has been stored or not
+	 */
+        public static function store($name, $object)
+        {
+                if (!isset( self::$instances[ $name ] ) && is_object($object))
+                {
+                        self::$instances[ $name ] = $object;
+                        
+                        return true;
+                }
+                
+                return false;
         }
 }
 

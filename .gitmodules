@@ -4,3 +4,6 @@
 [submodule "libraries/jquery"]
 	path = libraries/jquery
 	url = git://github.com/jquery/jquery.git
+[submodule "libraries/apidoc"]
+	path = libraries/apidoc
+	url = git://github.com/apigen/apigen.git

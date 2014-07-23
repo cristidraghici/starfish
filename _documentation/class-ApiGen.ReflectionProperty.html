@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class ApiGen\ReflectionProperty</title>
+
+	<script type="text/javascript" src="resources/combined.js?3476085374"></script>
+	<script type="text/javascript" src="elementlist.js?1290992025"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-ApiGen.html">ApiGen</a>
+						</li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-ApiGen.Backend.html">Backend</a></li>
+				<li><a href="class-ApiGen.Config.html">Config</a></li>
+				<li><a href="class-ApiGen.Generator.html">Generator</a></li>
+				<li><a href="class-ApiGen.MacroSet.html">MacroSet</a></li>
+				<li><a href="class-ApiGen.ReflectionBase.html">ReflectionBase</a></li>
+				<li><a href="class-ApiGen.ReflectionClass.html">ReflectionClass</a></li>
+				<li><a href="class-ApiGen.ReflectionConstant.html">ReflectionConstant</a></li>
+				<li><a href="class-ApiGen.ReflectionElement.html">ReflectionElement</a></li>
+				<li><a href="class-ApiGen.ReflectionExtension.html">ReflectionExtension</a></li>
+				<li><a href="class-ApiGen.ReflectionFunction.html">ReflectionFunction</a></li>
+				<li><a href="class-ApiGen.ReflectionFunctionBase.html">ReflectionFunctionBase</a></li>
+				<li><a href="class-ApiGen.ReflectionMethod.html">ReflectionMethod</a></li>
+				<li><a href="class-ApiGen.ReflectionMethodMagic.html">ReflectionMethodMagic</a></li>
+				<li><a href="class-ApiGen.ReflectionParameter.html">ReflectionParameter</a></li>
+				<li><a href="class-ApiGen.ReflectionParameterMagic.html">ReflectionParameterMagic</a></li>
+				<li class="active"><a href="class-ApiGen.ReflectionProperty.html">ReflectionProperty</a></li>
+				<li><a href="class-ApiGen.ReflectionPropertyMagic.html">ReflectionPropertyMagic</a></li>
+				<li><a href="class-ApiGen.SourceFilesFilterIterator.html">SourceFilesFilterIterator</a></li>
+				<li><a href="class-ApiGen.Template.html">Template</a></li>
+				<li><a href="class-ApiGen.Tree.html">Tree</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-ApiGen.IHelperSet.html">IHelperSet</a></li>
+			</ul>
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-ApiGen.ConfigException.html">ConfigException</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-ApiGen.html" title="Summary of ApiGen"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class ReflectionProperty</h1>
+
+
+	<div class="description">
+	
+<p>Property reflection envelope.</p>
+
+<p>Alters TokenReflection\IReflectionProperty functionality for ApiGen.</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-ApiGen.ReflectionBase.html"><span>ApiGen\ReflectionBase</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-ApiGen.ReflectionElement.html"><span>ApiGen\ReflectionElement</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>ApiGen\ReflectionProperty</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-ApiGen.ReflectionPropertyMagic.html">ApiGen\ReflectionPropertyMagic</a>
+	</div>
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-ApiGen.html">ApiGen</a><br />
+		
+
+		<b>Located at</b> <a href="source-class-ApiGen.ReflectionProperty.html#16-214" title="Go to source code">libraries/apidoc/ApiGen/ReflectionProperty.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="isReadOnly" id="_isReadOnly">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isReadOnly">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#23-31" title="Go to source code">isReadOnly</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns if the property is read-only.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns if the property is read-only.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isWriteOnly" id="_isWriteOnly">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isWriteOnly">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#33-41" title="Go to source code">isWriteOnly</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns if the property is write-only.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns if the property is write-only.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isMagic" id="_isMagic">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isMagic">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#43-51" title="Go to source code">isMagic</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns if the property is magic.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns if the property is magic.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getTypeHint" id="_getTypeHint">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getTypeHint">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#53-77" title="Go to source code">getTypeHint</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns property type hint.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns property type hint.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDeclaringClass" id="_getDeclaringClass">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-ApiGen.ReflectionClass.html">ApiGen\ReflectionClass</a></code>|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDeclaringClass">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#79-88" title="Go to source code">getDeclaringClass</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns the property declaring class.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns the property declaring class.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-ApiGen.ReflectionClass.html">ApiGen\ReflectionClass</a></code>|null</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDeclaringClassName" id="_getDeclaringClassName">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDeclaringClassName">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#90-98" title="Go to source code">getDeclaringClassName</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns the name of the declaring class.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns the name of the declaring class.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDefaultValue" id="_getDefaultValue">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDefaultValue">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#100-108" title="Go to source code">getDefaultValue</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns the property default value.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns the property default value.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDefaultValueDefinition" id="_getDefaultValueDefinition">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDefaultValueDefinition">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#110-118" title="Go to source code">getDefaultValueDefinition</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns the part of the source code defining the property default value.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns the part of the source code defining the property default value.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isDefault" id="_isDefault">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isDefault">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#120-128" title="Go to source code">isDefault</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns if the property was created at compile time.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns if the property was created at compile time.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getModifiers" id="_getModifiers">
+
+		<td class="attributes"><code>
+			 public 
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getModifiers">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#130-138" title="Go to source code">getModifiers</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns property modifiers.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns property modifiers.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>integer</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isPrivate" id="_isPrivate">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isPrivate">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#140-148" title="Go to source code">isPrivate</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns if the property is private.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns if the property is private.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isProtected" id="_isProtected">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isProtected">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#150-158" title="Go to source code">isProtected</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns if the property is protected.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns if the property is protected.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isPublic" id="_isPublic">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isPublic">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#160-168" title="Go to source code">isPublic</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns if the property is public.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns if the property is public.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isStatic" id="_isStatic">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isStatic">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#170-178" title="Go to source code">isStatic</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns if the poperty is static.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns if the poperty is static.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDeclaringTrait" id="_getDeclaringTrait">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-ApiGen.ReflectionClass.html">ApiGen\ReflectionClass</a></code>|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDeclaringTrait">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#180-189" title="Go to source code">getDeclaringTrait</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns the property declaring trait.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns the property declaring trait.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-ApiGen.ReflectionClass.html">ApiGen\ReflectionClass</a></code>|null</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDeclaringTraitName" id="_getDeclaringTraitName">
+
+		<td class="attributes"><code>
+			 public 
+			string|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDeclaringTraitName">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#191-199" title="Go to source code">getDeclaringTraitName</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns the declaring trait name.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns the declaring trait name.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string|null</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isValid" id="_isValid">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isValid">#</a>
+		<code><a href="source-class-ApiGen.ReflectionProperty.html#201-213" title="Go to source code">isValid</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns if the property is valid.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns if the property is valid.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-ApiGen.ReflectionElement.html#methods">ApiGen\ReflectionElement</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ApiGen.ReflectionElement.html#_addAnnotation">addAnnotation()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getAnnotation">getAnnotation()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getAnnotations">getAnnotations()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getDocComment">getDocComment()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getEndPosition">getEndPosition()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getExtension">getExtension()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getExtensionName">getExtensionName()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getLongDescription">getLongDescription()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getNamespaceAliases">getNamespaceAliases()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getNamespaceName">getNamespaceName()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getPackageName">getPackageName()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getPseudoNamespaceName">getPseudoNamespaceName()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getPseudoPackageName">getPseudoPackageName()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getShortDescription">getShortDescription()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_getStartPosition">getStartPosition()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_hasAnnotation">hasAnnotation()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_inNamespace">inNamespace()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_inPackage">inPackage()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_isDeprecated">isDeprecated()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_isDocumented">isDocumented()</a>, 
+			<a href="class-ApiGen.ReflectionElement.html#_isMain">isMain()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-ApiGen.ReflectionBase.html#methods">ApiGen\ReflectionBase</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ApiGen.ReflectionBase.html#___construct">__construct()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#___get">__get()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#___isset">__isset()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#_getBroker">getBroker()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#_getEndLine">getEndLine()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#_getFileName">getFileName()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#_getName">getName()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#_getPrettyName">getPrettyName()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#_getStartLine">getStartLine()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#_isInternal">isInternal()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#_isTokenized">isTokenized()</a>, 
+			<a href="class-ApiGen.ReflectionBase.html#_isUserDefined">isUserDefined()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-ApiGen.ReflectionElement.html#properties">ApiGen\ReflectionElement</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ApiGen.ReflectionElement.html#$annotations"><var>$annotations</var></a>, 
+			<a href="class-ApiGen.ReflectionElement.html#$isDocumented"><var>$isDocumented</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-ApiGen.ReflectionBase.html#properties">ApiGen\ReflectionBase</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ApiGen.ReflectionBase.html#$config"><var>$config</var></a>, 
+			<a href="class-ApiGen.ReflectionBase.html#$generator"><var>$generator</var></a>, 
+			<a href="class-ApiGen.ReflectionBase.html#$parsedClasses"><var>$parsedClasses</var></a>, 
+			<a href="class-ApiGen.ReflectionBase.html#$parsedConstants"><var>$parsedConstants</var></a>, 
+			<a href="class-ApiGen.ReflectionBase.html#$parsedFunctions"><var>$parsedFunctions</var></a>, 
+			<a href="class-ApiGen.ReflectionBase.html#$reflection"><var>$reflection</var></a>, 
+			<a href="class-ApiGen.ReflectionBase.html#$reflectionMethods"><var>$reflectionMethods</var></a>, 
+			<a href="class-ApiGen.ReflectionBase.html#$reflectionType"><var>$reflectionType</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

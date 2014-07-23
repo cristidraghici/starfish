@@ -1,12 +1,12 @@
+![Starfish PHP Framework](/storage/starfish.png "Starfish PHP Framework")
+
 # Starfish
 
 **Starfish PHP Framework** is a minimum Registry microframework primarily desiged to serve JSON content and use objects.
 
-![Starfish PHP Framework](/storage/starfish.png "Starfish PHP Framework")
-
 ## Router examples
 
-*       .htaccess file content example:
+* .htaccess file content example:
         ```php
         <IfModule mod_rewrite.c>
         RewriteEngine On
@@ -19,7 +19,7 @@
         </IfModule>
         ```
 
-*       This is an example of how to define an action based on the route accessed:
+* This is an example of how to define an action based on the route accessed:
 
         ```php
         <?php
@@ -58,11 +58,11 @@ Parts of code or inspiration was obtained from the following software:
 
 * [Dispatch PHP micro-framework](https://github.com/noodlehaus/dispatch)
 * [Simplon Router](https://github.com/fightbulc/simplon_router)
-* [Stackoverflow Answers](http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage) by [mellowsoon](http://stackoverflow.com/users/401019/mellowsoon)
+* [Stackoverflow Answer](http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage) by [mellowsoon](http://stackoverflow.com/users/401019/mellowsoon)
 
 ### Bootstrap and jQuery in examples
 
-*       Bootstrap
+* Bootstrap
         ```html
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -74,7 +74,7 @@ Parts of code or inspiration was obtained from the following software:
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
         ```
 
-*       jQuery
+* jQuery
         ```html
         <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
         <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>

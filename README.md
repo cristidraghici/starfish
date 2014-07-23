@@ -2,65 +2,80 @@
 
 **Starfish PHP Framework** is a minimum Registry microframework primarily desiged to serve JSON content and use objects.
 
+![Starfish PHP Framework](/storage/starfish.png "Starfish PHP Framework")
+
 ## Router examples
 
-* This is an example of how to define an action based on the route accessed:
+*       .htaccess file content example:
+        ```php
+        <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteBase /starfish/
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^(.*)$ index.php?=$1 [QSA,L]
 
-```php
-<?php
-/**
- * Starfish initial commands
- */
-// Require the needed files
-require_once('starfish.php');
+        ErrorDocument 404 " "
+        </IfModule>
+        ```
 
-// Initiate Starfish
-starfish::init();
+*       This is an example of how to define an action based on the route accessed:
 
-/**
- * The script itself
- */
-// With parameter
-starfish::obj('routes')->on('get', '/:alpha', function($param) {
-	echo 'With param: ' . $param;
-});
+        ```php
+        <?php
+        /**
+         * Starfish initial commands
+         */
+        // Require the needed files
+        require_once('starfish.php');
 
-// The default path
-starfish::obj('routes')->on('get', '/:all', function() {
-	echo 'Stuff is working well!';
-});
+        // Initiate Starfish
+        starfish::init();
 
-// Execute the router
-starfish::obj('routes')->run();
-?>
-```
+        /**
+         * The script itself
+         */
+        // With parameter
+        starfish::obj('routes')->on('get', '/:alpha', function($param) {
+                echo 'With param: ' . $param;
+        });
+
+        // The default path
+        starfish::obj('routes')->on('get', '/:all', function() {
+                echo 'Stuff is working well!';
+        });
+
+        // Execute the router
+        starfish::obj('routes')->run();
+        ?>
+        ```
 
 ## Other software used
 
 ### As mentioned inside the starfish.php document
 
-Parts of code or inspiration was obtained from the following software.
+Parts of code or inspiration was obtained from the following software:
 
 * [Dispatch PHP micro-framework](https://github.com/noodlehaus/dispatch)
 * [Simplon Router](https://github.com/fightbulc/simplon_router)
-* [Stackoverflow Answers](http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage)
+* [Stackoverflow Answers](http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage) by [mellowsoon](http://stackoverflow.com/users/401019/mellowsoon)
 
 ### Bootstrap and jQuery in examples
 
-* Bootstrap
-```html
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+*       Bootstrap
+        ```html
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-```
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        ```
 
-* jQuery
-```html
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-```
+*       jQuery
+        ```html
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        ```

@@ -53,10 +53,10 @@ class starfish
 
                         // Set the name of the application
                         'name' => 'starfish',
-                        
+
                         // Set the path for the application
                         'session' => 'starfish',
-                        
+
                         // Set some aliases (just playing around :) )
                         'aliases' => array( 's', 'star', 'reg', 'registry')
                 )
@@ -378,7 +378,7 @@ class starfish
 
                 return null;
         }
-        
+
         /**
 	 * Store an exising object inside the registry
 	 *
@@ -392,13 +392,13 @@ class starfish
                 if (!isset( self::$instances[ $name ] ) && is_object($object))
                 {
                         self::$instances[ $name ] = $object;
-                        
+
                         return true;
                 }
-                
+
                 return false;
         }
-        
+
         /**
 	 * To a redirect
 	 *

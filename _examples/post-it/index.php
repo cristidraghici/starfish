@@ -12,16 +12,9 @@ starfish::init();
 /**
  * The script itself
  */
-// With parameter
-starfish::obj('routes')->on('get', '/:alpha', function($param) {
-        echo 'With param: ' . starfish::obj('scramble')->decode( starfish::obj('scramble')->encode($param) );
-});
 
-// The default path
-starfish::obj('routes')->on('get', '/:all', function() {
-        echo 'Stuff is working well!';
-});
+// Connect to the database
+starfish::obj('database')->connect('textdb', 'post-it-textdb', 'post-it');
 
-// Execute the router
-starfish::obj('routes')->run();
+// 
 ?>

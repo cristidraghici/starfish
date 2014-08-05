@@ -12,9 +12,4 @@ starfish::init();
 /**
  * The script itself
  */
-
-// Connect to the database
-starfish::obj('database')->connect('textdb', 'post-it-textdb', 'post-it');
-
-// 
 ?>

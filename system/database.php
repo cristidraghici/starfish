@@ -38,7 +38,7 @@ class database
          *                              - password
          *                              - database
          */
-        public static function add($name, $type, $parameters)
+        public static function add($name, $type='textdb', $parameters=array())
         {
                 $this->connections[$name] = array(
                         'type' => $type, 

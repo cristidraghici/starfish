@@ -160,6 +160,7 @@ class starfish
                 // Proper initialization
                 self::obj('parameters');
                 self::obj('routes');
+				self::obj('databases');
 
                 return null;
         }
@@ -204,7 +205,7 @@ class starfish
                 else
                 {
                         // One value
-                        if ($type['values'] == 'string')
+                        if ($type['values'] == 'string' || $type['names'] == 'string')
                         {
                                 // One value, one name
                                 if ($type['names'] == 'string')

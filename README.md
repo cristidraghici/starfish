@@ -81,12 +81,46 @@ on();
 
 ## Recommendations
 
-In development, enable php debugging before including starfish:
+* In development, enable php debugging before including starfish:
 
 ```php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ```
+
+
+## Databases
+
+* Mysql connection configuration:
+
+```php
+// Add a connection to the database
+starfish::config('_starfish', 'databases', array(
+        'name' => array(
+                'type' => 'mysql', 
+                'parameters' => array(
+                        'host' => 'localhost',
+                        'user' => 'root',
+                        'pass' => '',
+                        'name' => 'name',
+                )
+        )
+));
+```
+
+* One example query:
+```php
+<?php
+$resource = starfish::obj('database')->query('select * from `table`');
+while ( $row = starfish::obj('database')->fetch($resource) )
+{
+        print_r($row);
+}
+
+starfish::obj('database')->free( $resource );
+?>
+```
+
 
 ## Other software used
 

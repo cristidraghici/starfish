@@ -28,11 +28,15 @@ class database
         public static function init()
         {
                 $databases = starfish::config('_starfish', 'databases');
-                foreach ($databases as $key=>$value)
-                {
-                        self::add($key, $value['type'], $value['parameters']);
-                }
-                
+				
+				if (is_array($databases))
+				{
+						foreach ($databases as $key=>$value)
+						{
+								self::add($key, $value['type'], $value['parameters']);
+						}
+				}
+				
                 return true;
         }
         
@@ -68,7 +72,7 @@ class database
         {
                 // If a name is specified
                 if ($name != null)
-                {
+                {		
                         // Get the stored resource
                         if (isset(self::$resources[$name]))
                         {
@@ -81,6 +85,7 @@ class database
                                 
                                 // Create the new resource
                                 $conn = null;
+								
                                 switch ($info['type'])
                                 {
                                         case 'pgsql':
@@ -99,6 +104,8 @@ class database
                                         default: 
                                                 return null;
                                 }
+								
+								return $conn;
                         }
                 }
                 // Only one connection, no name specified
@@ -106,7 +113,7 @@ class database
                 {
                         // Get the name of the connection
                         $connections = array_keys(self::$connections);
-                        
+						
                         // Call this function again
                         return self::get( $connections[0] );
                 }
@@ -151,7 +158,7 @@ class database
         }
         
         /** 
-         * Fetch results from a returned query resource
+         * Fetch a result from a returned query resource
          * 
          * @param resource $resource The resource to be interpreted
          * @param string $connection Name of the connection
@@ -160,7 +167,20 @@ class database
          */
         public static function fetch($resource, $connection=null)
         {
-                return self::conn($connection)->fetch($query);
+                return self::conn($connection)->fetch($resource);
+        }
+		
+        /** 
+         * Fetch all results from a returned query resource
+         * 
+         * @param resource $resource The resource to be interpreted
+         * @param string $connection Name of the connection
+         * 
+         * @return array An array containing the fetched result
+         */
+        public static function fetchAll($resource, $connection=null)
+        {
+                return self::conn($connection)->fetchAll($resource);
         }
         
         /** 
@@ -171,19 +191,54 @@ class database
          */
         public static function free($resource, $connection=null)
         {
-                return self::conn($connection)->free($query);
+                return self::conn($connection)->free($resource);
         }
-        
         
         /** 
          * Disconnect a connection
          * 
          * @param string $name Name of the connections
          */
-        public static function disconnect($name=null)
+        public static function disconnect($connection=null)
         {
-				self::conn($connection)->disconnect($query);
+				// Get the object
+				$obj = self::conn($connection);
+				
+				// Disconnect from the database
+				$obj->disconnect();
+				
+				// Delete from the resources list
+				foreach (self::$resources as $key=>$value)
+				{
+						if ($value == $obj) { unset(self::$resources[$key]); break; }
+				}
+				
+				// Destroy the object
+				unset($obj);
+				
                 return true;
         }
+		
+        /** 
+         * Sanitize string
+         * 
+         * @param string $name String to alter
+         * @return string String returned after processing
+         */
+		function sanitize($string, $connection=null)
+		{
+				return self::conn($connection)->sanitize($string);
+		}
+		
+        /** 
+         * Escape string
+         * 
+         * @param string $name String to alter
+         * @return string String returned after processing
+         */
+		function escape($string)
+		{
+				return self::conn($connection)->escape($string);
+		}
 }
 ?>

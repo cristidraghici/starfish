@@ -6,6 +6,8 @@ if (!class_exists('starfish')) { die(); }
  *
  * @package starfish
  * @subpackage starfish.system.database
+ *
+ * @todo Connect to the parameters object to help with sanitization
  */
 class database
 {
@@ -111,6 +113,29 @@ class database
                 
                 return null;
         }
+		
+		 /** 
+         * Convert the connection string inside this object's methods into a connection resource
+         * 
+         * @param mixed $conn Name of the connections
+         * @return resource The connection requested
+         */
+        private static function conn($conn)
+        {
+				switch (strtolower(gettype($conn)))
+				{
+						case 'string':
+						case 'null':
+								return self::get($conn);
+								break;
+						
+						case 'resource':
+								return $conn;
+								break;
+				}
+				
+				return null;
+        }
         
         /** 
          * Send a query to the connection
@@ -122,7 +147,7 @@ class database
          */
         public static function query($query, $connection=null)
         {
-                
+                return self::conn($connection)->query($query);
         }
         
         /** 
@@ -135,7 +160,7 @@ class database
          */
         public static function fetch($resource, $connection=null)
         {
-                
+                return self::conn($connection)->fetch($query);
         }
         
         /** 
@@ -146,7 +171,7 @@ class database
          */
         public static function free($resource, $connection=null)
         {
-                
+                return self::conn($connection)->free($query);
         }
         
         
@@ -157,6 +182,7 @@ class database
          */
         public static function disconnect($name=null)
         {
+				self::conn($connection)->disconnect($query);
                 return true;
         }
 }

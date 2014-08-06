@@ -366,28 +366,28 @@ class parameters
                 switch (count($args))
                 {
                         case 0:
-                        session_start();
-                        self::$cache['session'] = $_SESSION;
-                        session_write_close();
+                                session_start();
+                                self::$cache['session'] = $_SESSION;
+                                session_write_close();
 
-                        return true;
+                                return true;
 
-                        break; // for structured coding
+                                break; // for structured coding
                         case 1:
-                        return self::$cache['session'][ $args[0] ];
+                                return isset( self::$cache['session'][ $args[0] ] ) ? self::$cache['session'][ $args[0] ] : null;
 
-                        break; // for structure coding
+                                break; // for structure coding
 
                         case 2:
-                        self::$cache['session'][ $args[0] ] = $args[1];
+                                self::$cache['session'][ $args[0] ] = $args[1];
 
-                        session_start();
-                        $_SESSION[ $args[0] ] = $args[1];
-                        session_write_close();
+                                session_start();
+                                $_SESSION[ $args[0] ] = $args[1];
+                                session_write_close();
 
-                        return $args[1];
+                                return $args[1];
 
-                        break; // for structure coding
+                                break; // for structure coding
                 }
         }
 

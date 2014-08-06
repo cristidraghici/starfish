@@ -44,11 +44,11 @@ class mysql
         }
         function fetch($resource)
         {
-                return $resource->fetch_array();
+                return $resource->fetch_assoc();
         }
         function fetchAll($resource)
         {
-                while ($row = $resource->fetch_array())
+                while ($row = $resource->fetch_assoc())
                 {
                         $this->result[] = $row;
                 }
@@ -71,7 +71,7 @@ class mysql
          */
         function sanitize($string, $connection=null)
         {
-                return mysqli_real_escape_string (self::conn($connection), $string);
+                return mysqli_real_escape_string ($this->connection, $string);
         }
 
         /** 

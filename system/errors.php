@@ -13,6 +13,35 @@ class errors
 {
 
         /**
+         * Main message function
+         * 
+         * This function stores a message in the session if two parameters are specified, or retrieves one and deletes it from the session, when only one parameter is given.
+         * 
+         * @param string $code Code of the error
+         * @param string $message Body of the error
+         */
+        public static function message()
+        {
+                $args = func_get_args();
+                $message = '';
+                
+                switch (count($args))
+                {
+                        case 1:
+                                $message = session('_starfish_errors-' . $args[0]);
+                                session('_starfish_errors-' . $args[0], null);
+                                break;
+                        
+                        case 2:
+                                $message = $args[1];
+                                session('_starfish_errors-' . $args[0], $args[1]);
+                                break;
+                }
+                
+                return $message;
+        }
+        
+        /**
          * Main error function
          * 
          * @param string $code Code of the error

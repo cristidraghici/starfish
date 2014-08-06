@@ -149,12 +149,35 @@ class database
          * 
          * @param mixed $query Name of the connections
          * @param string $connection Name of the connection
+         * @param array $parameters Parameters to replace in the query, after sanitization
          * 
          * @return resource The resource containing the result
          */
-        public static function query($query, $connection=null)
+        public static function query($query, $connection=null, $parameters=array() )
         {
+                if (count($parameters) > 0)
+                {
+                        foreach ($parameters as $key=>$value)
+                        {
+                                $query = str_replace('{'. $key . '}', self::sanitize( $parameters[$key], $connection ), $query );
+                        }
+                }
+                
                 return self::conn($connection)->query($query);
+        }
+
+        /** 
+         * Verify a query
+         * 
+         * @param mixed $query Name of the connections
+         * @param string $connection Name of the connection
+         * 
+         * @return resource The resource containing the result
+         */
+        public static function eecho($query, $connection=null)
+        {
+                echo $query;
+                exit;
         }
 
         /** 
@@ -225,7 +248,7 @@ class database
          * @param string $name String to alter
          * @return string String returned after processing
          */
-        function sanitize($string, $connection=null)
+        public static function sanitize($string, $connection=null)
         {
                 return self::conn($connection)->sanitize($string);
         }
@@ -236,7 +259,7 @@ class database
          * @param string $name String to alter
          * @return string String returned after processing
          */
-        function escape($string)
+        public static function escape($string)
         {
                 return self::conn($connection)->escape($string);
         }

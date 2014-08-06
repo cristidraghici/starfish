@@ -79,6 +79,15 @@ on();
 ?>
 ```
 
+## Recommendations
+
+In development, enable php debugging before including starfish:
+
+```php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+```
+
 ## Other software used
 
 ### As mentioned inside the starfish.php document

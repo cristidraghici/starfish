@@ -20,9 +20,17 @@ class database
 
         /**
 	 * Init the object. Connect to any database in the configuration, if needed
+	 * 
+	 * @todo Maybe add connections that start automatically
 	 */
         public static function init()
         {
+                $databases = starfish::config('_starfish', 'databases');
+                foreach ($databases as $key=>$value)
+                {
+                        self::add($key, $value['type'], $value['parameters']);
+                }
+                
                 return true;
         }
         
@@ -40,7 +48,7 @@ class database
          */
         public static function add($name, $type='textdb', $parameters=array())
         {
-                $this->connections[$name] = array(
+                self::$connections[$name] = array(
                         'type' => $type, 
                         'parameters' => $parameters
                 );
@@ -60,21 +68,27 @@ class database
                 if ($name != null)
                 {
                         // Get the stored resource
-                        if (isset($this->resources[$name]))
+                        if (isset(self::$resources[$name]))
                         {
-                                return $this->resources[$name];
+                                return self::$resources[$name];
                         }
-                        elseif (isset($this->connections[$name]))
+                        elseif (isset(self::$connections[$name]))
                         {
                                 // Get the information about the connection
-                                $info = $this->connections[$name];
+                                $info = self::$connections[$name];
                                 
                                 // Create the new resource
+                                $conn = null;
                                 switch ($info['type'])
                                 {
                                         case 'pgsql':
                                                 break;
                                         case 'mysql':
+                                                $conn = starfish::obj('mysql')->connect( $info['parameters'] );
+                                                if ($conn != false)
+                                                {
+                                                        self::$resources[$name] = $conn;
+                                                }
                                                 break;
                                         case 'textdb':
                                                 break;
@@ -86,10 +100,10 @@ class database
                         }
                 }
                 // Only one connection, no name specified
-                elseif (count($this->connections) == 1)
+                elseif (count(self::$connections) == 1)
                 {
                         // Get the name of the connection
-                        $connections = array_keys($this->connections);
+                        $connections = array_keys(self::$connections);
                         
                         // Call this function again
                         return self::get( $connections[0] );

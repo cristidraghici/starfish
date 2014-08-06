@@ -24,6 +24,7 @@
  * @package starfish
  * @subpackage starfish
  */
+
 class starfish
 {
         /**
@@ -155,7 +156,7 @@ class starfish
 
                 // Set the path for Starfish root storage		
                 self::config('_starfish', 'root_storage', $path . 'storage'  . DIRECTORY_SEPARATOR);
-
+                
                 // Proper initialization
                 self::obj('parameters');
                 self::obj('routes');

@@ -49,7 +49,7 @@ class routes
         public static function on()
         {
                 $args = func_get_args();
-                
+
                 if (count($args) == 3)
                 {
                         $method = strtoupper($args[0]);

@@ -153,14 +153,17 @@ class starfish
 
                 // Set the path for Starfish storage		
                 self::config('_starfish', 'storage', $path . 'storage'  . DIRECTORY_SEPARATOR, false);
+                
+                // Set the path for Starfish storage		
+                self::config('_starfish', 'template', $path . 'template'  . DIRECTORY_SEPARATOR, false);
 
                 // Set the path for Starfish root storage		
                 self::config('_starfish', 'root_storage', $path . 'storage'  . DIRECTORY_SEPARATOR);
-                
+
                 // Proper initialization
                 self::obj('parameters');
                 self::obj('routes');
-				self::obj('databases');
+                self::obj('databases');
 
                 return null;
         }

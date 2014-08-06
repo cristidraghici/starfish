@@ -25,8 +25,8 @@ ErrorDocument 404 " "
 ```php
 <?php
 /**
- * Starfish initial commands
- */
+* Starfish initial commands
+*/
 // Require the needed files
 require_once('starfish.php');
 
@@ -34,16 +34,16 @@ require_once('starfish.php');
 starfish::init();
 
 /**
- * The script itself
- */
+* The script itself
+*/
 // With parameter
 starfish::obj('routes')->on('get', '/:alpha', function($param) {
-        echo 'With param: ' . $param;
+echo 'With param: ' . $param;
 });
 
 // The default path
 starfish::obj('routes')->on('get', '/:all', function() {
-        echo 'Stuff is working well!';
+echo 'Stuff is working well!';
 });
 
 // Execute the router
@@ -66,12 +66,12 @@ init();
 
 // With parameter
 on('get', '/:alpha', function($param) {
-        echo 'With param: ' .$param;
+echo 'With param: ' .$param;
 });
 
 // The default path
 on('get', '/:all', function() {
-        echo 'Stuff is working well!';
+echo 'Stuff is working well!';
 });
 
 // Execute the router
@@ -96,15 +96,15 @@ ini_set('display_errors', 1);
 ```php
 // Add a connection to the database
 starfish::config('_starfish', 'databases', array(
-        'name' => array(
-                'type' => 'mysql', 
-                'parameters' => array(
-                        'host' => 'localhost',
-                        'user' => 'root',
-                        'pass' => '',
-                        'name' => 'name',
-                )
-        )
+'name' => array(
+'type' => 'mysql', 
+'parameters' => array(
+'host' => 'localhost',
+'user' => 'root',
+'pass' => '',
+'name' => 'name',
+)
+)
 ));
 ```
 
@@ -114,7 +114,7 @@ starfish::config('_starfish', 'databases', array(
 $resource = starfish::obj('database')->query('select * from `table`');
 while ( $row = starfish::obj('database')->fetch($resource) )
 {
-        print_r($row);
+print_r($row);
 }
 
 starfish::obj('database')->free( $resource );

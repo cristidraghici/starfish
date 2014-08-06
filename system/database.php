@@ -28,18 +28,18 @@ class database
         public static function init()
         {
                 $databases = starfish::config('_starfish', 'databases');
-				
-				if (is_array($databases))
-				{
-						foreach ($databases as $key=>$value)
-						{
-								self::add($key, $value['type'], $value['parameters']);
-						}
-				}
-				
+
+                if (is_array($databases))
+                {
+                        foreach ($databases as $key=>$value)
+                        {
+                                self::add($key, $value['type'], $value['parameters']);
+                        }
+                }
+
                 return true;
         }
-        
+
         /**
          * Add a new connection
          * 
@@ -58,10 +58,10 @@ class database
                         'type' => $type, 
                         'parameters' => $parameters
                 );
-                
+
                 return true;
         }
-        
+
         /** 
          * Retrieve/create a connection
          * 
@@ -82,30 +82,30 @@ class database
                         {
                                 // Get the information about the connection
                                 $info = self::$connections[$name];
-                                
+
                                 // Create the new resource
                                 $conn = null;
-								
+
                                 switch ($info['type'])
                                 {
                                         case 'pgsql':
-                                                break;
+                                        break;
                                         case 'mysql':
-                                                $conn = starfish::obj('mysql')->connect( $info['parameters'] );
-                                                if ($conn != false)
-                                                {
-                                                        self::$resources[$name] = $conn;
-                                                }
-                                                break;
+                                        $conn = starfish::obj('mysql')->connect( $info['parameters'] );
+                                        if ($conn != false)
+                                        {
+                                                self::$resources[$name] = $conn;
+                                        }
+                                        break;
                                         case 'textdb':
-                                                break;
-                                        
+                                        break;
+
                                         // Break execution if database type is not valid
                                         default: 
-                                                return null;
+                                        return null;
                                 }
-								
-								return $conn;
+
+                                return $conn;
                         }
                 }
                 // Only one connection, no name specified
@@ -113,15 +113,15 @@ class database
                 {
                         // Get the name of the connection
                         $connections = array_keys(self::$connections);
-						
+
                         // Call this function again
                         return self::get( $connections[0] );
                 }
-                
+
                 return null;
         }
-		
-		 /** 
+
+        /** 
          * Convert the connection string inside this object's methods into a connection resource
          * 
          * @param mixed $conn Name of the connections
@@ -129,21 +129,21 @@ class database
          */
         private static function conn($conn)
         {
-				switch (strtolower(gettype($conn)))
-				{
-						case 'string':
-						case 'null':
-								return self::get($conn);
-								break;
-						
-						case 'resource':
-								return $conn;
-								break;
-				}
-				
-				return null;
+                switch (strtolower(gettype($conn)))
+                {
+                        case 'string':
+                        case 'null':
+                        return self::get($conn);
+                        break;
+
+                        case 'resource':
+                        return $conn;
+                        break;
+                }
+
+                return null;
         }
-        
+
         /** 
          * Send a query to the connection
          * 
@@ -156,7 +156,7 @@ class database
         {
                 return self::conn($connection)->query($query);
         }
-        
+
         /** 
          * Fetch a result from a returned query resource
          * 
@@ -169,7 +169,7 @@ class database
         {
                 return self::conn($connection)->fetch($resource);
         }
-		
+
         /** 
          * Fetch all results from a returned query resource
          * 
@@ -182,7 +182,7 @@ class database
         {
                 return self::conn($connection)->fetchAll($resource);
         }
-        
+
         /** 
          * Free a resource
          * 
@@ -193,7 +193,7 @@ class database
         {
                 return self::conn($connection)->free($resource);
         }
-        
+
         /** 
          * Disconnect a connection
          * 
@@ -201,44 +201,44 @@ class database
          */
         public static function disconnect($connection=null)
         {
-				// Get the object
-				$obj = self::conn($connection);
-				
-				// Disconnect from the database
-				$obj->disconnect();
-				
-				// Delete from the resources list
-				foreach (self::$resources as $key=>$value)
-				{
-						if ($value == $obj) { unset(self::$resources[$key]); break; }
-				}
-				
-				// Destroy the object
-				unset($obj);
-				
+                // Get the object
+                $obj = self::conn($connection);
+
+                // Disconnect from the database
+                $obj->disconnect();
+
+                // Delete from the resources list
+                foreach (self::$resources as $key=>$value)
+                {
+                        if ($value == $obj) { unset(self::$resources[$key]); break; }
+                }
+
+                // Destroy the object
+                unset($obj);
+
                 return true;
         }
-		
+
         /** 
          * Sanitize string
          * 
          * @param string $name String to alter
          * @return string String returned after processing
          */
-		function sanitize($string, $connection=null)
-		{
-				return self::conn($connection)->sanitize($string);
-		}
-		
+        function sanitize($string, $connection=null)
+        {
+                return self::conn($connection)->sanitize($string);
+        }
+
         /** 
          * Escape string
          * 
          * @param string $name String to alter
          * @return string String returned after processing
          */
-		function escape($string)
-		{
-				return self::conn($connection)->escape($string);
-		}
+        function escape($string)
+        {
+                return self::conn($connection)->escape($string);
+        }
 }
 ?>

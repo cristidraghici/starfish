@@ -11,9 +11,13 @@ class mysql
 {
         private $connection = null;
         private $resource = null;
-        private $result = null;
-        private $index = 0;
 
+        /*
+         * Connect to the database
+         * 
+         * @param array $config The configuration for the connection
+         * @return object The object containing the connection to the database
+         */
         function connect($config)
         {
                 if ($this->connection == null)
@@ -23,6 +27,10 @@ class mysql
 
                 return $this;
         }
+        /*
+         * Disconnect from the database
+         * Kill the connection to the database
+         */
         function disconnect()
         {
                 // Kill the connection
@@ -36,16 +44,34 @@ class mysql
 
                 return true;
         }
+        /*
+         * Query the database
+         * 
+         * @param mixed $query
+         * @return resource The query resource
+         */
         function query($query)
         {
                 $this->resource = $this->connection->query( $query );
 
                 return $this->resource;
         }
+        /*
+         * Fetch one result from a resource
+         * 
+         * @param resource $resource The resource to fetch the result from
+         * @return array The associated array
+         */
         function fetch($resource)
         {
                 return $resource->fetch_assoc();
         }
+        /*
+         * Fetch all results from a resource
+         * 
+         * @param resource $resource The resource to fetch results from
+         * @return array An array with all the results
+         */
         function fetchAll($resource)
         {
                 while ($row = $resource->fetch_assoc())
@@ -54,6 +80,11 @@ class mysql
                 }
                 return $this->result;
         }
+        /*
+         * Free a resource
+         * 
+         * @param resource $resource The resource to free
+         */
         function free($resource)
         {
                 // Free the memory

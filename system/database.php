@@ -207,6 +207,19 @@ class database
         }
 
         /** 
+         * Count the results matching the given conditions
+         * 
+         * @param resource $resource The resource to be interpreted
+         * @param string $connection Name of the connection
+         * 
+         * @return number The number of results
+         */
+        public static function numRows($resource, $connection=null)
+        {
+                return self::conn($connection)->numRows($resource);
+        }
+
+        /** 
          * Free a resource
          * 
          * @param resource $resource The resource to be interpreted

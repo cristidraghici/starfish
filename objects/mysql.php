@@ -39,8 +39,6 @@ class mysql
                 // Reset the data
                 $this->connection = null;
                 $this->resource = null;
-                $this->result = null;
-                $this->index = 0;
 
                 return true;
         }
@@ -80,6 +78,20 @@ class mysql
                 }
                 return $this->result;
         }
+
+        /** 
+         * Count the results matching the given conditions
+         * 
+         * @param resource $resource The resource to be interpreted
+         * @param string $connection Name of the connection
+         * 
+         * @return number The number of results
+         */
+        public static function numRows($resource)
+        {
+                return $this->connection->mysql_num_rows($resource);
+        }
+        
         /*
          * Free a resource
          * 
@@ -100,7 +112,7 @@ class mysql
          * @param string $name String to alter
          * @return string String returned after processing
          */
-        function sanitize($string, $connection=null)
+        function sanitize($string)
         {
                 return mysqli_real_escape_string ($this->connection, $string);
         }

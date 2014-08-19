@@ -264,6 +264,15 @@ class starfish
                                 }
                         }
                 }
+                
+                // Exception for "base" name
+                if ($names == 'base' && $type['values'] == 'array')
+                {
+                        foreach ($values as $key=>$value)
+                        {
+                                self::$config[$module][ $key ] = $value;
+                        }
+                }
 
                 return $return;
         }

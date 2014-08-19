@@ -25,6 +25,9 @@ class postgres
                 if ($this->connection == null)
                 {
                         $this->connection = @pg_connect("host=".$config['host']." port=".$config['port']." dbname=".$config['name']." user=".$config['user']." password=".$config['pass']);
+                        
+                        // Correct output
+                        @pg_query($this->connection, 'SET bytea_output = "escape";');
                 }
 
                 return $this;

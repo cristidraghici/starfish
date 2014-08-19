@@ -40,8 +40,6 @@ class tpl
                 $this->set('site_description', $base['site_description'] );
                 $this->set('/', $base['site_url'] );
                 
-                echo starfish::config('_starfish', 'site_url');
-                
                 return true;
         }
         

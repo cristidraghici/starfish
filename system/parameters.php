@@ -236,7 +236,10 @@ class parameters
                         $stub = starfish::config('_starfish', 'site_router') ;
                         $path = preg_replace('@^/?'.preg_quote(trim($stub, '/')).'@i', '', $path);
                 }
-
+                
+                // add begining backslash
+                if (substr($path, 0, 1) != '/') { $path = '/'.$path; }
+                
                 self::$cache['path'] = $path;
                 return self::$cache['path'];
         }

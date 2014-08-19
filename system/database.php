@@ -72,7 +72,7 @@ class database
         {
                 // If a name is specified
                 if ($name != null)
-                {		
+                {	
                         // Get the stored resource
                         if (isset(self::$resources[$name]))
                         {
@@ -89,20 +89,26 @@ class database
                                 switch ($info['type'])
                                 {
                                         case 'pgsql':
+                                        case 'postgres':
+                                                $conn = starfish::obj('postgres')->connect( $info['parameters'] );
+                                                if ($conn != false)
+                                                {
+                                                        self::$resources[$name] = $conn;
+                                                }
                                         break;
                                         case 'mysql':
-                                        $conn = starfish::obj('mysql')->connect( $info['parameters'] );
-                                        if ($conn != false)
-                                        {
-                                                self::$resources[$name] = $conn;
-                                        }
+                                                $connectiononn = starfish::obj('mysql')->connect( $info['parameters'] );
+                                                if ($conn != false)
+                                                {
+                                                        self::$resources[$name] = $conn;
+                                                }
                                         break;
                                         case 'textdb':
                                         break;
 
                                         // Break execution if database type is not valid
                                         default: 
-                                        return null;
+                                                return null;
                                 }
 
                                 return $conn;
@@ -133,11 +139,11 @@ class database
                 {
                         case 'string':
                         case 'null':
-                        return self::get($conn);
+                                return self::get($conn);
                         break;
 
                         case 'resource':
-                        return $conn;
+                                return $conn;
                         break;
                 }
 

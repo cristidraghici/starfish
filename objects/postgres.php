@@ -6,8 +6,6 @@ if (!class_exists('starfish')) { die(); }
  *
  * @package starfish
  * @subpackage starfish.objects.postgres
- *
- * @todo SET bytea_output = "escape"; after connection
  */
 class postgres
 {	
@@ -24,7 +22,7 @@ class postgres
         {
                 if ($this->connection == null)
                 {
-                        $this->connection = @pg_connect("host=".$config['host']." port=".$config['port']." dbname=".$config['name']." user=".$config['user']." password=".$config['pass']);
+                        $this->connection = pg_connect("host=".$config['host']." port=".$config['port']." dbname=".$config['name']." user=".$config['user']." password=".$config['pass']);
                         
                         // Correct output
                         @pg_query($this->connection, 'SET bytea_output = "escape";');

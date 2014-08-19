@@ -72,11 +72,13 @@ class mysql
          */
         function fetchAll($resource)
         {
+                $result = array();
+                
                 while ($row = $resource->fetch_assoc())
                 {
-                        $this->result[] = $row;
+                        $result[] = $row;
                 }
-                return $this->result;
+                return $result;
         }
 
         /** 

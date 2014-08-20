@@ -193,7 +193,7 @@ class pagination
                                         $output['first'] = array(
                                                 'name'  => $text,
                                                 'link'  => str_replace('{page}', $i, $link),
-                                                'class' => 'box'
+                                                'class' => ''
                                         );
                                 }
                                 if ( $i == $nrpages )
@@ -204,7 +204,7 @@ class pagination
                                         $output['last'] = array(
                                                 'name'  => $text,
                                                 'link'  => str_replace('{page}', $i, $link),
-                                                'class' => 'box'
+                                                'class' => ''
                                         );
                                 }
                         }
@@ -215,7 +215,7 @@ class pagination
                                 $output['prev'] = array(
                                         'name'  => '&laquo;',
                                         'link'  => str_replace('{page}', $prevpage, $link),
-                                        'class' => 'free'
+                                        'class' => 'disabled'
                                 );
                         }
                         if ( $i <= ($page + $pages) && $i >= ($page - $pages) )
@@ -232,7 +232,7 @@ class pagination
                                         $output['pages'][] = array(
                                                 'name'  => $i,
                                                 'link'  => str_replace('{page}', $i, $link),
-                                                'class' => 'box'
+                                                'class' => ''
                                         );
                                 }
                         }
@@ -242,7 +242,7 @@ class pagination
                                 $output['next'] = array(
                                         'name'  => '&raquo;',
                                         'link'  => str_replace('{page}', $nextpage, $link),
-                                        'class' => 'free'
+                                        'class' => 'disabled'
                                 );
                         }
                 }

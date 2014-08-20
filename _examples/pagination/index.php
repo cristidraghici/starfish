@@ -15,6 +15,7 @@ starfish::init();
  * The script itself
  */
 $page = get('page');
+if ((int)$page < 1) { $page = 1; }
 $total = 101;
 $rows = 10;
 

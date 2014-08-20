@@ -178,6 +178,12 @@ class pagination
                 $min = $limits['min'];
                 $max = $limits['max'];
 
+                // Alter the link form
+                if (substr($link, 0, 2) == './')
+                {
+                        $link = starfish::config('_starfish', 'site_url') . substr($link, 2);
+                }
+                
                 // The links list
                 $output = array();
 
@@ -215,7 +221,7 @@ class pagination
                                 $output['prev'] = array(
                                         'name'  => '&laquo;',
                                         'link'  => str_replace('{page}', $prevpage, $link),
-                                        'class' => 'disabled'
+                                        'class' => ''
                                 );
                         }
                         if ( $i <= ($page + $pages) && $i >= ($page - $pages) )
@@ -242,7 +248,7 @@ class pagination
                                 $output['next'] = array(
                                         'name'  => '&raquo;',
                                         'link'  => str_replace('{page}', $nextpage, $link),
-                                        'class' => 'disabled'
+                                        'class' => ''
                                 );
                         }
                 }

@@ -1,42 +1,45 @@
 /* Pagination rules */
-.pagination_starfish_clean {
-    clear: both;
-    font-size: 11px;
-    line-height: 11px;
+ul.pagination_starfish_clean {
+        clear: both;
+        
+        font-family: arial, cursive;
+        font-size: 12px;
+        line-height: 14px;
+        
+        margin: 0;
+        padding: 0;
+        
+        overflow: hidden;
 }
-.pagination_starfish_clean ul {
-    padding: 0;
-    margin: 0;
+
+ul.pagination_starfish_clean li {
+        list-style-image: none;
+        list-style: none;
+        margin-right: 5px;
+        padding: 4px 8px 4px 8px;
+        
+        float: left;
+        
+        background: #fff;
+        border: 1px solid #000;
 }
-.pagination_starfish_clean li {
-    list-style:none;
-    float: left;
-    margin: 1px;
+ul.pagination_starfish_clean li.active {
+        background: #000;
+        color: #fff;
 }
-.pagination_starfish_clean a.box {
-    display: block;
-    margin-right: 5px;
-    border: 1px solid #c1c1c1;
-    background: #f1f1f1;
-    padding: 4px 8px 4px 8px;
-    text-decoration: none;
+ul.pagination_starfish_clean li.disabled {
+        background: transparent;
+        border: none;
+        color: #000;
 }
-.pagination_starfish_clean a.box:hover {
-    border: 1px solid #000;
-    color: #000;
+
+ul.pagination_starfish_clean li a {
+        color: #000;
+        text-decoration: none;
 }
-.pagination_starfish_clean a.free {
-    padding: 10px;
-    display: block;
-    margin-right: 5px;
-    padding: 4px 8px 4px 8px;
-    text-decoration: none;
-}
-.pagination_starfish_clean li.active {
-    display: block;
-    margin-right: 5px;
-    padding: 4px 8px 4px 8px;
-    text-decoration: none;
-    border: 1px solid #000;
-    color: #000;
+
+ul.pagination_starfish_clean li a,
+ul.pagination_starfish_clean li span {
+        padding: 5px;
+        display: block;
 }

@@ -5,17 +5,17 @@
         ?>
 </style>
 
-<div class="pagination_starfish_clean">
-        <ul>        
+<div>
+        <ul class="pagination_starfish_clean">        
                 <?php foreach ($data as $key=>$item): ?>
 
                 <?php if (isset($item['link']) && strlen($item['link']) > 0): ?>
 
-                <li><a href="<?php echo $item['link']; ?>" class="<?php echo $item['class']; ?>"><?php echo $item['name']; ?></a></li>
+                <li class="<?php echo $item['class']; ?>"><a href="<?php echo $item['link']; ?>"><?php echo $item['name']; ?></a></li>
 
                 <?php else: ?>
 
-                <li class="<?php echo $item['class']; ?>"><?php echo $item['name']; ?></li>
+                <li class="<?php echo $item['class']; ?>"><span><?php echo $item['name']; ?></span></li>
 
                 <?php endif; ?>
 

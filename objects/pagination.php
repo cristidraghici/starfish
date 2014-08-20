@@ -15,7 +15,9 @@ class pagination
          * 
          * $pages - number of pages to show in the pagination links
          * $language - the default language
-         * $template - the template to use for html
+         * $template - the template to use for html. The default values are:
+         *              - helpers-clean
+         *              - helpers-bootstrap
          */
         public $pages = 5;
         public $language = 'en';
@@ -27,8 +29,8 @@ class pagination
         public function init()
         {
                 // Load the default language (en) from the helper folder
-                require_once( self::config('_starfish', 'root') . 'helpers/pagination/language/en.php' );
-
+                require_once( starfish::config('_starfish', 'root') . 'helpers/pagination/language/en.php' );
+                
                 return true;
         }
 
@@ -43,8 +45,6 @@ class pagination
          */
         public function nav($total, $rows, $page=1, $link='', $pages=null)
         {
-                $html = '';
-
                 if ($pages == null)
                 {
                         $pages = $this->pages;
@@ -52,21 +52,19 @@ class pagination
 
 
                 // Make the limits
-
+                $limits = $this->setLimits($total, $rows, $page);
+                
                 // Generate the links
+                $links = $this->setLinks($limits, $page, $pages, $link);
 
-                // Use the html
-
-
-                return $html;
+                // Make and return the html
+                return $this->makeHtml($links);
         }
 
         /**
          * Set the template for the pagination
          * 
          * @param string $name Name of the template to use for the pagination
-         * 
-         * @todo Check if the template exists, when not in helper
          */
         public function setTemplate($name)
         {
@@ -81,9 +79,12 @@ class pagination
                         break;
 
                         default:
-
-                        // Check if the path exists inside the application
-                        $this->template = $name;
+                        // Check if file exists inside the templates folder
+                        if (file_exists(starfish::config('_starfish', 'template') . $name))
+                        {
+                                $this->template = $name;
+                        }
+                        
                         return true;
 
                         break;
@@ -132,7 +133,7 @@ class pagination
         {
                 if (count($strings) == 0)
                 {
-                        $file = self::config('_starfish', 'root') . 'helpers/pagination/language/'.$name.'.php';
+                        $file = starfish::config('_starfish', 'root') . 'helpers/pagination/language/'.$name.'.php';
                         if (file_exists($file))
                         {
                                 $this->language = $name;
@@ -164,12 +165,13 @@ class pagination
          *              - nrpages
          *              - min
          *              - max
-         * @param number $page The current pages
+         * @param number $page The current page
+         * @param number $pages This parameter is the number of pages shown in the pagination links list
          * @param string $link The base links
          * 
          * @return array The list of links and their classes
          */
-        public function setLinks($limits, $page, $link)
+        public function setLinks($limits, $page, $pages, $link)
         {
                 // Variables
                 $nrpages = $limits['nrpages'];
@@ -249,17 +251,17 @@ class pagination
                 // Order the links
                 $data = array();
             
-                if (is_array($output['first']))
+                if (isset($output['first']) && is_array($output['first']))
                 {
                         $data[] = $output['first'];
                 }
                 // show prev
-                if (is_array($output['prev']))
+                if (isset($output['prev']) && is_array($output['prev']))
                 {
                         $data[] = $output['prev'];
                 }
                 // show pages
-                if (is_array($output['pages']))
+                if (isset($output['pages']) && is_array($output['pages']))
                 {
                         foreach ($output['pages'] as $key=>$item)
                         {
@@ -267,12 +269,12 @@ class pagination
                         }
                 }
                 // show next
-                if (is_array($output['next']))
+                if (isset($output['next']) && is_array($output['next']))
                 {
                         $data[] = $output['next'];
                 }
                 // show last
-                if (is_array($output['last']))
+                if (isset($output['last']) && is_array($output['last']))
                 {
                         $data[] = $output['last'];
                 }
@@ -282,12 +284,33 @@ class pagination
 
         /**
          * Put the pagination values inside HTML code
+         * 
+         * @param array $links The list of links to insert into the html
+         * @return string The HTML code for the pagination
          */
-        public function makeHtml()
+        public function makeHtml($links)
         {
+                // Set the template filename
+                $file = '';
+                switch ($this->template)
+                {
+                        case 'helpers-bootstrap':
+                        $file = starfish::config('_starfish', 'root') . 'helpers/pagination/themes/bootstrap/pagination.tpl.php';
+                        break;
+                        
+                        case 'helpers-clean':
+                        $file = starfish::config('_starfish', 'root') . 'helpers/pagination/themes/clean/pagination.tpl.php';
+                        break;
 
-
-                return true;
+                        default:
+                        $file = starfish::config('_starfish', 'template') . $this->template;
+                        break;
+                }
+                
+                // Load the template file                
+                return reg::obj('tpl')->view($file, array(
+                        'data'=>$links
+                ));
         }
 
 

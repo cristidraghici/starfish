@@ -1,0 +1,24 @@
+<?php /* Starfish Framework Template protection */ die(); ?>
+<style type="text/css">
+        <?php 
+        echo starfish::obj('files')->r( starfish::config('_starfish', 'root') . 'helpers/pagination/themes/clean/pagination.css' );
+        ?>
+</style>
+
+<div class="pagination_starfish_clean">
+        <ul>        
+                <?php foreach ($data as $key=>$item): ?>
+
+                <?php if (isset($item['link']) && strlen($item['link']) > 0): ?>
+
+                <li><a href="<?php echo $item['link']; ?>" class="<?php echo $item['class']; ?>"><?php echo $item['name']; ?></a></li>
+
+                <?php else: ?>
+
+                <li class="<?php echo $item['class']; ?>"><?php echo $item['name']; ?></li>
+
+                <?php endif; ?>
+
+                <?php endforeach; ?>
+        </ul>
+</div>

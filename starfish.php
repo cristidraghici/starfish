@@ -250,7 +250,7 @@ class starfish
                                 $names = array_values($names);
                                 $values = array_values($values);
 
-                                for ($a=0; $a++; $a<count($names))
+                                for ($a=0; $a<count($names); $a++)
                                 {
                                         if ($override == false && isset(self::$config[$module][$names[$a]]))
                                         {

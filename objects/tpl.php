@@ -85,9 +85,19 @@ class tpl
                 {
                         extract($variables);
                 }
-                $tplFile = $this->path . $file . '.tpl.php';
+                
+                // Add the file termination, if needed
+                if (substr($file, -8) != '.tpl.php')
+                {
+                        $tplFile = $this->path . $file . '.tpl.php';
+                }
+                else
+                {
+                        $tplFile = $file;
+                }
                 
                 $tplContent = starfish::obj('files')->r($tplFile);
+                
                 if ($tplContent)
                 {
                         // Remove safeguards

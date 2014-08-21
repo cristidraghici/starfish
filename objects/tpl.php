@@ -23,7 +23,7 @@ class tpl
 
         private $dump = false;
 
-        
+
         /**
 	 * Init the script
 	 */
@@ -31,18 +31,22 @@ class tpl
         {
                 // Init the path
                 $this->path = starfish::config('_starfish', 'template');
-                $this->path = trim($this->path, '/') . '/';
-                
+
+                if (substr($this->path, -1) != '/')
+                {
+                        $this->path .= '/';
+                }
+
                 // Store automatic variables
                 $base = starfish::config('_starfish', 'base');
                 $this->set('site_url', $base['site_url'] );
                 $this->set('site_title', $base['site_title'] );
                 $this->set('site_description', $base['site_description'] );
                 $this->set('/', $base['site_url'] );
-                
+
                 return true;
         }
-        
+
         /*
          * Set a variable for the templating system
          * 
@@ -53,10 +57,10 @@ class tpl
         {
                 $list = starfish::get('_starfish_templates');
                 $list[$variable] = $value;
-                
+
                 return starfish::set('_starfish_templates', $list);
         }
-        
+
         /*
          * Get the value of a variable
          * 
@@ -66,10 +70,10 @@ class tpl
         public function get($variable)
         {
                 $list = starfish::get('_starfish_templates');
-                
+
                 return isset( $list[$variable] ) ?  $list[$variable] : null;
         }
-        
+
         /*
          * Get a view
          * 
@@ -79,13 +83,13 @@ class tpl
         public function view($file, $variables=null)
         {
                 $html = '';
-                
+
                 // Alter and establish the input data
                 if (is_array($variables))
                 {
                         extract($variables);
                 }
-                
+
                 // Add the file termination, if needed
                 if (substr($file, -8) != '.tpl.php')
                 {
@@ -95,9 +99,9 @@ class tpl
                 {
                         $tplFile = $file;
                 }
-                
+
                 $tplContent = starfish::obj('files')->r($tplFile);
-                
+
                 if ($tplContent)
                 {
                         // Remove safeguards
@@ -116,11 +120,11 @@ class tpl
                         eval(' ?>'.$tplContent.'<?php ');
                         $html = ob_get_clean();
                 }
-                
+
                 return $html;
-                
+
         }
-        
+
         /*
          * Dump the template in the browser
          */
@@ -155,7 +159,7 @@ class tpl
                         echo $html;
                 }
         }
-        
+
         /*
          * Insert the stored variables into the template
          * 
@@ -165,7 +169,7 @@ class tpl
         private function variables($html)
         {
                 $variables = starfish::get('_starfish_templates');
-                
+
                 foreach ($variables as $key=>$value)
                 {
                         $html = str_replace('{'.$key.'}', $value, $html);

@@ -242,6 +242,70 @@ class files
 
                 return $exists;
         }
+        
+        
+        /**
+        * Simple handler for file upload
+        *
+        * @param string $name Name of the file
+        * @param number $size Allowed size in MB
+        * @param array $ext Allowed exensions
+        * @param array $types Allowed file types
+        *
+        * @return array The information about the file
+        * 
+        * @todo http://php.net//manual/ro/session.upload-progress.php
+        * @todo https://github.com/chemicaloliver/PHP-5.4-Upload-Progress-Example
+        */
+        public function upload($name, $size=null, $ext=null, $types=null)
+        {
+                $file = $_FILES[$name]; 
+                
+                // Check upload errors
+                if ($file['error'] > 0)
+                {
+                        return false;
+                }
+                
+                // Check the size
+                if ($size != null)
+                {
+                        $size = $size * 1024 * 1024;
+                        if ($file['size'] > $size)
+                        {
+                                return false;
+                        }
+                }
+                
+                // Check the extension
+                if ($ext != null)
+                {
+                        if (is_array ($ext) && !in_array($this->extension($file['name']), $ext))
+                        {
+                                return false;
+                        }
+                        elseif (is_string($ext) && $this->extension($file['name']) != $ext)
+                        {
+                                return false;
+                        }
+                }
+                
+                // Check the type
+                if ($types != null)
+                {
+                        if (is_array ($types) && !in_array($file['type'], $types))
+                        {
+                                return false;
+                        }
+                        elseif (is_string($types) && $file['type'] != $types)
+                        {
+                                return false;
+                        }
+                }
+                
+                
+                return $file;
+        }
 }
 
 /**

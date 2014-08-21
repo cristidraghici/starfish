@@ -14,11 +14,10 @@ starfish::init();
 /**
  * The script itself
  */
-$page = get('page');
-if ((int)$page < 1) { $page = 1; }
+$page = (int)get('page');
+if ($page < 1) { $page = 1; }
 $total = 101;
 $rows = 10;
 
 echo starfish::obj('pagination')->nav($total, $rows, $page, 'index.php?page={page}', 2);
-
 ?>

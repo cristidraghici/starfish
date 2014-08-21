@@ -109,10 +109,10 @@ class files
                 $return = false;
 
                 // Create the path 
-                $directory = @realpath($path) . DIRECTORY_SEPARATOR;
+                $directory = @dirname (self::truepath($path)) . DIRECTORY_SEPARATOR;
                 if (!file_exists($directory))
                 {
-                        @mkdir($directory, 0777, true);
+                        mkdir($directory, 0777, true);
                 }
 
                 // Write to file
@@ -129,6 +129,41 @@ class files
 
                 return $return;
         }
+
+        /**
+        * This function is to replace PHP's extremely buggy realpath().
+        * 
+        * @param string The original path, can be relative etc.
+        * @return string The resolved path, it might not exist.
+        * 
+        * @link http://stackoverflow.com/questions/4049856/replace-phps-realpath
+        */
+        public static function truepath($path){
+                // whether $path is unix or not
+                $unipath=strlen($path)==0 || $path{0}!='/';
+                // attempts to detect if path is relative in which case, add cwd
+                if(strpos($path,':')===false && $unipath)
+                        $path=getcwd().DIRECTORY_SEPARATOR.$path;
+                // resolve path parts (single dot, double dot and double delimiters)
+                $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+                $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
+                $absolutes = array();
+                foreach ($parts as $part) {
+                        if ('.'  == $part) continue;
+                        if ('..' == $part) {
+                                array_pop($absolutes);
+                        } else {
+                                $absolutes[] = $part;
+                        }
+                }
+                $path=implode(DIRECTORY_SEPARATOR, $absolutes);
+                // resolve any symlinks
+                if(file_exists($path) && linkinfo($path)>0)$path=readlink($path);
+                // put initial separator that could have been lost
+                $path=!$unipath ? '/'.$path : $path;
+                return $path;
+        }
+
 
         /**
         * Get the extension of a file
@@ -242,8 +277,8 @@ class files
 
                 return $exists;
         }
-        
-        
+
+
         /**
         * Simple handler for file upload
         *
@@ -260,13 +295,13 @@ class files
         public function upload($name, $size=null, $ext=null, $types=null)
         {
                 $file = $_FILES[$name]; 
-                
+
                 // Check upload errors
                 if ($file['error'] > 0)
                 {
                         return false;
                 }
-                
+
                 // Check the size
                 if ($size != null)
                 {
@@ -276,7 +311,7 @@ class files
                                 return false;
                         }
                 }
-                
+
                 // Check the extension
                 if ($ext != null)
                 {
@@ -289,7 +324,7 @@ class files
                                 return false;
                         }
                 }
-                
+
                 // Check the type
                 if ($types != null)
                 {
@@ -302,8 +337,8 @@ class files
                                 return false;
                         }
                 }
-                
-                
+
+
                 return $file;
         }
 }

@@ -17,7 +17,7 @@ class errors
          * 
          * This function stores a message in the session if two parameters are specified, or retrieves one and deletes it from the session, when only one parameter is given.
          * 
-         * @param string $code Code of the error
+         * @param string $location Location of the error
          * @param string $message Body of the error
          */
         public static function message()

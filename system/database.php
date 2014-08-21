@@ -97,7 +97,7 @@ class database
                                                 }
                                         break;
                                         case 'mysql':
-                                                $connectiononn = starfish::obj('mysql')->connect( $info['parameters'] );
+                                                $conn = starfish::obj('mysql')->connect( $info['parameters'] );
                                                 if ($conn != false)
                                                 {
                                                         self::$resources[$name] = $conn;
@@ -180,10 +180,17 @@ class database
          * 
          * @return resource The resource containing the result
          */
-        public static function eecho($query, $connection=null)
+        public static function eecho($query, $connection=null, $parameters=array() )
         {
+                if (count($parameters) > 0)
+                {
+                        foreach ($parameters as $key=>$value)
+                        {
+                                $query = str_replace('{'. $key . '}', self::sanitize( $parameters[$key], $connection ), $query );
+                        }
+                }
+                
                 echo $query;
-                exit;
         }
 
         /** 

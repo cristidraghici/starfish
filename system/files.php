@@ -114,12 +114,12 @@ class files
                 {
                         mkdir($directory, 0777, true);
                 }
-
+                
                 // Write to file
                 if ( (file_exists($path) && is_writable($path)) || (!file_exists($path) && is_writable($directory)) )
                 {
                         $resource = @fopen($path, $type);
-                        if (@fwrite($resource, $data) !== FALSE)
+                        if (@fwrite($resource, $content) !== FALSE)
                         {
                                 $return = true;
                         }

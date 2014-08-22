@@ -43,7 +43,7 @@ class files
                         }
                 }
 
-                return $list;
+                return $files;
         }
 
         /**

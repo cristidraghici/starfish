@@ -11,6 +11,21 @@ if (!class_exists('starfish')) { die(); }
  */
 class htmlparser
 {	
+        #####################
+        # Create and use a runner
+        #####################
+        
+        // add urls
+        
+        // download the urls
+        
+        // process the url
+        
+        
+        #####################
+        # Manipulate the HTML
+        #####################
+        
         /**
          * Extract a html block
          * 

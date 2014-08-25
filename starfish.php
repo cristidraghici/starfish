@@ -127,6 +127,9 @@ class starfish
 
                 // Get and store more operating system information
                 self::$constants['php_uname'] = php_uname();
+                
+                // Get and set CLI status
+                self::$constants['cli'] = ( php_sapi_name() == 'cli' ) ? true : false;
 
                 // Register aliases
                 if (self::config('_starfish', 'aliases') != null && is_array( self::config('_starfish', 'aliases') ))
@@ -429,6 +432,32 @@ class starfish
 
                 @header("Location: {$path}", true, $code);
                 exit;
+        }
+        
+        /**
+         * Get the internal memory usage
+         * 
+         * @return string String showing readable memory usage
+         */
+        public static function memory_usage() 
+        {
+                $mem_usage = memory_get_usage(true);
+
+                if ($mem_usage < 1024)
+                {
+                        return $mem_usage." bytes";
+                }
+                elseif ($mem_usage < 1048576)
+                {
+                        return round($mem_usage/1024,2)." KB";
+                }
+
+                else
+                {
+                        return round($mem_usage/1048576,2)." MB";
+                }
+
+                return "";
         }
 }
 

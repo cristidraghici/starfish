@@ -7,102 +7,324 @@ if (!class_exists('starfish')) { die(); }
  * @package starfish
  * @subpackage starfish.objects.curl
  *
- * @see https://github.com/ajimix/asana-api-php-class/blob/master/asana.php
+ * @see https://github.com/hackerone/curl/blob/master/Curl.php
  */
 class curl
 {	
-        private $timeout = 10;
-        public  $apiKey = '';
-        public  $requestContentType = 'json';
-        public  $debugInfo = '';
+        // Configuration for the requests
+        private $config = array();
 
-        public function curl()
+        // Private variable storing request and response information
+        private $_header, $_headerMap, $_error, $_status, $_info, $_request;
+
+        public function init()
         {
                 if (!extension_loaded('curl')) { starfish::obj('errors')->error(400, "PHP required extension - curl - not loaded."); }
+
+                $this->config = array(
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HEADER => false,
+                        CURLOPT_VERBOSE => true,
+                        CURLOPT_AUTOREFERER => true,
+                        CURLOPT_CONNECTTIMEOUT => 30,
+                        CURLOPT_TIMEOUT => 30,
+                        CURLOPT_SSL_VERIFYPEER => false,
+                        CURLOPT_MAXREDIRS => 10,       // stop after 10 redirects
+                        CURLOPT_ENCODING => "",       // handle all encodings
+                        CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+
+                        CURLOPT_COOKIEJAR => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt',
+                        CURLOPT_COOKIEFILE => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt'
+                );
+
                 return true;
         }
 
-        public function get($url, $data=null, $method='get')
+        /**
+         * Set a config option
+         * 
+         * @param string $name Name of the option
+         * @param string $value Value for the option
+         */
+        public function setOption($name, $value)
         {
-                $curl = curl_init();
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Don't print the result
-                curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-                curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
-                curl_setopt($curl, CURLOPT_FAILONERROR, true);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0); // Don't verify SSL connection
-                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0); // "" ""
-                if (strlen($this->apiKey) > 0)
+                $this->config[$name] = $value;
+        }
+
+        ###############
+        # Execute
+        ###############
+        /**
+         * Make a single request
+         * 
+         * @param array $request Request information
+         */
+        public function single($request)
+        {
+                // Set the options for the request
+                $url = $request['exec_url'];
+                $options = $request['options'];
+                $id = $request['id'];
+
+                // Reset the info about the requests
+                $this->resetInfo();
+
+                // Init the request
+                $ch = curl_init($url);
+                curl_setopt_array($ch, $options);
+                $output = curl_exec($ch);
+
+                $this->_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                if(!$output)
                 {
-                        curl_setopt($curl, CURLOPT_USERPWD, $this->apiKey);
-                        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                        $this->_error = curl_error($ch);
+                        $this->_info = curl_getinfo($ch);
                 }
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: " . $this->type() )); // Send as JSON
-                /*
-                if ($this->advDebug)
-                        {
-                    curl_setopt($curl, CURLOPT_HEADER, true); // Display headers
-                    curl_setopt($curl, CURLOPT_VERBOSE, true); // Display communication with server
-                }
-                */
-
-                switch (strtolower($method))
+                else 
                 {
-                        case 'delete':
-                        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-                        break;
-
-                        case 'put':
-                        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-                        break;
-
-                        case 'post':
-                        curl_setopt($curl, CURLOPT_POST, true);
-                        break;
-
-                        default:
-                        case 'get':
-                        $method = 'get';
-                        break;
+                        $this->_info = curl_getinfo($ch);
                 }
 
-                if(!is_null($data) && $method != 'get')
+                if(@$options[CURLOPT_HEADER] == true)
                 {
-                        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                        list($header, $output) = $this->_processHeader($output, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
+                        $this->_header = $header;
                 }
 
-                try {
-                        $return = curl_exec($curl);
-                        $this->responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                curl_close($ch);
 
-                        $this->debugInfo = curl_getinfo($curl);
-                }
-                catch(Exception $ex)
+                return $output;
+        }
+
+        /**
+         * Make multiple requests
+         * 
+         * @param array $request Requests information
+         */
+        public function multiple($requests)
+        {
+                // Add handles for each of the urls
+                $mh = curl_multi_init();
+
+                $handles = array();
+                foreach ($requests as $key=>$value)
                 {
-                        $this->debugInfo = array(
-                                'no'    => curl_errno($curl),
-                                'error' => curl_error($curl)
+                        $ch = curl_init( $value['exec_url'] );
+                        curl_setopt_array( $ch, $value['options'] );
+
+                        curl_multi_add_handle($mh, $ch);
+
+                        $handles[] = array(
+                                'id'       => $value['id'],
+                                'handle'    => $ch
                         );
 
-                        $return = null;
+                        $this->_request[ $value['id'] ] = $value;
                 }
-                
-                curl_close($curl);
+
+                // Run the download
+                $running=null;
+                do 
+                {
+                        curl_multi_exec($mh, $running);
+
+                        // added a usleep for 0.25 seconds to reduce load
+                        usleep (250000);
+                }
+                while ($running > 0);
+
+                // Get the content of the urls (if there is any)
+                for($i=0; $i<count($handles); $i++)
+                {
+                        $id = $handles[$i]['id'];
+                        $ch = $handles[$i]['handle'];
+                        $output = curl_multi_getcontent($ch);
+
+                        $this->_status[$id] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                        if(!$output)
+                        {
+                                $this->_error[$id] = curl_error($ch);
+                                $this->_info[$id] = curl_getinfo($ch);
+                        }
+                        else 
+                        {
+                                $this->_info[$id] = curl_getinfo($ch);
+                        }
+
+                        if(@$options[CURLOPT_HEADER] == true)
+                        {
+                                list($header, $output) = $this->_processHeader($output, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
+                                $this->_header[$id] = $header;
+                        }
+                        $content[ $id ] = $output;
+                        
+                        curl_multi_remove_handle($mh, $ch);
+                }
+
+                // Close the multi curl handle to free system resources
+                curl_multi_close($mh);
+
+                unset($mh, $handles);
+
+                // Return the contents
+                return $content;
+        }
+
+        /**
+         * Return the info about requests
+         * 
+         * @return array Information about the requests executed
+         */
+        public function info()
+        {
+                return array(
+                        'error' => $this->_error,
+                        'header' => $this->_header,
+                        'headerMap' => $this->_headerMap,
+                        'info' => $this->_info,
+                        'status' => $this->_status
+                );
+        }
+
+        /** 
+         * Reset the info about the requests executed
+         */
+        public function resetInfo()
+        {
+                // Reset the info about the requests
+                $this->_error = null;
+                $this->_header = null;
+                $this->_headerMap = null;
+                $this->_info = null;
+                $this->_status = null;
+
+                return true;
+        }
+
+        /**
+         * Create an id for the requested page
+         * 
+         * @param array $request The request information provided by $this->get(), $this->post(), $this->put(), $this->delete()
+         * @return string MD5 serialized string for the $request param
+         */
+        private function id($request=array())
+        {
+                return md5(serialize($request));
+        }
+
+        ###############
+        # Methods
+        ###############
+        /**
+         * Single get request
+         */
+        public function get($url, $params=array(), $config=array())
+        {
+                $exec_url = $this->buildUrl($url, $params);
+                $options = $this->config + $config;
+
+                $return = array(
+                        'method'   => 'get',
+                        'exec_url' => $exec_url,
+                        'options'  => $options
+                );
+                $return['id'] = $this->id($return);
+
+                return $return;
+        }
+        /**
+         * Post request
+         */
+        public function post($url, $params=array(), $data=null, $config=array())
+        {
+                $exec_url = $this->buildUrl($url, $params);
+
+                $options = $this->config + $config;
+                $options[CURLOPT_POST] = true;
+                $options[CURLOPT_POSTFIELDS] = $data;
+
+                $return = array(
+                        'method'   => 'post',
+                        'exec_url' => $exec_url,
+                        'options'  => $options
+                );
+                $return['id'] = $this->id($return);
+
+                return $return;
+        }
+        /**
+         * Put request
+         */
+        public function put($url, $params=array(), $data=null, $config=array())
+        {
+                $exec_url = $this->buildUrl($url, $params);
+
+                $f = fopen('php://temp', 'rw+');
+                fwrite($f, $data);
+                rewind($f);
+                $options = $this->config + $config;
+                $options[CURLOPT_PUT] = true;
+                $options[CURLOPT_INFILE] = $f;
+                $options[CURLOPT_INFILESIZE] = strlen($data);
+
+                $return = array(
+                        'method'   => 'put',
+                        'exec_url' => $exec_url,
+                        'options'  => $options
+                );
+                $return['id'] = $this->id($return);
+
+                return $return;
+        }
+        /**
+         * Delete request
+         */
+        public function delete($url, $params=array(), $config=array())
+        {
+                $exec_url = $this->buildUrl($url, $params);
+
+                $options = $this->config + $config;
+                $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+
+                $return = array(
+                        'method'   => 'delete',
+                        'exec_url' => $exec_url,
+                        'options'  => $options
+                );
+                $return['id'] = $this->id($return);
 
                 return $return;
         }
 
-        public function type()
+        /**
+         * Make a format for the url
+         * 
+         * @param string $url The url resource
+         * @param array $data More data to parse
+         * 
+         * @see https://github.com/hackerone/curl/blob/master/Curl.php
+         */
+        public function buildUrl($url, $data = array())
         {
-                switch ($this->requestContentType)
-                {
-                        default:
-                        case 'json':
-                        return 'application/json';
-                        break;
+                $parsed = parse_url($url);
+                isset($parsed['query']) ? parse_str($parsed['query'], $parsed['query']) : $parsed['query'] = array();
+                $params = isset($parsed['query']) ? $data + $parsed['query'] : $data;
+                $parsed['query'] = ($params) ? '?' . http_build_query($params) : '';
+                if (!isset($parsed['path'])) {
+                        $parsed['path']='/';
                 }
-
-                return false;
+                $parsed['port'] = isset($parsed['port'])?':'.$parsed['port']:'';
+                return $parsed['scheme'].'://'.$parsed['host'].$parsed['port'].$parsed['path'].$parsed['query'];
+        }
+        /**
+         * Convert header output to readable 
+         */
+        public function _processHeader($response, $header_size)
+        {
+                return array(substr($response, 0, $header_size), substr($response, $header_size));
         }
 }
 ?>

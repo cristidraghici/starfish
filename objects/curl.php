@@ -101,14 +101,17 @@ class curl
         /**
          * Make multiple requests
          * 
-         * @param array $request Requests information
+         * @param array $requests Requests information
          */
         public function multiple($requests)
         {
+                if (!isset($requests[0]) || !is_array($requests[0])) { $requests = array($requests);}
+                
                 // Add handles for each of the urls
                 $mh = curl_multi_init();
 
                 $handles = array();
+                
                 foreach ($requests as $key=>$value)
                 {
                         $ch = curl_init( $value['exec_url'] );

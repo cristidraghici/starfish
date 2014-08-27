@@ -151,6 +151,22 @@ class database
         }
 
         /** 
+         * Return the connection information for the given connection
+         * 
+         * @param string $name Name of the connection to return info about
+         * @return array Information about the connection
+         */
+        private static function connectionInfo($name)
+        {
+                if (isset(self::$connections[$name]))
+                {
+                        return self::$connections[$name];
+                }
+
+                return null;
+        }
+
+        /** 
          * Send a query to the connection
          * 
          * @param mixed $query Name of the connections

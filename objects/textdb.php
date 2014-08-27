@@ -12,9 +12,6 @@ class textdb
         private $conection;
         private $resource;
         
-        private $index = 0;
-        private $count = 0;
-        
         /*
          * Connect to the database
          * 
@@ -61,12 +58,11 @@ class textdb
          * @param mixed $query
          *              - source: name of the table which contains the data; just one
          *              - operation: select, insert, update, delete
-         *              - fields: fields used in the select
-         *              - values: values used in the select
-         *              - conditions: conditions to meet for data to be valid
-         *              - order: how to order the rows (only in association with $this->fetchAll() method)
+         *              - columns: array containing column names and values
+         *              - conditions: function to check the data against 
+         *              - order: function to reorder the results
          *              - limits: limits the rows for the displayed data
-         * @return function Function to check every line in the file against the arguments given
+         * @return boolean Wheter results were found or not
          */
         function query($query)
         {
@@ -77,50 +73,16 @@ class textdb
                 switch ($query['type'])
                 {
                         case 'select':
-                                return $this->query_select($source, $query['fields'], $query['conditions'], $query['order'], $query['limits']);
                                 break;
                         case 'insert':
-                                return $this->query_insert($source, $query['fields'], $query['values']);
                                 break;
                         case 'update':
-                                return $this->query_update($source, $query['fields'], $query['values'], $query['conditions']);
                                 break;
                         case 'delete':
-                                return $this->query_delete($source, $query['conditions']);
                                 break;
                 }
                 
                 return false;
-        }
-        /** Helper functions for executing a query */
-        // select
-        function query_select($source, $fields, $conditions, $order, $limits)
-        {
-                // Jump the first line, which is a safeguard
-                
-                // Read some results
-                
-                return true;
-        }
-        // insert
-        function query_insert($source, $fields, $values)
-        {
-                return true;
-        }
-        // update
-        function query_update($source, $fields, $values, $conditions)
-        {
-                return true;
-        }
-        // delete
-        function query_delete($source, $conditions)
-        {
-                return true;
-        }
-        
-        function query_conditions($conditions)
-        {
-                return '';
         }
         
         // encode a string
@@ -152,7 +114,6 @@ class textdb
          */
         function fetchAll($resource)
         {
-                
                 return '';
         }
         /** 

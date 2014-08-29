@@ -10,7 +10,9 @@ if (!class_exists('starfish')) { die(); }
 class textdb
 {
         private $conection;
-        private $resource;
+        
+        private $resource = array();
+        private $resource_position = 0;
         
         /*
          * Connect to the database
@@ -66,8 +68,20 @@ class textdb
          */
         function query($query)
         {
+                // Reset the resource
+                $this->resource = array();
+                
+                // Reset the resource position index
+                $this->resource_position = 0;
+                
                 // Establish the source
                 $source = $this->connection['name'] . $query['source'] . '.textdb.php';
+                
+                // Order the parameters
+                if (isset($query['columns'])) { ksort($query['columns']); }
+                
+                // Order the parameters
+                if (!is_callable($query['conditions'])) { $query['conditions'] = function ($results) { return $results; } }
                 
                 // Execute the requested action                
                 switch ($query['type'])
@@ -95,6 +109,16 @@ class textdb
         {
                 return $this->connection->scramble->decode( $this->connection->encrypt->decode($string) );
         }
+        // query order the results
+        function query_order()
+        {
+                return $this->resource;
+        }
+        // query limits
+        function query_limits()
+        {
+                return $this->resource;
+        }
         
         /*
          * Fetch one result from a resource
@@ -104,6 +128,18 @@ class textdb
          */
         function fetch($resource)
         {
+                $this->resource_position++;
+                
+                if (isset($this->resource[$this->resource_position]))
+                {
+                        return $this->resource[$this->resource_position];
+                }
+                else
+                {
+                        $this->resource_position = 0;
+                        return false;
+                }
+                
                 return '';
         }
         /*
@@ -114,7 +150,7 @@ class textdb
          */
         function fetchAll($resource)
         {
-                return '';
+                return $this->resource;
         }
         /** 
          * Count the results matching the given conditions
@@ -126,7 +162,7 @@ class textdb
          */
         public static function numRows($resource)
         {
-                return 0;
+                return @count($this->resource);
         }
         
         /*
@@ -136,6 +172,7 @@ class textdb
          */
         function free($resource)
         {
+                $this->resource = array();
                 return true;
         }
 

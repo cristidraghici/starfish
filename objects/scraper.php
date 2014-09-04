@@ -97,7 +97,7 @@ class scraper
         /**
          * Download the established urls - starts a download process for the urls inside the database
          * 
-         * 
+         * e.g. while ( starfish::obj('scraper')->download(1, 1) ) { starfish::obj('scraper')->message('Download in progress.'); }
          * 
          * @param number $project_id Id of the project in use
          * @param number $group_id Group of urls inside the project
@@ -108,14 +108,16 @@ class scraper
         {
                 if ($this->status($project_id, $group_id) == true)
                 {
-                        // Download the project files
+                        // Get a list of the files to download, together with updating their download status
                         $resource = starfish::obj('database')->query("select _url_set_downloading(''), url, group_id limit 0, 10;");
                         $rows = $query->fetchAll( $resource );
                         starfish::obj('database')->free( $resource );
                         
+                        // Download the project files
                         
                         
-                        // Process - apply the group_id corresponding callback function
+                        // Process the downloaded result - apply the group_id corresponding callback function
+                        
 
                         return true;
                 }

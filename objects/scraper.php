@@ -2,7 +2,7 @@
 if (!class_exists('starfish')) { die(); }
 
 /**
- * Scraper to download webpages
+ * Scraper to download lists of links
  * 
  * The database connection is shared between parsers and belongs to the Starfish Framework installation
  * 
@@ -13,7 +13,11 @@ if (!class_exists('starfish')) { die(); }
  * @todo  Check the existence of the tables and stored procedures
  */
 class scraper
-{	// The name of the mysql database to use for parsing, as specified in the config file
+{	
+        // Limit the simultaneous results
+        private $simultaneousDownloads = 2;
+        
+        // The name of the mysql database to use for parsing, as specified in the config file
         private $connectionName = null; 
         
         // The details about the project
@@ -73,7 +77,7 @@ class scraper
                 $this->project_name = $name;
                 
                 $resource = starfish::obj('database')->query("select _project_get_id('".$name."') as nr_crt;");
-                $row = $query->fetch( $resource );
+                $row = starfish::obj('database')->fetch( $resource );
                 starfish::obj('database')->free( $resource );
                 
                 $this->project_id = $row['nr_crt'];
@@ -82,15 +86,45 @@ class scraper
         }
 
         /**
+         * Reset the download queue for a project
+         * 
+         * @param number $project_id Id of the project in use
+         * @param number $group_id Group of urls inside the project
+         * 
+         * @return boolean True if the process still needs to continue
+         */
+        public function resetQueue($project_id, $group_id=null)
+        {
+                // Build where clause
+                $where = "where project_id='".$project_id."'";
+                if (is_numeric($group_id)) { $where .= "and group_id='".$group_id."'"; }
+                
+                $resource = starfish::obj('database')->query("update urls set status_download=1, status_process=1 ".$where);
+                starfish::obj('database')->free( $resource );
+        }
+        
+        /**
          * Add urls to the list
          * 
          * @param number $project_id Id of the project in use
          * @param number $group_id Group of urls inside the project
+         * $param number $type 
+         *                      1 - download every type the parser runs
+         *                      2 - permanent
          * @param string $url URL to download
          * @param array $data Data to use when parsing this url
          */
-        public function addUrl($project_id, $group_id, $url, $data=array())
+        public function addUrl($project_id, $group_id, $type, $url, $method='get', $parameters=array(), $data=array())
         {
+                // Alter the parameters for storage
+                $parameters = @serialize(@ksort($parameters));
+                $data = @serialize(@ksort($data));
+                
+                // Add the url to the database
+                $resource = starfish::obj('database')->query("select _url_add('".$project_id."','".$group_id."','".$type."','".$url."','".$method."','".$parameters."','".$data."')");
+                $rows = starfish::obj('database')->fetchAll( $resource );
+                starfish::obj('database')->free( $resource );
+                
                 return true;
         }
         
@@ -108,18 +142,76 @@ class scraper
         {
                 if ($this->status($project_id, $group_id) == true)
                 {
+                        // The returned content
+                        $return = array();
+                        
+                        // Build where clause
+                        $where = "where status_download=1 and project_id='".$project_id."'";
+                        if (is_numeric($group_id)) { $where .= "and group_id='".$group_id."'"; }
+                        
                         // Get a list of the files to download, together with updating their download status
-                        $resource = starfish::obj('database')->query("select _url_set_downloading(''), url, group_id limit 0, 10;");
-                        $rows = $query->fetchAll( $resource );
+                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, group_id from urls ".$where." limit 0, ".$this->simultaneousDownloads );
+                        $rows = starfish::obj('database')->fetchAll( $resource );
                         starfish::obj('database')->free( $resource );
                         
-                        // Download the project files
+                        // update the status for the selected files
+                        foreach ($rows as $key=>$value)
+                        {
+                                $resource = starfish::obj('database')->query("select _url_set_download(".$value['nr_crt'].", 2)");
+                                starfish::obj('database')->free( $resource );
+                        }
                         
+                        // Download the project files
+                        $requests = array();
+                        foreach ($rows as $key=>$value)
+                        {
+                                // alter the retrieved data for usage
+                                $value['data'] = @unserialize($value['data']);
+                                $value['parameters'] = @unserialize($value['parameters']);
+                                
+                                // ensure data is ok
+                                $value['method'] = strtolower($value['method']);
+                                if (!in_array($value['method'], array('get', 'post', 'put', 'delete'))) { $value['method'] = 'get'; }
+                                
+                                // build the request list
+                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters']);
+                                $request['row'] = $value;
+                                
+                                $requests[] = $request;
+                        }
+                        
+                        // Execute the query
+                        $content = starfish::obj('curl')->multiple($requests);
+                        $info = starfish::obj('curl')->info();
                         
                         // Process the downloaded result - apply the group_id corresponding callback function
-                        
+                        foreach ($content as $key=>$value)
+                        {
+                                $callback = null;
+                                
+                                if ($group_id == null && isset( $this->processing_functions [ $project_id ][ $info['_request'][$key]['row']['group_id'] ] ))
+                                {
+                                        $callback = $this->processing_functions [ $project_id ][ $info['_request'][$key]['row']['group_id'] ];
+                                }
+                                elseif ( isset( $this->processing_functions [ $project_id ][ $group_id ] ) )
+                                {
+                                        $callback = $this->processing_functions [ $project_id ][ $group_id ];
+                                }
+                                
+                                if ($callback != null)
+                                {
+                                        $return[$key] = $callback($value['content']);
+                                }
+                                else
+                                {
+                                        $return[$key] = $value;
+                                }
+                        }
 
-                        return true;
+                        return array(
+                                'info'=>$info,
+                                'content'=>$content
+                        );
                 }
                 else
                 {

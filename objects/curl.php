@@ -15,7 +15,7 @@ class curl
         private $config = array();
 
         // Private variable storing request and response information
-        private $_header, $_headerMap, $_error, $_status, $_info, $_request;
+        private $information = array();
 
         public function init()
         {
@@ -37,7 +37,9 @@ class curl
                         CURLOPT_COOKIEJAR => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt',
                         CURLOPT_COOKIEFILE => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt'
                 );
-
+                
+                $this->information = array();
+                
                 return true;
         }
 
@@ -66,7 +68,10 @@ class curl
                 $url = $request['exec_url'];
                 $options = $request['options'];
                 $id = $request['id'];
-
+                
+                // Store the request
+                $this->information['_request'] = $request;
+                
                 // Reset the info about the requests
                 $this->resetInfo();
 
@@ -75,22 +80,22 @@ class curl
                 curl_setopt_array($ch, $options);
                 $output = curl_exec($ch);
 
-                $this->_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $this->information['_status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
                 if(!$output)
                 {
-                        $this->_error = curl_error($ch);
-                        $this->_info = curl_getinfo($ch);
+                        $this->information['_error'] = curl_error($ch);
+                        $this->information['_info'] = curl_getinfo($ch);
                 }
                 else 
                 {
-                        $this->_info = curl_getinfo($ch);
+                        $this->information['_info'] = curl_getinfo($ch);
                 }
 
                 if(@$options[CURLOPT_HEADER] == true)
                 {
                         list($header, $output) = $this->_processHeader($output, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
-                        $this->_header = $header;
+                        $this->information['_header'] = $header;
                 }
 
                 curl_close($ch);
@@ -106,6 +111,10 @@ class curl
         public function multiple($requests)
         {
                 if (!isset($requests[0]) || !is_array($requests[0])) { $requests = array($requests);}
+                $this->_status = array();
+                
+                // Reset the info about the requests
+                $this->resetInfo();
                 
                 // Add handles for each of the urls
                 $mh = curl_multi_init();
@@ -124,7 +133,8 @@ class curl
                                 'handle'    => $ch
                         );
 
-                        $this->_request[ $value['id'] ] = $value;
+                        // store the request
+                        $this->information['_request'][ $value['id'] ] = $value;
                 }
 
                 // Run the download
@@ -145,23 +155,24 @@ class curl
                         $ch = $handles[$i]['handle'];
                         $output = curl_multi_getcontent($ch);
 
-                        $this->_status[$id] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                        $this->information['_status'][$id] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
                         if(!$output)
                         {
-                                $this->_error[$id] = curl_error($ch);
-                                $this->_info[$id] = curl_getinfo($ch);
+                                $this->information['_error'][$id] = curl_error($ch);
+                                $this->information['_info'][$id] = curl_getinfo($ch);
                         }
                         else 
                         {
-                                $this->_info[$id] = curl_getinfo($ch);
+                                $this->information['_info'][$id] = curl_getinfo($ch);
                         }
 
                         if(@$options[CURLOPT_HEADER] == true)
                         {
                                 list($header, $output) = $this->_processHeader($output, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
-                                $this->_header[$id] = $header;
+                                $this->information['_header'][$id] = $header;
                         }
+                        
                         $content[ $id ] = $output;
                         
                         curl_multi_remove_handle($mh, $ch);
@@ -183,13 +194,7 @@ class curl
          */
         public function info()
         {
-                return array(
-                        'error' => $this->_error,
-                        'header' => $this->_header,
-                        'headerMap' => $this->_headerMap,
-                        'info' => $this->_info,
-                        'status' => $this->_status
-                );
+                return $this->information;
         }
 
         /** 
@@ -198,11 +203,7 @@ class curl
         public function resetInfo()
         {
                 // Reset the info about the requests
-                $this->_error = null;
-                $this->_header = null;
-                $this->_headerMap = null;
-                $this->_info = null;
-                $this->_status = null;
+                $this->information = array();
 
                 return true;
         }
@@ -312,7 +313,9 @@ class curl
          */
         public function buildUrl($url, $data = array())
         {
+                if (!is_array($data)) { $data = array(); }
                 $parsed = parse_url($url);
+                
                 isset($parsed['query']) ? parse_str($parsed['query'], $parsed['query']) : $parsed['query'] = array();
                 $params = isset($parsed['query']) ? $data + $parsed['query'] : $data;
                 $parsed['query'] = ($params) ? '?' . http_build_query($params) : '';

@@ -15,7 +15,7 @@ if (!class_exists('starfish')) { die(); }
 class scraper
 {	
         // Limit the simultaneous results
-        private $simultaneousDownloads = 2;
+        private $simultaneousDownloads = 10;
         
         // The name of the mysql database to use for parsing, as specified in the config file
         private $connectionName = null; 
@@ -140,11 +140,8 @@ class scraper
          */
         public function download($project_id, $group_id=null)
         {
-                if ($this->status($project_id, $group_id) == true)
+                if ($this->status($project_id, $group_id)['finished'] == false)
                 {
-                        // The returned content
-                        $return = array();
-                        
                         // Build where clause
                         $where = "where status_download=1 and project_id='".$project_id."'";
                         if (is_numeric($group_id)) { $where .= "and group_id='".$group_id."'"; }
@@ -187,8 +184,14 @@ class scraper
                         // Process the downloaded result - apply the group_id corresponding callback function
                         foreach ($content as $key=>$value)
                         {
+                                // Reset the callback
                                 $callback = null;
                                 
+                                // Update the status
+                                $resource = starfish::obj('database')->query("select _url_set_download(".$info['_request'][$key]['row']['nr_crt'].", 3)");
+                                starfish::obj('database')->free( $resource );
+                                
+                                // Get and apply the callback we wanted
                                 if ($group_id == null && isset( $this->processing_functions [ $project_id ][ $info['_request'][$key]['row']['group_id'] ] ))
                                 {
                                         $callback = $this->processing_functions [ $project_id ][ $info['_request'][$key]['row']['group_id'] ];
@@ -200,17 +203,13 @@ class scraper
                                 
                                 if ($callback != null)
                                 {
-                                        $return[$key] = $callback($value['content']);
-                                }
-                                else
-                                {
-                                        $return[$key] = $value;
+                                        $content[$key] = $callback($value, $info['_request'][$key]['row']['data'] );
                                 }
                         }
 
                         return array(
-                                'info'=>$info,
-                                'content'=>$content
+                                'info'          => $info,
+                                'content'       => $content
                         );
                 }
                 else
@@ -221,10 +220,14 @@ class scraper
         
         /**
          * Process the downloaded urls
-         * - return a list of urls with content to be processed by outside functions
+         * 
+         * This method stores inside the current object a list of functions to apply to the downloaded content.
          * 
          * @param number $project_id Id of the project in use
          * @param number $group_id Group of urls inside the project
+         * @param function $callback 
+         *                      - $html - the downloaded html to processing
+         *                      - $data - the suplimentary data to use when processing
          */
         public function process($project_id, $group_id, $callback)
         {
@@ -240,15 +243,40 @@ class scraper
          * 
          * @return array        
          *              - total - total number of pages to download
-         *              - current - number of files downloaded so far
+         *              - downloaded - number of files downloaded so far
          *              - processed - number of files processed
          *              - finished - boolean - whether the process is finished or not
          */
         public function status($project_id, $group_id=null)
         {
-                $this->status[$project_id][$group_id] = array();
+                if (!is_numeric($group_id))
+                {
+                        $resource = starfish::obj('database')->query("select (select count(*) from urls where project_id=".$project_id.") as total, (select count(*) from urls where project_id=".$project_id." and (status_download=3 or status_download=4) ) as downloaded, (select count(*) from urls where project_id=".$project_id." and status_process=2) as processed");
+                }
+                else
+                {
+                        $resource = starfish::obj('database')->query("select (select count(*) from urls where project_id=".$project_id." and group_id=".$group_id.") as total, (select count(*) from urls where project_id=".$project_id." and group_id=".$group_id." and (status_download=3 or status_download=4) ) as downloaded, (select count(*) from urls where project_id=".$project_id." and group_id=".$group_id." and status_process=2) as processed");
+                }
                 
-                return true;
+                $row = starfish::obj('database')->fetch( $resource );
+                starfish::obj('database')->free( $resource );
+                
+                if ($row['total'] == $row['downloaded'])
+                {
+                        $row['finished'] = true;
+                }
+                else
+                {
+                        $row['finished'] = false;
+                }
+                
+                // Set the default values
+                return $this->status[$project_id][$group_id] = array(
+                        'total'=>$row['total'],
+                        'downloaded'=>$row['downloaded'],
+                        'processed'=>$row['processed'],
+                        'finished'=>$row['finished']
+                );
         }
         
         /**

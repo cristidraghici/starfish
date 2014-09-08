@@ -140,7 +140,8 @@ class scraper
          */
         public function download($project_id, $group_id=null)
         {
-                if ($this->status($project_id, $group_id)['finished'] == false)
+				$status = $this->status($project_id, $group_id);
+                if ($status['finished'] == false)
                 {
                         // Build where clause
                         $where = "where status_download=1 and project_id='".$project_id."'";

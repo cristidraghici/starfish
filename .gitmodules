@@ -1,9 +1,0 @@
-[submodule "libraries/bootstrap"]
-	path = libraries/bootstrap
-	url = git://github.com/twbs/bootstrap.git
-[submodule "libraries/jquery"]
-	path = libraries/jquery
-	url = git://github.com/jquery/jquery.git
-[submodule "libraries/apidoc"]
-	path = libraries/apidoc
-	url = git://github.com/apigen/apigen.git

@@ -459,6 +459,25 @@ class starfish
 
                 return "";
         }
+        
+        
+        /** 
+         * Model/View/Controller support functions
+         * 
+         * @todo Yet to be implemented
+         */
+	public static function c($name)
+	{
+		return true;
+	}
+	public static function m($name)
+	{
+		return true;
+	}
+	public static function v($name, $data=array())
+	{
+		return true;
+	}
 }
 
 /**

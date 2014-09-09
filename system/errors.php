@@ -24,23 +24,23 @@ class errors
         {
                 $args = func_get_args();
                 $message = '';
-                
+
                 switch (count($args))
                 {
                         case 1:
-                                $message = session('_starfish_errors-' . $args[0]);
-                                session('_starfish_errors-' . $args[0], null);
-                                break;
-                        
+                        $message = session('_starfish_errors-' . $args[0]);
+                        session('_starfish_errors-' . $args[0], null);
+                        break;
+
                         case 2:
-                                $message = $args[1];
-                                session('_starfish_errors-' . $args[0], $args[1]);
-                                break;
+                        $message = $args[1];
+                        session('_starfish_errors-' . $args[0], $args[1]);
+                        break;
                 }
-                
+
                 return $message;
         }
-        
+
         /**
          * Main error function
          * 
@@ -77,6 +77,32 @@ class errors
                 echo '</pre>';
 
                 return true;
+        }
+        
+        /**
+         * Convert an array of errors to a single string
+         * 
+         * @param mixed $err The error/errors
+         * @return string The only error string
+         */
+        public function toString($err='')
+        {
+                $string = '';
+
+                if (gettype($err) == 'array')
+                {
+                        foreach ($err as $key=>$value)
+                        {
+                                $string .= $key . ': ' . $value . ', ';
+                        }
+                        $string = substr($string, 0, -2);
+                }
+                else
+                {
+                        $string = (string)$err;
+                }
+
+                return $string;
         }
 }
 

@@ -207,6 +207,7 @@ class database
                 }
                 
                 echo $query;
+                exit;
         }
 
         /** 

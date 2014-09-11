@@ -118,5 +118,16 @@ class encrypt
 
                 return trim($decrypttext);
         }
+        
+        /**
+         * Create a password hash 
+         * 
+         * @param string $string String which acts like password
+         * @return string Encoded password hash
+         */
+	function password_hash($string)
+	{
+		return md5(md5($string . starfish::config('_starfish', 'site_url') )  . starfish::config('_starfish', 'site_url') );
+	
 }
 ?>

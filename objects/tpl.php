@@ -36,13 +36,19 @@ class tpl
                 {
                         $this->path .= '/';
                 }
-
-                // Store automatic variables
+				
+                // Get base values
                 $base = starfish::config('_starfish', 'base');
+				
+                // Current path
+                $current = $base['site_url'] . substr( starfish::obj('parameters')->path() , 1);
+                
+                // Store automatic variables
                 $this->set('site_url', $base['site_url'] );
                 $this->set('site_title', $base['site_title'] );
                 $this->set('site_description', $base['site_description'] );
                 $this->set('/', $base['site_url'] );
+                $this->set('./', $current );
 
                 return true;
         }

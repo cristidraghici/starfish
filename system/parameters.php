@@ -374,7 +374,7 @@ class parameters
                                 
                                 foreach ($_SESSION as $key=>$value)
                                 {
-                                        if (substr($key, 0, (strlen($prefix)-1) ) == $prefix)
+                                        if (substr($key, 0, strlen($prefix) ) == $prefix)
                                         {
                                                 self::$cache['session'][ $prefix . $key ] = $value;
                                         }

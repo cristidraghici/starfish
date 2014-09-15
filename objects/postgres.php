@@ -106,7 +106,7 @@ class postgres
         function free($resource)
         {
                 // Free the memory
-                pg_free_result($resource);
+                @pg_free_result($resource);
 
                 return true;
         }

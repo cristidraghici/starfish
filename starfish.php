@@ -142,6 +142,9 @@ class starfish
 
                 // Set the path for Starfish Framework files
                 $path = self::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);
+                
+                // Set the project name (used in e.g. Session variable names)
+                $path = self::config('_starfish', 'project', 'Starfish');
 
                 // Update the initial object list paths
                 foreach (self::$objects as $key=>$value)

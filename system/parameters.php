@@ -365,27 +365,36 @@ class parameters
         public static function session()
         {
                 $args = func_get_args();
-
+                $prefix = starfish::config('_starfish', 'project') . '-';
+                
                 switch (count($args))
                 {
                         case 0:
                                 session_start();
-                                self::$cache['session'] = $_SESSION;
+                                
+                                foreach ($_SESSION as $key=>$value)
+                                {
+                                        if (substr($key, 0, (strlen($prefix)-1) ) == $prefix)
+                                        {
+                                                self::$cache['session'][ $prefix . $key ] = $value;
+                                        }
+                                }
+                                
                                 session_write_close();
 
                                 return true;
 
                                 break; // for structured coding
                         case 1:
-                                return isset( self::$cache['session'][ $args[0] ] ) ? self::$cache['session'][ $args[0] ] : null;
+                                return isset( self::$cache['session'][ $prefix . $args[0] ] ) ? self::$cache['session'][ $prefix . $args[0] ] : null;
 
                                 break; // for structure coding
 
                         case 2:
-                                self::$cache['session'][ $args[0] ] = $args[1];
+                                self::$cache['session'][ $prefix . $args[0] ] = $args[1];
 
                                 session_start();
-                                $_SESSION[ $args[0] ] = $args[1];
+                                $_SESSION[ $prefix . $args[0] ] = $args[1];
                                 session_write_close();
 
                                 return $args[1];

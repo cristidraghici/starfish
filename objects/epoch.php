@@ -40,5 +40,16 @@ class epoch
 
                 return substr($s, 0, -2);
         }
+        
+        /**
+         * Method to return miliseconds
+         */
+        public function millitime()
+        {
+                $microtime = microtime();
+                $comps = explode(' ', $microtime);
+
+                return sprintf('%d%03d', $comps[1], $comps[0] * 1000);
+        }
 }
 ?>

@@ -237,6 +237,32 @@ class scraper
         }
         
         /**
+         * Method to test the functions which will be added in the process lists
+         * 
+         * @param function $callback
+         *                      - $html - the downloaded html to processing
+         *                      - $data - the suplimentary data to use when processing
+         * @param mixed $request
+         *                      - case type is string, then a url request is sent on the get method
+         *                      - case type is object, then $request is the request object itself
+         * @param array $data Data to use when processing the HTML
+         */
+        public function processFunction($callback, $request, $data)
+        {
+                // Request the HTML
+                if (gettype($request) == 'string')
+                {
+                        $request = starfish::obj('curl')->get($request);
+                }
+                $html = starfish::obj('curl')->single($request);
+                
+                // Execute the callback
+                $callback($html, $data);
+                
+                return true;
+        }
+        
+        /**
          * Return the status of parsing from the database
          * 
          * @param number $project_id Id of the project in use

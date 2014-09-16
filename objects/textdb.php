@@ -3,6 +3,8 @@ if (!class_exists('starfish')) { die(); }
 
 /**
  * TextDB connection class
+ * 
+ * This is a very simple file storage system which is compatible with simple SQL queries
  *
  * @package starfish
  * @subpackage starfish.objects.textdb
@@ -59,7 +61,7 @@ class textdb
          * 
          * @param mixed $query
          *              - source: name of the table which contains the data; just one
-         *              - operation: select, insert, update, delete
+         *              - type: select, insert, update, delete
          *              - columns: array containing column names and values
          *              - conditions: function to check the data against 
          *              - order: function to reorder the results
@@ -99,6 +101,95 @@ class textdb
                 return false;
         }
         
+        /**
+         * Parse an SQL string
+         * 
+         * e.g. 
+         * 
+         * select * from table where name='Starfish' order by title limit 0, 10
+         * insert into table(col1, col2, col3) values(1, 2, 3);
+         * update table set col1='a' where col3=3
+         * delete from table where col3=1
+         * 
+         * @param string $sql The sql formatted query
+         * @return array An array containing information on how to interrogate the TXT file
+         */
+        function query_sql($sql)
+        {
+                $query = array();
+                
+                // Identify the command
+                $parts = explode(" ", $sql);
+                switch (strtolower($parts[0]))
+                {
+                        case 'select':
+                        $query = $this->query_sql_select($sql);
+                        break;
+                        
+                        case 'insert':
+                        $query = $this->query_sql_select($sql);
+                        break;
+                        
+                        case 'update':
+                        $query = $this->query_sql_select($sql);
+                        break;
+                        
+                        case 'delete':
+                        $query = $this->query_sql_select($sql);
+                        break;
+                }
+                
+                return $query;
+        }
+        
+        // Query helper function for select
+        function query_sql_select($sql)
+        {
+                $query = array();
+                
+                return $query;
+        }
+        // Query helper function for insert
+        function query_sql_insert($sql)
+        {
+                $query = array();
+                
+                return $query;
+        }
+        // Query helper function for update
+        function query_sql_update($sql)
+        {
+                $query = array();
+                
+                return $query;
+        }
+        // Query helper function for delete
+        function query_sql_delete($sql)
+        {
+                $query = array();
+                
+                return $query;
+        }
+              
+        
+        // filter the results 
+        function query_conditions($sql)
+        {
+                return $this->resource;
+        }
+        
+        // query order the results
+        function query_order($sql)
+        {
+                return $this->resource;
+        }
+        // query limits
+        function query_limits($sql)
+        {
+                return $this->resource;
+        }
+        
+        
         // encode a string
         function query_encode($string)
         {
@@ -108,16 +199,6 @@ class textdb
         function query_decode($string)
         {
                 return $this->connection->scramble->decode( $this->connection->encrypt->decode($string) );
-        }
-        // query order the results
-        function query_order()
-        {
-                return $this->resource;
-        }
-        // query limits
-        function query_limits()
-        {
-                return $this->resource;
         }
         
         /*

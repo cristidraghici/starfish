@@ -104,6 +104,11 @@ class database
                                                 }
                                         break;
                                         case 'textdb':
+                                                $conn = starfish::obj('textdb')->connect( $info['parameters'] );
+                                                if ($conn != false)
+                                                {
+                                                        self::$resources[$name] = $conn;
+                                                }
                                         break;
 
                                         // Break execution if database type is not valid

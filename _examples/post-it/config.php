@@ -6,9 +6,5 @@ starfish::config('_starfish', 'app_objects', @realpath(__DIR__) . DIRECTORY_SEPA
 starfish::config('_starfish', 'storage', @realpath(__DIR__) . DIRECTORY_SEPARATOR . 'storage');
 
 // Add a connection to the database
-starfish::obj('database')->add('postit', 'textdb', array(
-        'name'=>'postit',
-        'hash'=>'postit'
-));
 
 ?>

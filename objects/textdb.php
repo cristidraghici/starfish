@@ -12,7 +12,7 @@ if (!class_exists('starfish')) { die(); }
  */
 class textdb
 {
-        private $conection;
+        private $connection;
         
         private $resource = array();
         private $resource_position = 0;
@@ -60,14 +60,7 @@ class textdb
         /*
          * Query the database
          * 
-         * @param mixed $query
-         *              - source: name of the table which contains the data; just one
-         *              - type: select, insert, update, delete
-         *              - columns: array containing column names and values
-         *              - conditions: function to check the data against 
-         *              - order: function to reorder the results
-         *              - limits: limits the rows for the displayed data
-         * @return boolean Wheter results were found or not
+         * @param string $query SQL query to execute
          */
         function query($query)
         {
@@ -77,29 +70,10 @@ class textdb
                 // Reset the resource position index
                 $this->resource_position = 0;
                 
-                // Establish the source
-                $source = $this->connection['name'] . $query['source'] . '.textdb.php';
+                // Execute the query
+                $this->query_sql($query);
                 
-                // Order the parameters
-                if (isset($query['columns'])) { ksort($query['columns']); }
-                
-                // Order the parameters
-                if (!is_callable($query['conditions'])) { $query['conditions'] = function ($results) { return $results; } }
-                
-                // Execute the requested action                
-                switch ($query['type'])
-                {
-                        case 'select':
-                                break;
-                        case 'insert':
-                                break;
-                        case 'update':
-                                break;
-                        case 'delete':
-                                break;
-                }
-                
-                return false;
+                return true;
         }
         
         /**
@@ -125,6 +99,7 @@ class textdb
                 
                 // Identify the table
                 $table = $this->query_get_the_table_name($command, $sql);
+                $source = starfish::config('_starfish', 'storage') . $this->connection['name'] . DIRECTORY_SEPARATOR . $table . '.textdb.php';
                 
                 // Identify the columns
                 $fields = $this->query_get_the_fields($command, $sql);
@@ -139,6 +114,7 @@ class textdb
                 $limits = $this->query_get_the_limit($command, $sql);
                 
                 // Execute the command
+                /*if (isset($query['columns'])) { ksort($query['columns']); }*/
                 
                 // Apply the limits
                 
@@ -150,7 +126,7 @@ class textdb
         // extract the table name
         function query_get_the_table_name($command, $query)
         {
-                $string = ''array()'';
+                $string = array();
                 
                 switch ($command)
                 {
@@ -323,7 +299,7 @@ class textdb
                 {
                         case 'select':
                                 preg_match('#limit (.*)#is', $query, $match);
-                                $string = trim($match[2]);
+                                $string = @trim(@$match[2]);
                         break;
                         
                         case 'insert':

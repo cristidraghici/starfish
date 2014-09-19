@@ -12,6 +12,11 @@ if (!class_exists('starfish')) { die(); }
 
 class files
 {	
+        // Resource used when walking through a file
+        private static $walkResource = null;
+        // Row number for the current file rows walk 
+        private static $walkNumRow = 0;
+        
         /**
 	 * Read the content of a directory
 	 *
@@ -70,6 +75,48 @@ class files
                 }
         }
 
+        /**
+	 * Walk line by line through the content of a file
+	 *
+	 * @param string $path Path to the file
+	 */
+        public static function walk($path=null)
+        {
+                // Check if the creation of the resource is needed
+                if (self::$walkResource == null && $path != null)
+                { 
+                        if (file_exists($path) && is_file($path) && is_readable($path))
+                        {
+                                self::$walkResource = @fopen($path, "r");
+                                self::$walkNumRow = 0;
+                                
+                                return self::walk();
+                        }
+                }
+                else
+                {
+                        // Check if there is still content available
+                        if (!@feof(self::$walkResource)) 
+                        {
+                                self::$walkNumRow++;
+                                return @fgets(self::$walkResource); 
+                        }
+                        else
+                        {
+                                @fclose(self::$walkResource);
+                                self::$walkResource = null;
+                                
+                                return null;
+                        }
+                }
+                
+                return null;
+        }
+        public static function walkNumRow()
+        {
+                return self::$walkNumRow - 1;
+        }
+        
         /**
 	 * Read the content of a file
 	 *

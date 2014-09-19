@@ -8,6 +8,8 @@ if (!class_exists('starfish')) { die(); }
  * 
  * @package starfish
  * @subpackage starfish.objects.db
+ * 
+ * @todo Not yet functional
  */
 class db
 {
@@ -54,7 +56,7 @@ class db
          * @param mixed $conn Name of the connections
          * @return resource This object
          */
-        private static function conn($conn)
+        private function conn($conn)
         {
                 $this->connection = starfish::obj('database')->conn($conn);
                 return $this;
@@ -66,7 +68,7 @@ class db
          * @param string $name Name of the connection to return info about
          * @return array Information about the connection
          */
-        private static function connectionInfo($name)
+        private function connectionInfo($name)
         {
                 return starfish::obj('database')->connectionInfo($name);
         }
@@ -80,9 +82,11 @@ class db
          * 
          * @return resource The resource containing the result
          */
-        public static function query($query, $connection=null, $parameters=array() )
+        public function query($query, $connection=null, $parameters=array() )
         {
                 $this->resource = starfish::obj('database')->query($query, $connection, $parameters);
+                echo $query."<br>";
+                print_r($this->resource);
                 return $this;
         }
 
@@ -94,7 +98,7 @@ class db
          * 
          * @return resource The resource containing the result
          */
-        public static function eecho($query, $connection=null, $parameters=array() )
+        public function eecho($query, $connection=null, $parameters=array() )
         {
                 if (count($parameters) > 0)
                 {
@@ -116,7 +120,7 @@ class db
          * 
          * @return array An array containing the fetched result
          */
-        public static function fetch($resource=null, $connection=null)
+        public function fetch($resource=null, $connection=null)
         {
                 if ($resource == null) { $resource = $this->resource; }
                 if ($connection == null) { $resource = $this->connection; }
@@ -132,7 +136,7 @@ class db
          * 
          * @return array An array containing the fetched result
          */
-        public static function fetchAll($resource=null, $connection=null)
+        public function fetchAll($resource=null, $connection=null)
         {
                 if ($resource == null) { $resource = $this->resource; }
                 if ($connection == null) { $resource = $this->connection; }
@@ -148,7 +152,7 @@ class db
          * 
          * @return number The number of results
          */
-        public static function numRows($resource, $connection=null)
+        public function numRows($resource, $connection=null)
         {
                 if ($resource == null) { $resource = $this->resource; }
                 if ($connection == null) { $resource = $this->connection; }
@@ -162,7 +166,7 @@ class db
          * @param resource $resource The resource to be interpreted
          * @param string $connection Name of the connection
          */
-        public static function free($resource, $connection=null)
+        public function free($resource, $connection=null)
         {
                 if ($resource == null) { $resource = $this->resource; }
                 if ($connection == null) { $resource = $this->connection; }
@@ -175,7 +179,7 @@ class db
          * 
          * @param string $name Name of the connections
          */
-        public static function disconnect($connection=null)
+        public function disconnect($connection=null)
         {
                 return starfish::obj('database')->disconnect($connection);
         }
@@ -186,7 +190,7 @@ class db
          * @param string $name String to alter
          * @return string String returned after processing
          */
-        public static function sanitize($string, $connection=null)
+        public function sanitize($string, $connection=null)
         {
                 return starfish::obj('database')->sanitize($string, $connection);
         }
@@ -197,7 +201,7 @@ class db
          * @param string $name String to alter
          * @return string String returned after processing
          */
-        public static function escape($string)
+        public function escape($string)
         {
                 return starfish::obj('database')->escape($string, $connection);
         }

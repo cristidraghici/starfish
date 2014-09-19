@@ -60,10 +60,10 @@ class errors
                 );
 
                 // set the response message
-                $message = "{$code} {$message}";
+                //$message = "{$code} {$message}";
                 echo $message;
 
-                if (starfish::config('_starfish', 'debug') == true) { starfish::backtrace(); exit; }
+                if (starfish::config('_starfish', 'debug') == true) { self::backtrace(); exit; }
         }
 
         /**

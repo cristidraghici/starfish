@@ -73,7 +73,7 @@ class textdb
                 // Execute the query
                 $this->query_sql($query);
                 
-                return true;
+                return $this->resource;
         }
         
         /**
@@ -88,6 +88,8 @@ class textdb
          * 
          * @param string $sql The sql formatted query
          * @return array An array containing information on how to interrogate the TXT file
+         * 
+         * @todo Update and delete are very resource consuming
          */
         function query_sql($sql)
         {
@@ -115,12 +117,170 @@ class textdb
                 
                 // Execute the command
                 /*if (isset($query['columns'])) { ksort($query['columns']); }*/
-                
-                // Apply the limits
+                switch ($command)
+                {
+                        case 'select':
+                                // create the comparison function
+                                $comparison = null;
+                                if ($conditions)
+                                {
+                                        $comparison = $this->query_comparison_function($conditions);
+                                }
+                        
+                                // go through the rows
+                                while ($row = starfish::obj('files')->walk($source) )
+                                {
+                                        $result = @unserialize($row);
+                                        foreach ($result as $key=>$value)
+                                        {
+                                                $result[$key] = $this->query_decode($value);
+                                        }
+                                        
+                                        if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
+                                        {
+                                                $this->resource[] = $result;
+                                        }
+                                }
+                        break;
+                        
+                        case 'insert':
+                                if (count($fields) != count($values) || count($fields) == 0)
+                                {
+                                        starfish::obj('errors')->err(400, 'Incorrect fields and values number!');
+                                }
+                                
+                                $result = array();
+                                for ($a = 0; $a < count($fields); $a++)
+                                {
+                                        $result[ $fields[$a] ] = $this->query_encode( $values[$a] );
+                                }
+                                
+                                ksort($result);
+                                
+                                $string = @serialize($result) . PHP_EOL;                                
+                                starfish::obj('files')->w( $source, $string, 'a' );
+                        break;
+                        
+                        case 'update':
+                                // The new lines to store
+                                $lines = array();
+                        
+                                // create the comparison function
+                                $comparison = null;
+                                if ($conditions)
+                                {
+                                        $comparison = $this->query_comparison_function($conditions);
+                                }
+                        
+                                // go through the rows
+                                while ($row = starfish::obj('files')->walk($source) )
+                                {
+                                        $result = @unserialize($row);
+                                        if (is_array($result))
+                                        {
+                                                foreach ($result as $key=>$value)
+                                                {
+                                                        $result[$key] = $this->query_decode($value);
+                                                }
+                                        }
+                                        
+                                        if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
+                                        {
+                                                for ($a = 0; $a < count($fields); $a++)
+                                                {
+                                                        $result[ $fields[$a] ] = $values[$a];
+                                                }
+                                                
+                                                foreach ($result as $key=>$value)
+                                                {
+                                                        $result[$key] = $this->query_encode( $value );
+                                                }
+                                                
+                                                ksort($result);
+                                                
+                                                $lines[] = @serialize($result);
+                                        }
+                                }
+                                
+                                // write the new lines
+                                starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL );
+                        break;
+                        
+                        case 'delete':
+                                // The new lines to store
+                                $lines = array();
+                        
+                                // create the comparison function
+                                $comparison = null;
+                                if ($conditions)
+                                {
+                                        $comparison = $this->query_comparison_function($conditions);
+                                }
+                        
+                                // go through the rows
+                                while ($row = starfish::obj('files')->walk($source) )
+                                {
+                                        $result = @unserialize($row);
+                                        foreach ($result as $key=>$value)
+                                        {
+                                                $result[$key] = $this->query_decode($value);
+                                        }
+                                        
+                                        if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
+                                        {
+                                                // ignorig the line will lead to deletion
+                                        }
+                                        else
+                                        {
+                                                foreach ($result as $key=>$value)
+                                                {
+                                                        $result[$key] = $this->query_encode( $value );
+                                                }
+                                                
+                                                ksort($result);
+                                                
+                                                $lines[] = @serialize($result);
+                                        }
+                                }
+                        
+                                // write the new lines
+                                starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL );
+                        break;
+                }
                 
                 // Create the result resource
                 
                 return $query;
+        }
+        
+        // create the comparison function
+        function query_comparison_function($where)
+        {
+                $conditions = array();
+                $parts = explode("and", $where);
+                foreach ($parts as $key=>$value)
+                {
+                        preg_match('#(.*)(<|>|=|==|<=|>=)(.*)#is', trim($value), $match);
+                        if (isset($match[1]) && isset($match[2]) && isset($match[3]))
+                        {
+                                if ($match[2] == '=') { $match[2] = '=='; }
+                                
+                                $conditions[] = 'if ($row["'.$match[1].'"] '.$match[2].' '.$match[3].') { } else { $return = false; }';
+                        }
+                }
+                
+                $function = function ($row) use ($conditions) {
+                        $return = true;
+                        
+                        foreach ($conditions as $value)
+                        {
+                                eval($value);
+                        }
+                        
+                        return $return;
+                };
+                
+                return $function;
         }
         
         // extract the table name
@@ -237,11 +397,11 @@ class textdb
                         
                         case 'update':
                                 preg_match('#update (.*) set (.*)#is', $query, $match);
-                                $string = trim($match[2]);
+                                $string = @trim($match[2]);
                                 $parts = explode("where", $string);
-                                $string = trim($parts[0]);
+                                $string = @trim($parts[0]);
                                 $parts = explode("limit", $string);
-                                $string = trim($parts[0]);
+                                $string = @trim($parts[0]);
                         
                                 $string = trim($string);
                                 preg_match_all("#([^=]*)='([^']*)'#is", $string, $matches);
@@ -267,7 +427,10 @@ class textdb
                 switch ($command)
                 {
                         case 'select':
-                                $string = true;
+                                preg_match('#where (.*)#is', $query, $match);
+                                $string = @trim($match[1]);
+                                $parts = explode("limit", $string);
+                                $string = @trim($parts[0]);
                         break;
                         
                         case 'insert':
@@ -276,14 +439,14 @@ class textdb
                         
                         case 'update':
                                 preg_match('#where (.*)#is', $query, $match);
-                                $string = trim($match[2]);
-                                $parts = explode("limit", $string);
+                                $string = @trim($match[1]);
+                                $parts = @explode("limit", $string);
                                 $string = trim($parts[0]);
                         break;
                         
                         case 'delete':
                                 preg_match('#where (.*)#is', $query, $match);
-                                $string = trim($match[2]);
+                                $string = @trim($match[1]);
                         break;
                 }
                 
@@ -312,7 +475,7 @@ class textdb
                         
                         case 'delete':
                                 preg_match('#limit (.*)#is', $query, $match);
-                                $string = trim($match[2]);
+                                $string = @trim($match[2]);
                         break;
                 }
                 
@@ -322,12 +485,12 @@ class textdb
         // encode a string
         function query_encode($string)
         {
-                return $this->connection->encrypt->encode( $this->connection->scramble->encode($string) );
+                return $this->connection['encrypt']->encode( $this->connection['scramble']->encode($string) );
         }
         // decode a string
         function query_decode($string)
         {
-                return $this->connection->scramble->decode( $this->connection->encrypt->decode($string) );
+                return $this->connection['scramble']->decode( $this->connection['encrypt']->decode($string) );
         }
         
         /*

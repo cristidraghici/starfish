@@ -8,6 +8,7 @@ if (!class_exists('starfish')) { die(); }
  *
  * @package starfish
  * @subpackage starfish.objects.textdb
+ * @todo This object can massively be updated, upon request
  */
 class textdb
 {
@@ -120,75 +121,227 @@ class textdb
                 
                 // Identify the command
                 $parts = explode(" ", $sql);
-                switch (strtolower($parts[0]))
+                $command = strtolower($parts[0]);
+                
+                // Identify the table
+                $table = $this->query_get_the_table_name($command, $sql);
+                
+                // Identify the columns
+                $fields = $this->query_get_the_fields($command, $sql);
+                
+                // Identify the values
+                $values = $this->query_get_the_values($command, $sql);
+                
+                // Identify the conditions      
+                $conditions = $this->query_get_the_condition($command, $sql);
+                
+                // Identify the limits
+                $limits = $this->query_get_the_limit($command, $sql);
+                
+                // Execute the command
+                
+                // Apply the limits
+                
+                // Create the result resource
+                
+                return $query;
+        }
+        
+        // extract the table name
+        function query_get_the_table_name($command, $query)
+        {
+                $string = ''array()'';
+                
+                switch ($command)
                 {
                         case 'select':
-                        $query = $this->query_sql_select($sql);
+                                preg_match('#from ([^\s]*)#is', $query, $match);
+                                $string = trim($match[1]);
                         break;
                         
                         case 'insert':
-                        $query = $this->query_sql_select($sql);
+                                preg_match('#insert into ([^\()]*)\(([^\))]*)\)#is', $query, $match);
+                                $string = trim($match[1]);
                         break;
                         
                         case 'update':
-                        $query = $this->query_sql_select($sql);
+                                preg_match('#update ([^\s]*) set#is', $query, $match);
+                                $string = trim($match[1]);
                         break;
                         
                         case 'delete':
-                        $query = $this->query_sql_select($sql);
+                                preg_match('#delete from ([^\s]*)#is', $query, $match);
+                                $string = trim($match[1]);
                         break;
                 }
                 
-                return $query;
+                return $string;                
         }
         
-        // Query helper function for select
-        function query_sql_select($sql)
+        // extract the field names from the query
+        function query_get_the_fields($command, $query)
         {
-                $query = array();
+                $fields = array();
                 
-                return $query;
-        }
-        // Query helper function for insert
-        function query_sql_insert($sql)
-        {
-                $query = array();
+                switch ($command)
+                {
+                        case 'select':
+                                preg_match('#select (.*) from#is', $query, $match);
+                                $string = trim($match[1]);
+                        
+                                if ($string == '*')
+                                {
+                                        $fields = true;
+                                }
+                                else
+                                {
+                                        $parts = explode(",", $string);
+                                        foreach ($parts as $key=>$value)
+                                        {
+                                                $fields[] = trim($value);
+                                        }
+                                }
+                        break;
+                        
+                        case 'insert':
+                                preg_match('#insert into ([^\()]*)\(([^\))]*)\)#is', $query, $match);
+                                $string = trim($match[2]);
+                                $parts = explode(",", $string);
+                                foreach ($parts as $key=>$value)
+                                {
+                                        $fields[] = trim($value);
+                                }
+                        break;
+                        
+                        case 'update':
+                                preg_match('#update (.*) set (.*)#is', $query, $match);
+                                $string = trim($match[2]);
+                                $parts = explode("where", $string);
+                                $string = trim($parts[0]);
+                                $parts = explode("limit", $string);
+                                $string = trim($parts[0]);
+                        
+                                $string = trim($string);
+                                preg_match_all("#([^=]*)='([^']*)'#is", $string, $matches);
+                                foreach ($matches[1] as $key=>$value)
+                                {
+                                        $fields[] = trim($value);
+                                }
+                        break;
+                        
+                        case 'delete':
+                                $fields = true;
+                        break;
+                }
                 
-                return $query;
+                return $fields;
         }
-        // Query helper function for update
-        function query_sql_update($sql)
-        {
-                $query = array();
-                
-                return $query;
-        }
-        // Query helper function for delete
-        function query_sql_delete($sql)
-        {
-                $query = array();
-                
-                return $query;
-        }
-              
         
-        // filter the results 
-        function query_conditions($sql)
+        // extract the values from the query
+        function query_get_the_values($command, $query)
         {
-                return $this->resource;
+                $values = array();
+                
+                switch ($command)
+                {
+                        case 'select':
+                                $values = true;
+                        break;
+                        
+                        case 'insert':
+                                preg_match('#insert into ([^\()]*)\(([^\))]*)\) values\(([^\))]*)\)#is', $query, $match);
+                                $string = trim($match[3]);
+                                
+                                preg_match_all("#'([^']*)'#is", $string, $matches);
+                                foreach ($matches[1] as $key=>$value)
+                                {
+                                        $values[] = trim($value);
+                                }
+                        break;
+                        
+                        case 'update':
+                                preg_match('#update (.*) set (.*)#is', $query, $match);
+                                $string = trim($match[2]);
+                                $parts = explode("where", $string);
+                                $string = trim($parts[0]);
+                                $parts = explode("limit", $string);
+                                $string = trim($parts[0]);
+                        
+                                $string = trim($string);
+                                preg_match_all("#([^=]*)='([^']*)'#is", $string, $matches);
+                                foreach ($matches[2] as $key=>$value)
+                                {
+                                        $values[] = trim($value);
+                                }
+                        break;
+                        
+                        case 'delete':
+                                $values = true;
+                        break;
+                }
+                
+                return $values;
         }
         
-        // query order the results
-        function query_order($sql)
+        // identify the condition
+        function query_get_the_condition($command, $query)
         {
-                return $this->resource;
-        }
-        // query limits
-        function query_limits($sql)
-        {
-                return $this->resource;
+                $string = array();
+                
+                switch ($command)
+                {
+                        case 'select':
+                                $string = true;
+                        break;
+                        
+                        case 'insert':
+                                $string = true;
+                        break;
+                        
+                        case 'update':
+                                preg_match('#where (.*)#is', $query, $match);
+                                $string = trim($match[2]);
+                                $parts = explode("limit", $string);
+                                $string = trim($parts[0]);
+                        break;
+                        
+                        case 'delete':
+                                preg_match('#where (.*)#is', $query, $match);
+                                $string = trim($match[2]);
+                        break;
+                }
+                
+                return $string;
         }
         
+        // identify the limit
+        function query_get_the_limit($command, $query)
+        {
+                $string = array();
+                
+                switch ($command)
+                {
+                        case 'select':
+                                preg_match('#limit (.*)#is', $query, $match);
+                                $string = trim($match[2]);
+                        break;
+                        
+                        case 'insert':
+                                $string = true;
+                        break;
+                        
+                        case 'update':
+                                $string = true;
+                        break;
+                        
+                        case 'delete':
+                                preg_match('#limit (.*)#is', $query, $match);
+                                $string = trim($match[2]);
+                        break;
+                }
+                
+                return $string;
+        }
         
         // encode a string
         function query_encode($string)

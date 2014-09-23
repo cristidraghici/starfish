@@ -406,10 +406,8 @@ class starfish
         /**
 	 * Store an exising object inside the registry
 	 *
-	 * @param string $name The name of the object to store
-	 * @param object $object The object itself
-	 * 
-	 * @return boolean Returns whether the object has been stored or not
+	 * @param string $name The name of the object to access or create
+	 * @param array $configuration The configuration for the created object. Parameters: path, class
 	 */
         public static function store($name, $object)
         {
@@ -421,6 +419,23 @@ class starfish
                 }
 
                 return false;
+        }
+        
+        /**
+	 * Just create an object, without storing it into the registry
+	 *
+	 * @param string $name The name of the object to store
+	 * @param object $object The object itself
+	 * 
+	 * @return boolean Returns whether the object has been stored or not
+	 */
+        public static function access($name, $configuration=array())
+        {
+                $object = self::obj($name, $configuration);
+                
+                unset( self::$instances[ $name ]);
+                
+                return $object;
         }
 
         /**

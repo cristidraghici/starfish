@@ -36,7 +36,7 @@ class database
                                 self::add($key, $value['type'], $value['parameters']);
                         }
                 }
-
+                
                 return true;
         }
 
@@ -82,7 +82,7 @@ class database
                         {
                                 // Get the information about the connection
                                 $info = self::$connections[$name];
-
+                                
                                 // Create the new resource
                                 $conn = null;
 
@@ -90,21 +90,21 @@ class database
                                 {
                                         case 'pgsql':
                                         case 'postgres':
-                                                $conn = starfish::obj('postgres')->connect( $info['parameters'] );
+                                                $conn = starfish::access('postgres')->connect( $info['parameters'] );
                                                 if ($conn != false)
                                                 {
                                                         self::$resources[$name] = $conn;
                                                 }
                                         break;
                                         case 'mysql':
-                                                $conn = starfish::obj('mysql')->connect( $info['parameters'] );
+                                                $conn = starfish::access('mysql')->connect( $info['parameters'] );
                                                 if ($conn != false)
                                                 {
                                                         self::$resources[$name] = $conn;
                                                 }
                                         break;
                                         case 'textdb':
-                                                $conn = starfish::obj('textdb')->connect( $info['parameters'] );
+                                                $conn = starfish::access('textdb')->connect( $info['parameters'] );
                                                 if ($conn != false)
                                                 {
                                                         self::$resources[$name] = $conn;
@@ -115,12 +115,12 @@ class database
                                         default: 
                                                 return null;
                                 }
-
+                                
                                 return $conn;
                         }
                 }
                 // Only one connection, no name specified
-                elseif (count(self::$connections) == 1)
+                elseif (count(self::$connections) >= 1)
                 {
                         // Get the name of the connection
                         $connections = array_keys(self::$connections);

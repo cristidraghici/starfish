@@ -414,7 +414,11 @@ class scraper
         {
                 if (!is_numeric($group_id))
                 {
-                        $resource = starfish::obj('database')->query("select (select count(*) from urls where project_id=".$project_id.") as total, (select count(*) from urls where project_id=".$project_id." and (status_download=3 or status_download=4) ) as downloaded, (select count(*) from urls where project_id=".$project_id." and status_process=2) as processed");
+                        $resource = starfish::obj('database')->query("select 
+                                (select count(*) from urls where project_id=".$project_id.") as total, 
+                                (select count(*) from urls where project_id=".$project_id." and (status_download=3 or status_download=4) ) as downloaded, 
+                                (select count(*) from urls where project_id=".$project_id." and status_process=2) as processed
+                        ");
                 }
                 else
                 {

@@ -391,7 +391,10 @@ class starfish
 
                                 // Run the init method, if it exists
                                 if (method_exists($object, 'init')) { $object->init(); }
-
+                                
+                                // Run the routing registration method, if it exists
+                                if (method_exists($object, 'routes')) { $object->init(); }
+                                
                                 // Store the object
                                 self::$instances[$name] = $object;
 

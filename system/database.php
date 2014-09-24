@@ -220,12 +220,23 @@ class database
          * 
          * @param resource $resource The resource to be interpreted
          * @param string $connection Name of the connection
+         * @param array $parameters Parameters to escape as they will be sent to the browser
          * 
          * @return array An array containing the fetched result
          */
-        public static function fetch($resource, $connection=null)
+        public static function fetch($resource, $connection=null, $parameters=array())
         {
-                return self::conn($connection)->fetch($resource);
+                $row = self::conn($connection)->fetch($resource);
+                
+                if (count($parameters) > 0)
+                {
+                        foreach ($parameters as $key=>$value)
+                        {
+                                if (isset($row[$value])) { $row[$value] = self::escape( $row[$value] ); }
+                        }
+                }
+                
+                return $row;
         }
 
         /** 
@@ -233,12 +244,26 @@ class database
          * 
          * @param resource $resource The resource to be interpreted
          * @param string $connection Name of the connection
+         * @param array $parameters Parameters to escape as they will be sent to the browser
          * 
          * @return array An array containing the fetched result
          */
-        public static function fetchAll($resource, $connection=null)
+        public static function fetchAll($resource, $connection=null, $parameters=array())
         {
-                return self::conn($connection)->fetchAll($resource);
+                $rows = self::conn($connection)->fetchAll($resource);
+                
+                if (count($parameters) > 0)
+                {
+                        foreach ($rows as $k=>$row)
+                        {
+                                foreach ($parameters as $key=>$value)
+                                {
+                                        if (isset($rows[$k][$value])) { $rows[$k][$value] = self::escape( $rows[$k][$value] ); }
+                                }
+                        }
+                }
+                
+                return $rows;
         }
 
         /** 

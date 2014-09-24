@@ -95,9 +95,14 @@ class scraper
         {
                 // Build where clause
                 $where = "where project_id='".$project_id."'";
-                if (is_numeric($group_id)) { $where .= "and group_id='".$group_id."'"; }
+                if (is_numeric($group_id)) { $where .= " and group_id='".$group_id."'"; }
 
-                $resource = starfish::obj('database')->query("update urls set status_download=1, status_process=1 ".$where);
+                // Update the process status
+                $resource = starfish::obj('database')->query("update urls set status_process=1 ".$where);
+                starfish::obj('database')->free( $resource );
+                
+                // Update the download status
+                $resource = starfish::obj('database')->query("update urls set status_download=1 ".$where." and `type`=1");
                 starfish::obj('database')->free( $resource );
                 
                 return true;
@@ -113,7 +118,7 @@ class scraper
         {
                 // Build where clause
                 $where = "where project_id='".$project_id."'";
-                if (is_numeric($group_id)) { $where .= "and group_id='".$group_id."'"; }
+                if (is_numeric($group_id)) { $where .= " and group_id='".$group_id."'"; }
 
                 $resource = starfish::obj('database')->query("update urls set status_download=1 ".$where);
                 starfish::obj('database')->free( $resource );
@@ -131,7 +136,7 @@ class scraper
         {
                 // Build where clause
                 $where = "where project_id='".$project_id."'";
-                if (is_numeric($group_id)) { $where .= "and group_id='".$group_id."'"; }
+                if (is_numeric($group_id)) { $where .= " and group_id='".$group_id."'"; }
 
                 $resource = starfish::obj('database')->query("update urls set status_process=1 ".$where);
                 starfish::obj('database')->free( $resource );
@@ -149,7 +154,7 @@ class scraper
         {
                 // Build where clause
                 $where = "where project_id='".$project_id."'";
-                if (is_numeric($group_id)) { $where .= "and group_id='".$group_id."'"; }
+                if (is_numeric($group_id)) { $where .= " and group_id='".$group_id."'"; }
 
                 $resource = starfish::obj('database')->query("update urls set status_download=3, status_process=2 ".$where);
                 starfish::obj('database')->free( $resource );

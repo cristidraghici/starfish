@@ -30,6 +30,44 @@ class scraper
         // Store the download/processing status of files
         public $status = array();
 
+        // Messages
+        public $message_total = 0;
+        public $message_page = 0;
+
+        /**
+         * The init function
+         */
+        public function init()
+        {
+                // Unlimited resources
+                set_time_limit(0);
+                ini_set("memory_limit", -1);
+
+                // For the browser
+                if (starfish::$constants['cli'] == false)
+                {
+                        //prevent apache from buffering it for deflate/gzip
+                        header("Content-type: text/html");
+                        header('Cache-Control: no-cache'); // recommended to prevent caching of event data.
+
+                        // Turn off output buffering
+                        ini_set('output_buffering', 'off');
+                        // Turn off PHP output compression
+                        ini_set('zlib.output_compression', false);
+
+                        //Flush (send) the output buffer and turn off output buffering
+                        //ob_end_flush();
+                        while (@ob_end_flush());
+
+                        // Implicitly flush the buffer(s)
+                        ini_set('implicit_flush', true);
+                        ob_implicit_flush(true);
+
+                }
+
+                return true;
+        }
+
         /**
          * Set the connection to the database
          * 
@@ -100,11 +138,11 @@ class scraper
                 // Update the process status
                 $resource = starfish::obj('database')->query("update urls set status_process=1 ".$where);
                 starfish::obj('database')->free( $resource );
-                
+
                 // Update the download status
                 $resource = starfish::obj('database')->query("update urls set status_download=1 ".$where." and `type`=1");
                 starfish::obj('database')->free( $resource );
-                
+
                 return true;
         }
 
@@ -122,7 +160,7 @@ class scraper
 
                 $resource = starfish::obj('database')->query("update urls set status_download=1 ".$where);
                 starfish::obj('database')->free( $resource );
-                
+
                 return true;
         }
 
@@ -140,10 +178,10 @@ class scraper
 
                 $resource = starfish::obj('database')->query("update urls set status_process=1 ".$where);
                 starfish::obj('database')->free( $resource );
-                
+
                 return true;
         }
-        
+
         /**
          * Stop the queue execution
          * 
@@ -198,7 +236,7 @@ class scraper
         public function download($project_id, $group_id=null)
         {
                 $status = $this->status($project_id, $group_id);
-                
+
                 if ($status['downloaded'] < $status['total'])
                 {
                         // Build where clause
@@ -249,16 +287,16 @@ class scraper
                                 // Update the status
                                 $resource = starfish::obj('database')->query("select _url_set_download(".$info['_request'][$key]['row']['nr_crt'].", 3)");
                                 starfish::obj('database')->free( $resource );
-                                
+
                                 // Update the content
                                 $resource = starfish::obj('database')->query("insert into url_download(url_id, content) values('{url_id}', '{content}') on duplicate key update content='{content}'", null,
-                                        array(
-                                                'url_id'=>$info['_request'][$key]['row']['nr_crt'],
-                                                'content'=>$value
-                                        )
-                                );
+                                                                             array(
+                                                                                     'url_id'=>$info['_request'][$key]['row']['nr_crt'],
+                                                                                     'content'=>$value
+                                                                             )
+                                                                            );
                                 starfish::obj('database')->free( $resource );
-                                
+
 
                                 // Get and apply the callback we wanted
                                 if ($group_id == null && isset( $this->processing_functions [ $project_id ][ $info['_request'][$key]['row']['group_id'] ] ))
@@ -274,7 +312,7 @@ class scraper
                                 {
                                         $content[$key] = $callback($value, $info['_request'][$key]['row']['data'] );
                                 }
-                                
+
                                 // update the process status
                                 $resource = starfish::obj('database')->query("select _url_set_process(".$info['_request'][$key]['row']['nr_crt'].", 2)");
                                 starfish::obj('database')->free( $resource );
@@ -295,7 +333,7 @@ class scraper
                         $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, group_id from urls ".$where." limit 0, ".$this->simultaneousDownloads );
                         $rows = starfish::obj('database')->fetchAll( $resource );
                         starfish::obj('database')->free( $resource );
-                        
+
                         foreach ($rows as $key=>$value)
                         {
                                 // alter the retrieved data for usage
@@ -312,14 +350,14 @@ class scraper
 
                                 $requests[ ] = $request;
                         }
-                        
+
                         // Process the downloaded result - apply the group_id corresponding callback function
                         foreach ($requests as $key=>$value)
                         {
                                 $resource = starfish::obj('database')->query("select url_id, content from url_download where url_id='".$value['row']['nr_crt']."'" );
                                 $row = starfish::obj('database')->fetch( $resource );
                                 starfish::obj('database')->free( $resource );
-                                
+
                                 // Reset the callback
                                 $callback = null;
 
@@ -341,14 +379,14 @@ class scraper
                                 {
                                         $content[$key] = $row['content'];
                                 }
-                                
+
                                 $info[$key] = $value;
-                                
+
                                 // update the process status
                                 $resource = starfish::obj('database')->query("select _url_set_process(".$value['row']['nr_crt'].", 2)");
                                 starfish::obj('database')->free( $resource );
                         }
-                        
+
                         return array(
                                 'info'          => $info,
                                 'content'       => $content
@@ -421,13 +459,17 @@ class scraper
                 {
                         $resource = starfish::obj('database')->query("select 
                                 (select count(*) from urls where project_id=".$project_id.") as total, 
-                                (select count(*) from urls where project_id=".$project_id." and (status_download=3 or status_download=4) ) as downloaded, 
+                                (select count(*) from urls where project_id=".$project_id." and (status_download=2 or status_download=3 or status_download=4) ) as downloaded, 
                                 (select count(*) from urls where project_id=".$project_id." and status_process=2) as processed
                         ");
                 }
                 else
                 {
-                        $resource = starfish::obj('database')->query("select (select count(*) from urls where project_id=".$project_id." and group_id=".$group_id.") as total, (select count(*) from urls where project_id=".$project_id." and group_id=".$group_id." and (status_download=3 or status_download=4) ) as downloaded, (select count(*) from urls where project_id=".$project_id." and group_id=".$group_id." and status_process=2) as processed");
+                        $resource = starfish::obj('database')->query("select 
+                                (select count(*) from urls where project_id=".$project_id." and group_id=".$group_id.") as total, 
+                                (select count(*) from urls where project_id=".$project_id." and group_id=".$group_id." and (status_download=2 or status_download=3 or status_download=4) ) as downloaded, 
+                                (select count(*) from urls where project_id=".$project_id." and group_id=".$group_id." and status_process=2) as processed
+                        ");
                 }
 
                 $row = starfish::obj('database')->fetch( $resource );
@@ -455,11 +497,64 @@ class scraper
          * Output a message to the browser/command line
          * 
          * @param string $text The text of the message
+         * @param number $max The maximum messages to show before the content of the page is reset
          */
-        public function message($text)
+        public function message($text, $max=50)
         {
-                echo $message;
+                // Show the current message
+                echo $text;
 
+                // Access the helper
+                $this->message_helper($max);
+
+                return true;
+        }
+
+        /**
+         * Show css for displaying the messages
+         * 
+         * @param number $max The maximum messages to show before the content of the page is reset
+         */
+        public function message_helper($max)
+        {
+                if (starfish::$constants['cli'] == false)
+                {
+                        echo '<br />' . PHP_EOL; 
+
+                        if ($this->message_page >= $max)
+                        {
+                                echo '<SCRIPT LANGUAGE=JavaScript>document.body.innerHTML = "";</SCRIPT>';
+                                $this->message_page = 0;
+                                
+                        }
+                        
+                        if ($this->message_total == 0 || $this->message_page == 0)
+                        {
+                                echo '<style type="text/css">'.
+                                        'html, body {font-family: Verdana, Arial, Helvetica, sans-serif;font-size: 11px;}'.
+                                        ' a {color: #0099FF; text-decoration: none;} a:hover{text-decoration: underline;}'.
+                                        '</style>';
+
+                                //Flush (send) the output buffer and turn off output buffering
+                                //ob_end_flush();
+                                while (@ob_end_flush());
+
+                                // Implicitly flush the buffer(s)
+                                ini_set('implicit_flush', true);
+                                ob_implicit_flush(true);
+                        }
+
+                        for($k = 0; $k < 1000; $k++) { echo ' '; }
+                        @ob_flush();
+                        @flush();
+                }
+                else
+                {
+                        echo PHP_EOL;
+                }
+
+                $this->message_total++;
+                $this->message_page++;
                 return true;
         }
 }

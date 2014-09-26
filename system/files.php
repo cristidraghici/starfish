@@ -225,7 +225,17 @@ class files
 
                 return $extension;
         }
-
+        
+        /**
+         * Filename validator
+         * 
+         * @param string $name The initial name
+         * @return string The cleaned name
+         */
+        public static function filename_validator($name)
+        {
+                return preg_replace("([^\w\s\d\-_~,;:\[\]\(\].]|[\.]{2,})", '', $name);
+        }
 
         /**
         * Copy remote file over HTTP one small chunk at a time.

@@ -24,8 +24,11 @@ class mysql
                 {
                         $this->connection = new mysqli($config['host'], $config['user'], $config['pass'], $config['name']);
                         
-                        $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-                        //@mysql_set_charset('utf8', $this->connection);
+                        if ($this->connection)
+                        {
+                                $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+                                //@mysql_set_charset('utf8', $this->connection);
+                        }
                 }
 
                 return $this;
@@ -53,7 +56,7 @@ class mysql
          */
         function query($query)
         {
-                $this->resource = $this->connection->query( $query );
+                $this->resource = @$this->connection->query( $query );
                 
                 if (!$this->resource)
                 {

@@ -234,7 +234,7 @@ class files
          */
         public static function filename_validator($name)
         {
-                return preg_replace("([^\w\s\d\-_~,;:\[\]\(\].]|[\.]{2,})", '', $name);
+                return preg_replace("([^\w\s\d\-_~,;\[\]\(\].]|[\.]{2,})", '', $name);
         }
 
         /**

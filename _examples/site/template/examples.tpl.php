@@ -13,7 +13,7 @@
 
                         <div class="col-md-4 col-sm-6 portfolio-item">
                                 <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                                        <img src="img/portfolio/golden.png" class="img-responsive" alt="">
+                                        <img src="public/images/example.jpg" class="img-responsive" alt="">
                                 </a>
                                 <div class="portfolio-caption">
                                         <h4>Post-it Notes</h4>
@@ -23,7 +23,7 @@
 
                         <div class="col-md-4 col-sm-6 portfolio-item">
                                 <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                                        <img src="img/portfolio/golden.png" class="img-responsive" alt="">
+                                        <img src="public/images/example.jpg" class="img-responsive" alt="">
                                 </a>
                                 <div class="portfolio-caption">
                                         <h4>SQL Query</h4>
@@ -33,7 +33,7 @@
 
                         <div class="col-md-4 col-sm-6 portfolio-item">
                                 <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                                        <img src="img/portfolio/golden.png" class="img-responsive" alt="">
+                                        <img src="public/images/example.jpg" class="img-responsive" alt="">
                                 </a>
                                 <div class="portfolio-caption">
                                         <h4>The Javascript Proxy</h4>

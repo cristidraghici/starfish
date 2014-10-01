@@ -53,14 +53,14 @@ class routes
                 if (count($args) == 3)
                 {
                         $method = strtoupper($args[0]);
-                        $path = self::compile($args[1]);
+                        $path = static::compile($args[1]);
 
                         // Store the route, by making sure there are no conflicts
-                        self::$routes[ $method ] [ $path ] = $args[2];
+                        static::$routes[ $method ] [ $path ] = $args[2];
                 }
                 else
                 {
-                        self::run();
+                        static::run();
                 }
         }
 
@@ -72,9 +72,9 @@ class routes
                 // called method() from ./system/parameters
                 $method = method();
                 
-                if (isset(self::$routes[$method]) && is_array(self::$routes[$method]))
+                if (isset(static::$routes[$method]) && is_array(static::$routes[$method]))
                 {
-                        foreach (self::$routes[$method] as $key=>$value)
+                        foreach (static::$routes[$method] as $key=>$value)
                         {
                                 $regex = $key;
                                 $callback = $value;
@@ -86,7 +86,7 @@ class routes
                                         array_shift($matched);
 
                                         // if :all wildcard, split result by "/"
-                                        if(strpos($regex, self::$wildcards['all']) !== FALSE)
+                                        if(strpos($regex, static::$wildcards['all']) !== FALSE)
                                         {
                                                 $matched = explode('/', $matched[0]);
                                         }
@@ -111,7 +111,7 @@ class routes
         private static function compile($path)
         {
                 // Replace the regex-es
-                foreach (self::$wildcards as $key=>$value)
+                foreach (static::$wildcards as $key=>$value)
                 {
                         $path = str_replace( ':' . $key, $value, $path );
                 }

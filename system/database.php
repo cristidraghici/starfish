@@ -33,7 +33,7 @@ class database
                 {
                         foreach ($databases as $key=>$value)
                         {
-                                self::add($key, $value['type'], $value['parameters']);
+                                static::add($key, $value['type'], $value['parameters']);
                         }
                 }
                 
@@ -54,7 +54,7 @@ class database
          */
         public static function add($name, $type='textdb', $parameters=array())
         {
-                self::$connections[$name] = array(
+                static::$connections[$name] = array(
                         'type' => $type, 
                         'parameters' => $parameters
                 );
@@ -74,14 +74,14 @@ class database
                 if ($name != null)
                 {	
                         // Get the stored resource
-                        if (isset(self::$resources[$name]))
+                        if (isset(static::$resources[$name]))
                         {
-                                return self::$resources[$name];
+                                return static::$resources[$name];
                         }
-                        elseif (isset(self::$connections[$name]))
+                        elseif (isset(static::$connections[$name]))
                         {
                                 // Get the information about the connection
-                                $info = self::$connections[$name];
+                                $info = static::$connections[$name];
                                 
                                 // Create the new resource
                                 $conn = null;
@@ -93,21 +93,21 @@ class database
                                                 $conn = starfish::access('postgres')->connect( $info['parameters'] );
                                                 if ($conn != false)
                                                 {
-                                                        self::$resources[$name] = $conn;
+                                                        static::$resources[$name] = $conn;
                                                 }
                                         break;
                                         case 'mysql':
                                                 $conn = starfish::access('mysql')->connect( $info['parameters'] );
                                                 if ($conn != false)
                                                 {
-                                                        self::$resources[$name] = $conn;
+                                                        static::$resources[$name] = $conn;
                                                 }
                                         break;
                                         case 'textdb':
                                                 $conn = starfish::access('textdb')->connect( $info['parameters'] );
                                                 if ($conn != false)
                                                 {
-                                                        self::$resources[$name] = $conn;
+                                                        static::$resources[$name] = $conn;
                                                 }
                                         break;
 
@@ -120,13 +120,13 @@ class database
                         }
                 }
                 // Only one connection, no name specified
-                elseif (count(self::$connections) >= 1)
+                elseif (count(static::$connections) >= 1)
                 {
                         // Get the name of the connection
-                        $connections = array_keys(self::$connections);
+                        $connections = array_keys(static::$connections);
 
                         // Call this function again
-                        return self::get( $connections[0] );
+                        return static::get( $connections[0] );
                 }
 
                 return null;
@@ -144,7 +144,7 @@ class database
                 {
                         case 'string':
                         case 'null':
-                                return self::get($conn);
+                                return static::get($conn);
                         break;
 
                         case 'resource':
@@ -163,9 +163,9 @@ class database
          */
         private static function connectionInfo($name)
         {
-                if (isset(self::$connections[$name]))
+                if (isset(static::$connections[$name]))
                 {
-                        return self::$connections[$name];
+                        return static::$connections[$name];
                 }
 
                 return null;
@@ -186,11 +186,11 @@ class database
                 {
                         foreach ($parameters as $key=>$value)
                         {
-                                $query = str_replace('{'. $key . '}', self::sanitize( $parameters[$key], $connection ), $query );
+                                $query = str_replace('{'. $key . '}', static::sanitize( $parameters[$key], $connection ), $query );
                         }
                 }
                 
-                return self::conn($connection)->query($query);
+                return static::conn($connection)->query($query);
         }
 
         /** 
@@ -207,7 +207,7 @@ class database
                 {
                         foreach ($parameters as $key=>$value)
                         {
-                                $query = str_replace('{'. $key . '}', self::sanitize( $parameters[$key], $connection ), $query );
+                                $query = str_replace('{'. $key . '}', static::sanitize( $parameters[$key], $connection ), $query );
                         }
                 }
                 
@@ -226,13 +226,13 @@ class database
          */
         public static function fetch($resource, $connection=null, $parameters=array())
         {
-                $row = self::conn($connection)->fetch($resource);
+                $row = static::conn($connection)->fetch($resource);
                 
                 if (count($parameters) > 0)
                 {
                         foreach ($parameters as $key=>$value)
                         {
-                                if (isset($row[$value])) { $row[$value] = self::escape( $row[$value] ); }
+                                if (isset($row[$value])) { $row[$value] = static::escape( $row[$value] ); }
                         }
                 }
                 
@@ -250,7 +250,7 @@ class database
          */
         public static function fetchAll($resource, $connection=null, $parameters=array())
         {
-                $rows = self::conn($connection)->fetchAll($resource);
+                $rows = static::conn($connection)->fetchAll($resource);
                 
                 if (count($parameters) > 0)
                 {
@@ -258,7 +258,7 @@ class database
                         {
                                 foreach ($parameters as $key=>$value)
                                 {
-                                        if (isset($rows[$k][$value])) { $rows[$k][$value] = self::escape( $rows[$k][$value] ); }
+                                        if (isset($rows[$k][$value])) { $rows[$k][$value] = static::escape( $rows[$k][$value] ); }
                                 }
                         }
                 }
@@ -276,7 +276,7 @@ class database
          */
         public static function numRows($resource, $connection=null)
         {
-                return self::conn($connection)->numRows($resource);
+                return static::conn($connection)->numRows($resource);
         }
 
         /** 
@@ -287,7 +287,7 @@ class database
          */
         public static function free($resource, $connection=null)
         {
-                return self::conn($connection)->free($resource);
+                return static::conn($connection)->free($resource);
         }
 
         /** 
@@ -298,15 +298,15 @@ class database
         public static function disconnect($connection=null)
         {
                 // Get the object
-                $obj = self::conn($connection);
+                $obj = static::conn($connection);
 
                 // Disconnect from the database
                 $obj->disconnect();
 
                 // Delete from the resources list
-                foreach (self::$resources as $key=>$value)
+                foreach (static::$resources as $key=>$value)
                 {
-                        if ($value == $obj) { unset(self::$resources[$key]); break; }
+                        if ($value == $obj) { unset(static::$resources[$key]); break; }
                 }
 
                 // Destroy the object
@@ -323,7 +323,7 @@ class database
          */
         public static function sanitize($string, $connection=null)
         {
-                return self::conn($connection)->sanitize($string);
+                return static::conn($connection)->sanitize($string);
         }
 
         /** 
@@ -334,7 +334,7 @@ class database
          */
         public static function escape($string)
         {
-                return self::conn($connection)->escape($string);
+                return static::conn($connection)->escape($string);
         }
 }
 ?>

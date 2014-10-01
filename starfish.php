@@ -91,14 +91,16 @@ class starfish
 
         /**
 	 * Init the framework
+	 * 
+	 * @param array $objects Objects to preload
 	 */
-        public static function init()
+        public static function init($objects=array())
         {
                 // Initialization
-                if (self::$initialized == true) { die('starfish::init() can be run only once!'); }
+                if (static::$initialized == true) { die('starfish::init() can be run only once!'); }
                 else
                 {
-                        self::$initialized = true;
+                        static::$initialized = true;
                 }
 
                 // Set the debugger
@@ -114,69 +116,89 @@ class starfish
                 }
 
                 // Establish the default timezone
-                $config = self::config('_starfish', 'date_default_timezone', "UTC", false );
+                $config = static::config('_starfish', 'date_default_timezone', "UTC", false );
                 @date_default_timezone_set( $config );
 
                 // Establish the operating system
                 if (strncasecmp(PHP_OS, 'WIN', 3) == 0) 
                 {
-                        self::$constants['operating_system'] = 'Win';
+                        static::$constants['operating_system'] = 'Win';
                 }
                 else
                 {
-                        self::$constants['operating_system'] = 'Non';
+                        static::$constants['operating_system'] = 'Non';
                 }
 
                 // Get and store more operating system information
-                self::$constants['php_uname'] = php_uname();
+                static::$constants['php_uname'] = php_uname();
                 
                 // Get and set CLI status
-                self::$constants['cli'] = ( php_sapi_name() == 'cli' ) ? true : false;
+                static::$constants['cli'] = ( php_sapi_name() == 'cli' ) ? true : false;
 
                 // Register aliases
-                if (self::config('_starfish', 'aliases') != null && is_array( self::config('_starfish', 'aliases') ))
+                if (static::config('_starfish', 'aliases') != null && is_array( static::config('_starfish', 'aliases') ))
                 {
-                        foreach (self::config('_starfish', 'aliases') as $key=>$value)
+                        foreach (static::config('_starfish', 'aliases') as $key=>$value)
                         {
                                 class_alias('starfish', $value);
                         }
                 }
 
                 // Set the project name (used in e.g. Session variable names)
-                self::config('_starfish', 'project', 'Starfish');
+                static::config('_starfish', 'project', 'Starfish');
                 
                 // Set the path for Starfish Framework files
-                $path = self::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);
+                $path = static::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);
                 
 
                 // Update the initial object list paths
-                foreach (self::$objects as $key=>$value)
+                foreach (static::$objects as $key=>$value)
                 {
-                        self::$objects[$key]['path'] = $path . $value['path'];
+                        static::$objects[$key]['path'] = $path . $value['path'];
                 }
                 // Set the path for Starfish Framework objects		
-                self::config('_starfish', 'core_objects', $path . 'system'  . DIRECTORY_SEPARATOR);
+                static::config('_starfish', 'core_objects', $path . 'system'  . DIRECTORY_SEPARATOR);
 
-                self::config('_starfish', 'root_objects', $path . 'objects' . DIRECTORY_SEPARATOR, false );
-                self::config('_starfish', 'app_objects',  $path . 'application' . DIRECTORY_SEPARATOR, false );
+                static::config('_starfish', 'root_objects', $path . 'objects' . DIRECTORY_SEPARATOR, false );
+                static::config('_starfish', 'app_objects',  $path . 'application' . DIRECTORY_SEPARATOR, false );
 
                 // Set the path for Starfish storage		
-                self::config('_starfish', 'storage', $path . 'storage'  . DIRECTORY_SEPARATOR, false);
+                static::config('_starfish', 'storage', $path . 'storage'  . DIRECTORY_SEPARATOR, false);
                 
                 // Set the path for Starfish storage		
-                self::config('_starfish', 'template', $path . 'template'  . DIRECTORY_SEPARATOR, false);
+                static::config('_starfish', 'template', $path . 'template'  . DIRECTORY_SEPARATOR, false);
 
                 // Set the path for Starfish root storage		
-                self::config('_starfish', 'root_storage', $path . 'storage'  . DIRECTORY_SEPARATOR);
+                static::config('_starfish', 'root_storage', $path . 'storage'  . DIRECTORY_SEPARATOR);
 
                 // Proper initialization
-                self::obj('parameters');
-                self::obj('routes');
-                self::obj('databases');
-
+                static::obj('parameters');
+                static::obj('routes');
+                static::obj('databases');
+                
+                static::preload($objects);
+                
                 return null;
         }
-
+        
+        /**
+         * Preload certain objects
+         * This is useful for using the alias functions
+         * 
+         * @param array $objects List of objects to load
+         */
+        public static function preload($objects=array())
+        {
+                if (gettype($objects) == 'string') { $objects = array($objects); }
+                
+                foreach ($objects as $key=>$value)
+                {
+                        static::obj($value);
+                }
+                
+                return null;
+        }
+        
         /**
 	 * Configuration function
 	 *
@@ -190,7 +212,7 @@ class starfish
                 // Initial values to work with
                 $return = null;
 
-                $config = isset(self::$config[$module]) ? self::$config[$module] : array();
+                $config = isset(static::$config[$module]) ? static::$config[$module] : array();
                 $type   = array(
                         'names' => gettype($names),
                         'values'=> gettype($values)
@@ -222,13 +244,13 @@ class starfish
                                 // One value, one name
                                 if ($type['names'] == 'string')
                                 {
-                                        if ($override == false && isset(self::$config[$module][ $names ]))
+                                        if ($override == false && isset(static::$config[$module][ $names ]))
                                         {
-                                                $return = self::$config[$module][ $names ];
+                                                $return = static::$config[$module][ $names ];
                                         }
                                         else
                                         {
-                                                self::$config[$module][ $names ] = $values;
+                                                static::$config[$module][ $names ] = $values;
                                                 $return = $values;
                                         }
                                 }
@@ -237,13 +259,13 @@ class starfish
                                 {
                                         foreach ($names as $key=>$value)
                                         {
-                                                if ($override == false && isset(self::$config[$module][ $value ]))
+                                                if ($override == false && isset(static::$config[$module][ $value ]))
                                                 {
-                                                        $return = self::$config[$module][ $value ];
+                                                        $return = static::$config[$module][ $value ];
                                                 }
                                                 else
                                                 {
-                                                        self::$config[$module][ $value ] = $values;
+                                                        static::$config[$module][ $value ] = $values;
                                                         $return[ $value ] = $values;
                                                 }
                                         }
@@ -261,13 +283,13 @@ class starfish
 
                                 for ($a=0; $a<count($names); $a++)
                                 {
-                                        if ($override == false && isset(self::$config[$module][$names[$a]]))
+                                        if ($override == false && isset(static::$config[$module][$names[$a]]))
                                         {
-                                                $return[ $names[$a] ] = self::$config[$module][$names[$a]];
+                                                $return[ $names[$a] ] = static::$config[$module][$names[$a]];
                                         }
                                         else
                                         {
-                                                self::$config[$module][$names[$a]] = $values[$a];
+                                                static::$config[$module][$names[$a]] = $values[$a];
                                                 $return[ $names[$a] ] = $values[$a];
                                         }
                                 }
@@ -279,7 +301,7 @@ class starfish
                 {
                         foreach ($values as $key=>$value)
                         {
-                                self::$config[$module][ $key ] = $value;
+                                static::$config[$module][ $key ] = $value;
                         }
                 }
 
@@ -299,7 +321,7 @@ class starfish
         public static function set($name, $value)
         {
                 // Check framework initialization
-                if (self::$initialized == false) { die('starfish::init() command must be run within your script!'); }
+                if (static::$initialized == false) { die('starfish::init() command must be run within your script!'); }
 
                 // Give a standard form to the variable name
                 $type = @gettype($name);
@@ -307,7 +329,7 @@ class starfish
                 $name = @serialize($name);
 
                 // Store the variable
-                self::$variables[$name] = $value;
+                static::$variables[$name] = $value;
 
                 return $value;
         }
@@ -320,7 +342,7 @@ class starfish
         public static function get($name)
         {
                 // Check framework initialization
-                if (self::$initialized == false) { die('starfish::init() command must be run within your script!'); }
+                if (static::$initialized == false) { die('starfish::init() command must be run within your script!'); }
 
                 // Give a standard form to the variable name
                 $type = @gettype($name);
@@ -328,7 +350,7 @@ class starfish
                 $name = @serialize($name);
 
                 // Get the variable
-                return self::$variables[$name];
+                return static::$variables[$name];
         }
 
         ##################
@@ -344,28 +366,28 @@ class starfish
         public static function obj($name, $configuration=array())
         {		
                 // Check framework initialization
-                if (self::$initialized == false) { die('starfish::init() command must be run within your script!'); }
+                if (static::$initialized == false) { die('starfish::init() command must be run within your script!'); }
 
                 // Object exists
-                if (isset(self::$instances[ $name ]) && is_object( self::$instances[ $name ] ))
+                if (isset(static::$instances[ $name ]) && is_object( static::$instances[ $name ] ))
                 {
-                        return self::$instances[ $name ];
+                        return static::$instances[ $name ];
                 }
                 else
                 {
                         // Check if a configuration already exists
-                        if ( isset(self::$objects[$name]) && is_array(self::$objects[$name]) )
+                        if ( isset(static::$objects[$name]) && is_array(static::$objects[$name]) )
                         {
-                                $configuration = array_merge( self::$objects[$name], $configuration );
+                                $configuration = array_merge( static::$objects[$name], $configuration );
                         }
 
                         // Name of the class
-                        $class = isset( self::$objects[$name]['class'] ) ? self::$objects[$name]['class'] : $name;
+                        $class = isset( static::$objects[$name]['class'] ) ? static::$objects[$name]['class'] : $name;
 
                         // Include the files, if needed
                         if (!class_exists($class))
                         {
-                                $path = isset( self::$objects[$name]['path'] ) ? self::$objects[$name]['path'] : null;
+                                $path = isset( static::$objects[$name]['path'] ) ? static::$objects[$name]['path'] : null;
 
                                 if ($path != null)
                                 {
@@ -373,9 +395,9 @@ class starfish
                                 }
                                 else
                                 {
-                                        $core	 	= self::config('_starfish', 'core_objects') . DIRECTORY_SEPARATOR . $name .'.php';
-                                        $objects 	= self::config('_starfish', 'root_objects') . DIRECTORY_SEPARATOR . $name .'.php';
-                                        $application 	= self::config('_starfish', 'app_objects') . DIRECTORY_SEPARATOR . $name .'.php';
+                                        $core	 	= static::config('_starfish', 'core_objects') . DIRECTORY_SEPARATOR . $name .'.php';
+                                        $objects 	= static::config('_starfish', 'root_objects') . DIRECTORY_SEPARATOR . $name .'.php';
+                                        $application 	= static::config('_starfish', 'app_objects') . DIRECTORY_SEPARATOR . $name .'.php';
 
                                         if (file_exists($core)) { require_once( $core ); }
                                         else if (file_exists($objects)) { require_once( $objects ); }
@@ -396,7 +418,7 @@ class starfish
                                 if (method_exists($object, 'routes')) { $object->init(); }
                                 
                                 // Store the object
-                                self::$instances[$name] = $object;
+                                static::$instances[$name] = $object;
 
                                 // Return the object
                                 return $object;
@@ -414,9 +436,9 @@ class starfish
 	 */
         public static function store($name, $object)
         {
-                if (!isset( self::$instances[ $name ] ) && is_object($object))
+                if (!isset( static::$instances[ $name ] ) && is_object($object))
                 {
-                        self::$instances[ $name ] = $object;
+                        static::$instances[ $name ] = $object;
 
                         return true;
                 }
@@ -434,9 +456,9 @@ class starfish
 	 */
         public static function access($name, $configuration=array())
         {
-                $object = self::obj($name, $configuration);
+                $object = static::obj($name, $configuration);
                 
-                unset( self::$instances[ $name ]);
+                unset( static::$instances[ $name ]);
                 
                 return $object;
         }
@@ -452,7 +474,7 @@ class starfish
         {
                 if (!$condition) { return; }
 
-                if (substr($path, 0, 2) == './') { $path = self::config('_starfish', 'site_url') . substr($path, 2); }
+                if (substr($path, 0, 2) == './') { $path = static::config('_starfish', 'site_url') . substr($path, 2); }
 
                 @header("Location: {$path}", true, $code);
                 exit;

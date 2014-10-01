@@ -104,7 +104,7 @@ class db
                 {
                         foreach ($parameters as $key=>$value)
                         {
-                                $query = str_replace('{'. $key . '}', self::sanitize( $parameters[$key], $connection ), $query );
+                                $query = str_replace('{'. $key . '}', $this->sanitize( $parameters[$key], $connection ), $query );
                         }
                 }
                 

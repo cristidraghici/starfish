@@ -64,7 +64,7 @@ class files
                         {
                                 if(is_dir($file))
                                 {
-                                        self::rrmdir($file);
+                                        static::rrmdir($file);
                                 }
                                 else
                                 {
@@ -83,28 +83,28 @@ class files
         public static function walk($path=null)
         {
                 // Check if the creation of the resource is needed
-                if (self::$walkResource == null && $path != null)
+                if (static::$walkResource == null && $path != null)
                 { 
                         if (file_exists($path) && is_file($path) && is_readable($path))
                         {
-                                self::$walkResource = @fopen($path, "r");
-                                self::$walkNumRow = 0;
+                                static::$walkResource = @fopen($path, "r");
+                                static::$walkNumRow = 0;
                                 
-                                return self::walk();
+                                return static::walk();
                         }
                 }
                 else
                 {
                         // Check if there is still content available
-                        if (!@feof(self::$walkResource)) 
+                        if (!@feof(static::$walkResource)) 
                         {
-                                self::$walkNumRow++;
-                                return @fgets(self::$walkResource); 
+                                static::$walkNumRow++;
+                                return @fgets(static::$walkResource); 
                         }
                         else
                         {
-                                @fclose(self::$walkResource);
-                                self::$walkResource = null;
+                                @fclose(static::$walkResource);
+                                static::$walkResource = null;
                                 
                                 return null;
                         }
@@ -114,7 +114,7 @@ class files
         }
         public static function walkNumRow()
         {
-                return self::$walkNumRow - 1;
+                return static::$walkNumRow - 1;
         }
         
         /**
@@ -156,7 +156,7 @@ class files
                 $return = false;
 
                 // Create the path 
-                $directory = @dirname (self::truepath($path)) . DIRECTORY_SEPARATOR;
+                $directory = @dirname (static::truepath($path)) . DIRECTORY_SEPARATOR;
                 if (!file_exists($directory))
                 {
                         mkdir($directory, 0777, true);

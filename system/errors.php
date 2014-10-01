@@ -63,7 +63,7 @@ class errors
                 //$message = "{$code} {$message}";
                 echo $message;
 
-                if (starfish::config('_starfish', 'debug') == true) { self::backtrace(); exit; }
+                if (starfish::config('_starfish', 'debug') == true) { static::backtrace(); exit; }
         }
 
         /**

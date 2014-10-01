@@ -15,11 +15,11 @@ starfish::init();
  * The script itself
  */
 
-starfish::obj('routes')->on('post', '/contact', function(){ 
+on('post', '/contact', function(){ 
         starfish::obj('contact')->send();
 });
 
-starfish::obj('routes')->on('get', '/', function()
+on('get', '/', function()
 {
         echo starfish::obj('tpl')->view('header');
         echo starfish::obj('tpl')->view('about');
@@ -30,7 +30,7 @@ starfish::obj('routes')->on('get', '/', function()
         echo starfish::obj('tpl')->view('footer');     
 });
 
-starfish::obj('routes')->on('get', '/:all', function($all)
+on('get', '/:all', function($all)
 {
         echo 'Page does not exist!';
 });

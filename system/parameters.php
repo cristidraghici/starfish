@@ -22,10 +22,10 @@ class parameters
 	 */
         public static function init()
         {
-                self::request_content_type();
-                self::request_body();
+                static::request_content_type();
+                static::request_body();
 
-                self::session();
+                static::session();
         }
 
         /**
@@ -50,7 +50,7 @@ class parameters
                 {
                         foreach ($mixed as $key=>$value)
                         {
-                                $mixed[$key] = self::sanitize($value);
+                                $mixed[$key] = static::sanitize($value);
                         }
                 }
 
@@ -63,12 +63,12 @@ class parameters
         public static function reset_sanitized($mixed)
         {
                 // Unset stored variables
-                unset(self::$cache['get']);
-                unset(self::$cache['post']);
-                unset(self::$cache['put']);
-                unset(self::$cache['delete']);
-                unset(self::$cache['head']);
-                unset(self::$cache['options']);
+                unset(static::$cache['get']);
+                unset(static::$cache['post']);
+                unset(static::$cache['put']);
+                unset(static::$cache['delete']);
+                unset(static::$cache['head']);
+                unset(static::$cache['options']);
 
                 return true;
         }
@@ -80,7 +80,7 @@ class parameters
         public static function method()
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['method'])) { return self::$cache['method']; }
+                if (isset(static::$cache['method'])) { return static::$cache['method']; }
 
                 // Create the string in cache and return it
                 $method = strtoupper($_SERVER['REQUEST_METHOD']);
@@ -98,8 +98,8 @@ class parameters
                 }
                 else
                 {
-                        $method = (self::post('_method') != null) ? self::post('_method') : $method;
-                        $method = (self::get('_method') != null) ? self::get('_method') : $method;
+                        $method = (static::post('_method') != null) ? static::post('_method') : $method;
+                        $method = (static::get('_method') != null) ? static::get('_method') : $method;
                 }
 
                 // Ensure method is within allowed methods
@@ -108,7 +108,7 @@ class parameters
                         $method = 'GET';
                 }
 
-                self::$cache['method'] = $method;
+                static::$cache['method'] = $method;
                 return $method;
         }
 
@@ -118,12 +118,12 @@ class parameters
         public static function request_protocol()
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['request_protocol'])) { return self::$cache['request_protocol']; }
+                if (isset(static::$cache['request_protocol'])) { return static::$cache['request_protocol']; }
 
                 // Create the string in cache and return it
                 $request_protocol = $_SERVER['SERVER_PROTOCOL'];
 
-                self::$cache['request_protocol'] = $request_protocol;
+                static::$cache['request_protocol'] = $request_protocol;
                 return $request_protocol;
         }
 
@@ -133,7 +133,7 @@ class parameters
         private static function request_content_type()
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['request_content_type'])) { return self::$cache['request_content_type']; }
+                if (isset(static::$cache['request_content_type'])) { return static::$cache['request_content_type']; }
 
                 // Create the string in cache and return it
                 $content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : false;
@@ -159,7 +159,7 @@ class parameters
                         break;
                 }
 
-                self::$cache['request_content_type'] = $request_content_type;
+                static::$cache['request_content_type'] = $request_content_type;
                 return $request_content_type;
         }
 
@@ -171,7 +171,7 @@ class parameters
         private static function request_body()
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['request_body'])) { return self::$cache['request_body']; }
+                if (isset(static::$cache['request_body'])) { return static::$cache['request_body']; }
 
                 // Create the string in cache and return it
                 $body = @file_get_contents("php://input");
@@ -181,7 +181,7 @@ class parameters
                 if (isset($_SERVER['QUERY_STRING'])) { parse_str($_SERVER['QUERY_STRING'], $parameters); }
 
                 // Establish the parameters by the content type headers
-                switch (self::request_content_type())
+                switch (static::request_content_type())
                 {
                         case 'json':
                         $body_params = @json_decode($body, true);
@@ -201,7 +201,7 @@ class parameters
                         break;
                 }
 
-                self::$cache['request_body'] = $parameters;
+                static::$cache['request_body'] = $parameters;
                 return $parameters;
         }
 
@@ -211,7 +211,7 @@ class parameters
         public static function path()
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['path'])) { return self::$cache['path']; }
+                if (isset(static::$cache['path'])) { return static::$cache['path']; }
 
                 // Create the string in cache and return it
                 // get the request_uri basename
@@ -240,8 +240,8 @@ class parameters
                 // add begining backslash
                 if (substr($path, 0, 1) != '/') { $path = '/'.$path; }
                 
-                self::$cache['path'] = $path;
-                return self::$cache['path'];
+                static::$cache['path'] = $path;
+                return static::$cache['path'];
         }
 
         /**
@@ -252,12 +252,12 @@ class parameters
         public static function get($name)
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['get'][$name])) { return self::$cache['get'][$name]; }
+                if (isset(static::$cache['get'][$name])) { return static::$cache['get'][$name]; }
 
                 // Create the string in cache and return it
-                self::$cache['get'][$name] = isset($_GET[$name]) ? self::sanitize($_GET[$name]) : null;
+                static::$cache['get'][$name] = isset($_GET[$name]) ? static::sanitize($_GET[$name]) : null;
 
-                return self::$cache['get'][$name];
+                return static::$cache['get'][$name];
         }
 
         /**
@@ -268,21 +268,21 @@ class parameters
         public static function post($name)
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['post'][$name])) { return self::$cache['post'][$name]; }
+                if (isset(static::$cache['post'][$name])) { return static::$cache['post'][$name]; }
 
                 // Create the string in cache and return it
-                switch (self::request_content_type())
+                switch (static::request_content_type())
                 {
                         case 'json':
-                        self::$cache['post'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;
+                        static::$cache['post'][$name] = isset(static::$cache['request_body'][$name]) ? static::sanitize(static::$cache['request_body'][$name]) : null;
                         break;
 
                         default:
-                        self::$cache['post'][$name] = isset($_POST[$name]) ? self::sanitize($_POST[$name]) : null;
+                        static::$cache['post'][$name] = isset($_POST[$name]) ? static::sanitize($_POST[$name]) : null;
                 }
 
 
-                return self::$cache['post'][$name];
+                return static::$cache['post'][$name];
         }
 
         /**
@@ -293,12 +293,12 @@ class parameters
         public static function put($name)
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['put'][$name])) { return self::$cache['put'][$name]; }
+                if (isset(static::$cache['put'][$name])) { return static::$cache['put'][$name]; }
 
                 // Create the string in cache and return it
-                self::$cache['put'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;;
+                static::$cache['put'][$name] = isset(static::$cache['request_body'][$name]) ? static::sanitize(static::$cache['request_body'][$name]) : null;;
 
-                return self::$cache['put'][$name];
+                return static::$cache['put'][$name];
         }
 
         /**
@@ -309,13 +309,13 @@ class parameters
         public static function delete($name)
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['delete'][$name])) { return self::$cache['delete'][$name]; }
+                if (isset(static::$cache['delete'][$name])) { return static::$cache['delete'][$name]; }
 
                 // Create the string in cache and return it
-                self::$cache['delete'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;;
+                static::$cache['delete'][$name] = isset(static::$cache['request_body'][$name]) ? static::sanitize(static::$cache['request_body'][$name]) : null;;
 
 
-                return self::$cache['delete'][$name];
+                return static::$cache['delete'][$name];
         }
 
         /**
@@ -326,12 +326,12 @@ class parameters
         public static function head($name)
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['head'][$name])) { return self::$cache['head'][$name]; }
+                if (isset(static::$cache['head'][$name])) { return static::$cache['head'][$name]; }
 
                 // Create the string in cache and return it
-                self::$cache['head'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;;
+                static::$cache['head'][$name] = isset(static::$cache['request_body'][$name]) ? static::sanitize(static::$cache['request_body'][$name]) : null;;
 
-                return self::$cache['head'][$name];
+                return static::$cache['head'][$name];
         }
 
         /**
@@ -342,12 +342,12 @@ class parameters
         public static function options($name)
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['options'][$name])) { return self::$cache['options'][$name]; }
+                if (isset(static::$cache['options'][$name])) { return static::$cache['options'][$name]; }
 
                 // Create the string in cache and return it
-                self::$cache['options'][$name] = isset(self::$cache['request_body'][$name]) ? self::sanitize(self::$cache['request_body'][$name]) : null;;
+                static::$cache['options'][$name] = isset(static::$cache['request_body'][$name]) ? static::sanitize(static::$cache['request_body'][$name]) : null;;
 
-                return self::$cache['options'][$name];
+                return static::$cache['options'][$name];
         }
 
         /**
@@ -376,7 +376,7 @@ class parameters
                                 {
                                         if (substr($key, 0, strlen($prefix) ) == $prefix)
                                         {
-                                                self::$cache['session'][ $prefix . $key ] = $value;
+                                                static::$cache['session'][ $prefix . $key ] = $value;
                                         }
                                 }
                                 
@@ -386,12 +386,12 @@ class parameters
 
                                 break; // for structured coding
                         case 1:
-                                return isset( self::$cache['session'][ $prefix . $args[0] ] ) ? self::$cache['session'][ $prefix . $args[0] ] : null;
+                                return isset( static::$cache['session'][ $prefix . $args[0] ] ) ? static::$cache['session'][ $prefix . $args[0] ] : null;
 
                                 break; // for structure coding
 
                         case 2:
-                                self::$cache['session'][ $prefix . $args[0] ] = $args[1];
+                                static::$cache['session'][ $prefix . $args[0] ] = $args[1];
 
                                 session_start();
                                 $_SESSION[ $prefix . $args[0] ] = $args[1];
@@ -411,12 +411,12 @@ class parameters
         public static function file($name)
         {
                 // If string exists in cache, return it
-                if (isset(self::$cache['file'][$name])) { return self::$cache['file'][$name]; }
+                if (isset(static::$cache['file'][$name])) { return static::$cache['file'][$name]; }
 
                 // Create the string in cache and return it
-                self::$cache['file'][$name] = $_FILES[$name];
+                static::$cache['file'][$name] = $_FILES[$name];
 
-                return self::$cache['file'][$name];
+                return static::$cache['file'][$name];
         }
 }
 

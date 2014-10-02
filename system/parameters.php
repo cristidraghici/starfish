@@ -249,8 +249,11 @@ class parameters
 	 *
 	 * @param string $name The name of the variable to retrieve
 	 */
-        public static function get($name)
+        public static function get($name=null)
         {
+                // Return all values
+                if ($name == null) { return static::$cache['get']; }
+                
                 // If string exists in cache, return it
                 if (isset(static::$cache['get'][$name])) { return static::$cache['get'][$name]; }
 
@@ -265,8 +268,11 @@ class parameters
 	 *
 	 * @param mixed $name The name of the variable to retrieve
 	 */
-        public static function post($name)
+        public static function post($name=null)
         {
+                // Return all values
+                if ($name == null) { return static::$cache['post']; }
+                
                 // If string exists in cache, return it
                 if (isset(static::$cache['post'][$name])) { return static::$cache['post'][$name]; }
 
@@ -290,8 +296,11 @@ class parameters
 	 *
 	 * @param mixed $name The name of the variable to retrieve
 	 */
-        public static function put($name)
+        public static function put($name=null)
         {
+                // Return all values
+                if ($name == null) { return static::$cache['put']; }
+                
                 // If string exists in cache, return it
                 if (isset(static::$cache['put'][$name])) { return static::$cache['put'][$name]; }
 
@@ -306,8 +315,11 @@ class parameters
 	 *
 	 * @param mixed $name The name of the variable to retrieve
 	 */
-        public static function delete($name)
+        public static function delete($name=null)
         {
+                // Return all values
+                if ($name == null) { return static::$cache['delete']; }
+                
                 // If string exists in cache, return it
                 if (isset(static::$cache['delete'][$name])) { return static::$cache['delete'][$name]; }
 
@@ -323,8 +335,11 @@ class parameters
 	 *
 	 * @param mixed $name The name of the variable to retrieve
 	 */
-        public static function head($name)
+        public static function head($name=null)
         {
+                // Return all values
+                if ($name == null) { return static::$cache['head']; }
+                
                 // If string exists in cache, return it
                 if (isset(static::$cache['head'][$name])) { return static::$cache['head'][$name]; }
 
@@ -339,8 +354,11 @@ class parameters
 	 *
 	 * @param mixed $name The name of the variable to retrieve
 	 */
-        public static function options($name)
+        public static function options($name=null)
         {
+                // Return all values
+                if ($name == null) { return static::$cache['options']; }
+                
                 // If string exists in cache, return it
                 if (isset(static::$cache['options'][$name])) { return static::$cache['options'][$name]; }
 

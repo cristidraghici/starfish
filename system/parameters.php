@@ -252,7 +252,7 @@ class parameters
         public static function get($name=null)
         {
                 // Return all values
-                if ($name == null) { return static::$cache['get']; }
+                if ($name == null) { return static::sanitize($_GET); }
                 
                 // If string exists in cache, return it
                 if (isset(static::$cache['get'][$name])) { return static::$cache['get'][$name]; }
@@ -271,7 +271,7 @@ class parameters
         public static function post($name=null)
         {
                 // Return all values
-                if ($name == null) { return static::$cache['post']; }
+                if ($name == null) { return static::sanitize(static::$cache['request_body']); }
                 
                 // If string exists in cache, return it
                 if (isset(static::$cache['post'][$name])) { return static::$cache['post'][$name]; }
@@ -299,7 +299,7 @@ class parameters
         public static function put($name=null)
         {
                 // Return all values
-                if ($name == null) { return static::$cache['put']; }
+                if ($name == null) { return static::sanitize(static::$cache['request_body']); }
                 
                 // If string exists in cache, return it
                 if (isset(static::$cache['put'][$name])) { return static::$cache['put'][$name]; }
@@ -318,7 +318,7 @@ class parameters
         public static function delete($name=null)
         {
                 // Return all values
-                if ($name == null) { return static::$cache['delete']; }
+                if ($name == null) { return static::sanitize(static::$cache['request_body']); }
                 
                 // If string exists in cache, return it
                 if (isset(static::$cache['delete'][$name])) { return static::$cache['delete'][$name]; }
@@ -338,7 +338,7 @@ class parameters
         public static function head($name=null)
         {
                 // Return all values
-                if ($name == null) { return static::$cache['head']; }
+                if ($name == null) { return static::sanitize(static::$cache['request_body']); }
                 
                 // If string exists in cache, return it
                 if (isset(static::$cache['head'][$name])) { return static::$cache['head'][$name]; }
@@ -357,7 +357,7 @@ class parameters
         public static function options($name=null)
         {
                 // Return all values
-                if ($name == null) { return static::$cache['options']; }
+                if ($name == null) { return static::sanitize(static::$cache['request_body']); }
                 
                 // If string exists in cache, return it
                 if (isset(static::$cache['options'][$name])) { return static::$cache['options'][$name]; }

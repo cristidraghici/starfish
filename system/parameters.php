@@ -271,7 +271,18 @@ class parameters
         public static function post($name=null)
         {
                 // Return all values
-                if ($name == null) { return static::sanitize(static::$cache['request_body']); }
+                if ($name == null) { 
+                        // Create the string in cache and return it
+                        switch (static::request_content_type())
+                        {
+                                case 'json':
+                                return static::sanitize(static::$cache['request_body']);
+                                break;
+
+                                default:
+                                return static::sanitize($_POST);
+                        }
+                }
                 
                 // If string exists in cache, return it
                 if (isset(static::$cache['post'][$name])) { return static::$cache['post'][$name]; }

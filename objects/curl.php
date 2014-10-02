@@ -249,7 +249,7 @@ class curl
                 $options = $this->config + $config;
                 $options[CURLOPT_POST] = true;
                 $options[CURLOPT_POSTFIELDS] = $data;
-
+                
                 $return = array(
                         'method'   => 'post',
                         'exec_url' => $exec_url,

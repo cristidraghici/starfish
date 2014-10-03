@@ -337,4 +337,14 @@ class database
                 return static::conn($connection)->escape($string);
         }
 }
+
+/**
+* Aliases used by class for easier programming
+*/
+function query() { return call_user_func_array(array('database', 'query'),    func_get_args()); }
+function fetch() { return call_user_func_array(array('database', 'query'),    func_get_args()); }
+function fetchAll() { return call_user_func_array(array('database', 'fetchAll'),    func_get_args()); }
+function dbFree() { return call_user_func_array(array('database', 'free'),    func_get_args()); }
+function numRows() { return call_user_func_array(array('database', 'numRows'),    func_get_args()); }
+
 ?>

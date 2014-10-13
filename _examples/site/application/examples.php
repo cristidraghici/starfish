@@ -15,10 +15,10 @@ class examples
                 
                 foreach ($folders as $key=>$value)
                 {
-                        if (file_exists($path . $value . DIRECTORY_SEPARATOR . 'readme.md'))
+                        if (file_exists($path . $value . DIRECTORY_SEPARATOR . 'README.md'))
                         {
                                 $examples[$key]['title'] = strtoupper($value);
-                                $examples[$key]['content'] = $Markdown->transform( r( $path . $value . DIRECTORY_SEPARATOR . 'readme.md' ) );
+                                $examples[$key]['content'] = $Markdown->transform( r( $path . $value . DIRECTORY_SEPARATOR . 'README.md' ) );
                                 $examples[$key]['modified'] = date("Y-m-d", starfish::obj('files')->directorymtime( $path . $value ) );
                                 
                                 $screenshot = $path . $value . DIRECTORY_SEPARATOR . 'screenshot.png';

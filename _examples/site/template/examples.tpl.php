@@ -15,7 +15,7 @@
                         <?php foreach ($examples as $key=>$value): ?>
                         <div class="col-md-4 col-sm-6 portfolio-item">
                                 <a href="#portfolio-<?php echo $value['title']; ?>" class="portfolio-link" data-toggle="modal">
-                                        <img src="<?php echo $value['screenshot']; ?>" class="img-responsive" alt="">
+                                        <img src="<?php echo $value['screenshot']; ?>" class="img-responsive" alt="" style="max-height: 200px;">
                                 </a>
                                 <div class="portfolio-caption">
                                         <h4><?php echo $value['title']; ?></h4>

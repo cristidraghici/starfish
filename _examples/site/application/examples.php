@@ -13,6 +13,8 @@ class examples
                 $all = obj('files')->all( $path );
                 $folders = $all['folders'];
                 
+                natsort($folders);
+                
                 foreach ($folders as $key=>$value)
                 {
                         if (file_exists($path . $value . DIRECTORY_SEPARATOR . 'README.md'))

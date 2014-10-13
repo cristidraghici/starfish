@@ -25,7 +25,9 @@ on('get', '/', function()
         echo starfish::obj('tpl')->view('about');
         echo starfish::obj('tpl')->view('examples');
         echo starfish::obj('tpl')->view('history');
-        echo starfish::obj('tpl')->view('team');
+        echo starfish::obj('tpl')->view('team', array(
+                'contributors' => obj('team')->getMembers()
+        ));
         echo starfish::obj('tpl')->view('contact');
         echo starfish::obj('tpl')->view('footer');     
 });

@@ -57,6 +57,15 @@ class curl
         ###############
         # Execute
         ###############
+        
+        /**
+         * Make a single get request
+         */
+        public function quickGet($url)
+        {
+                return $this->single( $this->get($url) );
+        }
+        
         /**
          * Make a single request
          * 

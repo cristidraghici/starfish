@@ -10,9 +10,9 @@ if (!class_exists('starfish')) { die(); }
 class cache
 {	
         // The default path to the cache files
-        $path = '';
+        public $path = '';
         // Cache expiration in minutes; 0 - forever
-        $expires = 0;
+        public $expires = 0;
         
         /**
          * Init the object
@@ -28,21 +28,16 @@ class cache
         }
         
         /**
-         * Quickly return the content of a file 
+         * Set the global number of minutes until the cache expires
          * 
-         * @param string $file The filename/Url to use in caching
+         * @param number $minutes The number of minutes
          */
-        function quick($file)
+        function setExpiration($minutes)
         {
-                $file = $this->name($file);
-                
-                if ($row = $this->exists($this->path . $file))
-                {
-                        return $row;
-                }
-                
-                return false;
+                $this->expires = $minutes;
+                return true;
         }
+
         /**
          * Create the filename for the cache file
          * 
@@ -50,42 +45,41 @@ class cache
          */
         function name($file)
         {
-                $file = substr($file, -100) . '-' . md5($file);
-                return $file;
+                return $this->path . starfish::obj('files')->filename_validator( substr($file, -100) ) . '-' . md5($file);
         }
         
         /**
-         * Read the content of a cache file
+         * Quickly return the content of a file 
          * 
          * @param string $file The filename/Url to use in caching
+         * @param number $expires Number of minutes until the cache expires, available only for this file
          */
-        function r($file)
+        function quick($file, $expires=null)
         {
-                $file = $this->name($file);
+                if ($this->exists($file, $expires))
+                {
+                        return $this->get($file);
+                }
                 
-                return starfish::obj('files')->r($file);
+                return false;
         }
-        /**
-         * Write the content of a cache file
-         * 
-         * @param string $file The filename/Url to use in caching
-         * @param string $content The content of the cached file
-         */
-        function w($file, $content)
-        {
-                $file = $this->name($file);
-                
-                return starfish::obj('files')->w($file, $content);
-        }
+        
         /**
          * Check if a file exists inside the cache and if it is still available
          * 
          * @param string $file The filename/Url to use in caching
+         * @param number $expires Number of minutes until the cache expires, available only for this file
+         * 
+         * @return boolean Whether the cache exists and is available or not
          */
-        function exists($file)
+        function exists($file, $expires=null)
         {
+                if (!is_numeric($expires)) { $expires = $this->expires; }
+                
+                // Convert the filename into the cache format
                 $file = $this->name($file);
                 
+                // Check the existence
                 if (file_exists($file))
                 {
                         if ($this->expires == 0)
@@ -93,13 +87,39 @@ class cache
                                 return true;
                         }
                         
-                        $difference = time() - $this->expires * 60;
+                        $difference = time() - ( filemtime($file) + $expires * 60 );
                         if ($difference <= 0)
                         {
                                 return true;
                         }
                 }
+                
                 return false;
+        }
+        
+        /**
+         * Read the content of a cache file
+         * 
+         * @param string $file The filename/Url to use in caching
+         */
+        function get($file)
+        {
+                $file = $this->name($file);
+                
+                return starfish::obj('files')->r($file);
+        }
+        
+        /**
+         * Write the content of a cache file
+         * 
+         * @param string $file The filename/Url to use in caching
+         * @param string $content The content of the cached file
+         */
+        function add($file, $content)
+        {
+                $file = $this->name($file);
+                
+                return starfish::obj('files')->w($file, $content);
         }
 }
 ?>

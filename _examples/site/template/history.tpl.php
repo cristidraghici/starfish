@@ -109,7 +109,7 @@
                                 </div>
                                 <div class="timeline-panel">
                                         <div class="timeline-heading">
-                                                <h4>15 October 2014</h4>
+                                                <h4>25 October 2014</h4>
                                                 <h4 class="subheading">The first version was launched</h4>
                                         </div>
                                         <div class="timeline-body">

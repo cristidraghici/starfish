@@ -11,7 +11,9 @@
                 <meta name="author" content="">
 
                 <title>Starfish - The PHP Framework</title>
-
+                
+                <link rel="shortcut icon" href="public/images/starfish-small.png" />
+                
                 <!-- Bootstrap Core CSS -->
                 <link href="libraries/bootstrap.min.css" rel="stylesheet">
 

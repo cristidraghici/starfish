@@ -8,6 +8,8 @@ ini_set('display_errors', 1);
 require_once('../../starfish.php');
 require_once('config.php');
 
+require_once('./libraries/markdown/markdown.php');
+
 // Initiate Starfish
 starfish::init();
 
@@ -23,7 +25,9 @@ on('get', '/', function()
 {
         echo starfish::obj('tpl')->view('header');
         echo starfish::obj('tpl')->view('about');
-        echo starfish::obj('tpl')->view('examples');
+        echo starfish::obj('tpl')->view('examples', array(
+                'examples' => obj('examples')->getExamples()
+        ));
         echo starfish::obj('tpl')->view('history');
         echo starfish::obj('tpl')->view('team', array(
                 'contributors' => obj('team')->getMembers()

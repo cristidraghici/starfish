@@ -16,7 +16,7 @@ class files
         private static $walkResource = null;
         // Row number for the current file rows walk 
         private static $walkNumRow = 0;
-        
+
         /**
 	 * Read the content of a directory
 	 *
@@ -89,7 +89,7 @@ class files
                         {
                                 static::$walkResource = @fopen($path, "r");
                                 static::$walkNumRow = 0;
-                                
+
                                 return static::walk();
                         }
                 }
@@ -105,18 +105,18 @@ class files
                         {
                                 @fclose(static::$walkResource);
                                 static::$walkResource = null;
-                                
+
                                 return null;
                         }
                 }
-                
+
                 return null;
         }
         public static function walkNumRow()
         {
                 return static::$walkNumRow - 1;
         }
-        
+
         /**
 	 * Read the content of a file
 	 *
@@ -161,7 +161,7 @@ class files
                 {
                         mkdir($directory, 0777, true);
                 }
-                
+
                 // Write to file
                 if ( (file_exists($path) && is_writable($path)) || (!file_exists($path) && is_writable($directory)) )
                 {
@@ -225,7 +225,7 @@ class files
 
                 return $extension;
         }
-        
+
         /**
          * Filename validator
          * 
@@ -235,6 +235,30 @@ class files
         public static function filename_validator($name)
         {
                 return preg_replace("([^\w\s\d\-_~,;\[\]\(\].]|[\.]{2,})", '', $name);
+        }
+
+        /**
+         * Get the directory modification date
+         * 
+         * @param string $path The path of the directory
+         * @return number The most recent filemtime value for the files inside 
+         */
+        public static function directorymtime($path)
+        {
+                $iterator = new DirectoryIterator($path);
+
+                $mtime = -1;
+                $file;
+                foreach ($iterator as $fileinfo) {
+                        if ($fileinfo->isFile()) {
+                                if ($fileinfo->getMTime() > $mtime) {
+                                        $file = $fileinfo->getFilename();
+                                        $mtime = $fileinfo->getMTime();
+                                }
+                        }
+                }
+                
+                return $mtime;
         }
 
         /**

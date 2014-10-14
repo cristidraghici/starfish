@@ -91,7 +91,7 @@
                 <header>
                         <div class="container">
                                 <div class="intro-text">
-                                        <div class="intro-lead-in">My name is Starfish PHP Framework <img src="public/images/starfish-small.png"></div>
+                                        <div class="intro-lead-in">My name is Starfish PHP Framework <img src="public/images/starfish.png"></div>
                                         <div class="intro-heading">It's Nice To Meet You <span>&#9786;</span></div>
                                         <a href="#about" class="page-scroll btn btn-xl">Tell Me More</a>
                                 </div>

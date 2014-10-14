@@ -24,12 +24,19 @@ header .intro-heading span {
 	clear: both;
 	display: block;
 }
+.intro-lead-in img {
+        max-height: 100px;
+}
 
 a.white {
 	color: #fff;
 }
 a.black {
 	color: #000;
+}
+
+#examples img.img-responsive {
+        border: 1px solid #ccc;
 }
 
 .portfolio-modal .modal-content {

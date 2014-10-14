@@ -319,7 +319,7 @@ class starfish
         {
                 foreach ($array as $key=>$value)
                 {
-                        static::config($module, $key, $value, $override);
+                        static::$config[$module][ $key ] = $value;
                 }
                 
                 return true;

@@ -307,6 +307,23 @@ class starfish
 
                 return $return;
         }
+        
+        /**
+         * Configuration array - Pass the configuration values through an array
+	 *
+	 * @param string $module Module name
+	 * @param mixed  $array The array containing the values
+         * @param boolean $override Defaults to: true. If false, then the new value is not set if one already exists
+         */
+        public static function configArray($module, $array=array(), $override=true)
+        {
+                foreach ($array as $key=>$value)
+                {
+                        static::config($module, $key, $value, $override);
+                }
+                
+                return true;
+        }
 
         ##################
         # Variables
@@ -350,7 +367,7 @@ class starfish
                 $name = @serialize($name);
 
                 // Get the variable
-                return static::$variables[$name];
+                return isset(static::$variables[$name]) ? static::$variables[$name] : null;
         }
 
         ##################
@@ -533,6 +550,9 @@ function init()   { return call_user_func_array(array('starfish', 'init'),    fu
 function obj()   { return call_user_func_array(array('starfish', 'obj'),    func_get_args()); }
 function config()   { return call_user_func_array(array('starfish', 'config'),    func_get_args()); }
 function redirect()   { return call_user_func_array(array('starfish', 'redirect'),    func_get_args()); }
+
+function getVar()   { return call_user_func_array(array('starfish', 'get'),    func_get_args()); }
+function setVar()   { return call_user_func_array(array('starfish', 'set'),    func_get_args()); }
 
 /**
  * Instantiate the framework. Minimum PHP 5.3 required.

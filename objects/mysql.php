@@ -22,13 +22,15 @@ class mysql
         {
                 if ($this->connection == null)
                 {
-                        $this->connection = new mysqli($config['host'], $config['user'], $config['pass'], $config['name']);
-                        
-                        if ($this->connection)
-                        {
-                                $this->connection->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-                                //@mysql_set_charset('utf8', $this->connection);
+                        $this->connection = mysqli_connect($config['host'], $config['user'], $config['pass'], $config['name']);
+
+                        // Halt on error
+                        if (mysqli_connect_errno()) {
+                                die( "Connect failed: %s\n", mysqli_connect_errno() );
                         }
+
+                        mysqli_query($this->connection, ("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+                        //@mysql_set_charset('utf8', $this->connection);
                 }
 
                 return $this;
@@ -56,11 +58,10 @@ class mysql
          */
         function query($query)
         {
-                $this->resource = @$this->connection->query( $query );
-                
+                $this->resource = @mysqli_query($this->connection, $query);
                 if (!$this->resource)
                 {
-                        die( $this->connection->error );
+                        die(  mysqli_error( $this->connection ) );
                 }
 
                 return $this->resource;
@@ -73,7 +74,7 @@ class mysql
          */
         function fetch($resource)
         {
-                return $resource->fetch_assoc();
+                return @mysqli_fetch_assoc($resource);
         }
         /*
          * Fetch all results from a resource
@@ -84,11 +85,12 @@ class mysql
         function fetchAll($resource)
         {
                 $result = array();
-                
-                while ($row = $resource->fetch_assoc())
+
+                while ($row = @mysqli_fetch_assoc($resource))
                 {
                         $result[] = $row;
                 }
+                
                 return $result;
         }
 
@@ -102,9 +104,9 @@ class mysql
          */
         public static function numRows($resource)
         {
-                return $this->connection->mysql_num_rows($resource);
+                return @mysqli_num_rows($resource);
         }
-        
+
         /*
          * Free a resource
          * 
@@ -114,6 +116,7 @@ class mysql
         {
                 // Free the memory
                 //$resource->free();
+                @mysqli_free_result($resource);
 
                 return true;
         }
@@ -127,7 +130,7 @@ class mysql
          */
         function sanitize($string)
         {
-                return mysqli_real_escape_string ($this->connection, $string);
+                return @mysqli_real_escape_string($this->connection, $string);
         }
 
         /** 

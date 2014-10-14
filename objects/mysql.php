@@ -26,10 +26,10 @@ class mysql
 
                         // Halt on error
                         if (mysqli_connect_errno()) {
-                                die( "Connect failed: %s\n", mysqli_connect_errno() );
+                                die( "Connect failed: %s\n" . mysqli_connect_errno() );
                         }
 
-                        mysqli_query($this->connection, ("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+                        mysqli_query($this->connection, "SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
                         //@mysql_set_charset('utf8', $this->connection);
                 }
 

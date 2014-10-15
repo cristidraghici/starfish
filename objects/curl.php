@@ -32,7 +32,7 @@ class curl
                         CURLOPT_SSL_VERIFYPEER => false,
                         CURLOPT_MAXREDIRS => 10,       // stop after 10 redirects
                         CURLOPT_ENCODING => "",       // handle all encodings
-                        CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+                        CURLOPT_USERAGENT => "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5",
 
                         CURLOPT_COOKIEJAR => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt',
                         CURLOPT_COOKIEFILE => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt'
@@ -86,7 +86,7 @@ class curl
 
                 // Init the request
                 $ch = curl_init($url);
-                @curl_setopt_array($ch, $options);
+                curl_setopt_array($ch, $options);
                 $output = curl_exec($ch);
 
                 $this->information['_status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -265,7 +265,7 @@ class curl
                         'options'  => $options
                 );
                 $return['id'] = $this->id($return);
-
+                
                 return $return;
         }
         /**

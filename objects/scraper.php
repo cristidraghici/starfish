@@ -221,18 +221,31 @@ class scraper
          * @param string $url URL to download
          * @param string $method Method to use for downloading the urls
          * @param array $parameters Parameters used in the request
-         * @param array $data Data to use when parsing this url
+         * @param array $data Data to send with the request
+         * @param array $storage Data to use when parsing this url
          */
-        public function addUrl($project_id, $group_id, $type, $url, $method='get', $parameters=array(), $data=array())
+        public function addUrl($project_id, $group_id, $type, $url, $method='get', $parameters=array(), $data=array(), $storage=array())
         {
                 // Alter the parameters for storage
                 @ksort($parameters);
                 $parameters = @serialize($parameters);
                 @ksort($data);
                 $data = @serialize($data);
+                @ksort($storage);
+                $storage = @serialize($storage);
+                
+                // Sanitize the data
+                $project_id = starfish::obj('database')->sanitize($project_id);
+                $group_id = starfish::obj('database')->sanitize($group_id);
+                $type = starfish::obj('database')->sanitize($type);
+                $url = starfish::obj('database')->sanitize($url);
+                $method = starfish::obj('database')->sanitize($method);
+                $parameters = starfish::obj('database')->sanitize($parameters);
+                $data = starfish::obj('database')->sanitize($data);
+                $storage = starfish::obj('database')->sanitize($storage);
                 
                 // Add the url to the database
-                $resource = starfish::obj('database')->query("select _url_add('".$project_id."','".$group_id."','".$type."','".$url."','".$method."','".$parameters."','".$data."')");
+                $resource = starfish::obj('database')->query("select _url_add('".$project_id."','".$group_id."','".$type."','".$url."','".$method."','".$parameters."','".$data."', '".$storage."')");
                 $rows = starfish::obj('database')->fetchAll( $resource );
                 starfish::obj('database')->free( $resource );
 
@@ -256,7 +269,17 @@ class scraper
                 $parameters = @serialize($parameters);
                 @ksort($data);
                 $data = @serialize($data);
+                @ksort($storage);
+                $storage = @serialize($storage);
                                 
+                // Sanitize the data
+                $project_id = starfish::obj('database')->sanitize($project_id);
+                $group_id = starfish::obj('database')->sanitize($group_id);
+                $url = starfish::obj('database')->sanitize($url);
+                $method = starfish::obj('database')->sanitize($method);
+                $parameters = starfish::obj('database')->sanitize($parameters);
+                $data = starfish::obj('database')->sanitize($data);
+                
                 // Add the url to the database
                 $resource = starfish::obj('database')->query("delete from urls where project_id='".$project_id."' and group_id='".$group_id."' and url='".$url."' and method='".$method."' and parameters='".$parameters."' and data='".$data."'");
                 starfish::obj('database')->free( $resource );
@@ -289,13 +312,13 @@ class scraper
                 {
                         // Build where clause
                         $where = "where status_download=1 and project_id='".$project_id."'";
-                        if (is_numeric($group_id)) { $where .= "and group_id='".$group_id."'"; }
+                        if (is_numeric($group_id)) { $where .= " and group_id='".$group_id."'"; }
 
                         // Get a list of the files to download, together with updating their download status
-                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, group_id from urls ".$where." order by nr_crt asc limit 0, ".$this->simultaneousDownloads );
+                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, storage, group_id from urls ".$where." order by nr_crt asc limit 0, ".$this->simultaneousDownloads );
                         $rows = starfish::obj('database')->fetchAll( $resource );
                         starfish::obj('database')->free( $resource );
-
+                        
                         // update the status for the selected files
                         foreach ($rows as $key=>$value)
                         {
@@ -308,15 +331,28 @@ class scraper
                         foreach ($rows as $key=>$value)
                         {
                                 // alter the retrieved data for usage
-                                $value['data'] = @unserialize($value['data']);
-                                $value['parameters'] = @unserialize($value['parameters']);
+                                $value['data'] = unserialize($value['data']);
+                                $value['parameters'] = unserialize($value['parameters']);
+                                $value['storage'] = unserialize($value['storage']);
 
                                 // ensure data is ok
                                 $value['method'] = strtolower($value['method']);
                                 if (!in_array($value['method'], array('get', 'post', 'put', 'delete'))) { $value['method'] = 'get'; }
 
                                 // build the request list
-                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters']);
+                                switch ($value['method'])
+                                {
+                                        case 'get':
+                                        case 'delete':
+                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters']);
+                                                break;
+                                        case 'put':
+                                        case 'post':
+                                                // To be reviewed
+                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data']);
+                                                break;
+                                                
+                                }
                                 $request['row'] = $value;
 
                                 $requests[] = $request;
@@ -325,7 +361,7 @@ class scraper
                         // Execute the query
                         $content = starfish::obj('curl')->multiple($requests);
                         $info = starfish::obj('curl')->info();
-
+                        
                         // Process the downloaded result - apply the group_id corresponding callback function
                         foreach ($content as $key=>$value)
                         {
@@ -358,7 +394,7 @@ class scraper
 
                                 if ($callback != null)
                                 {
-                                        $content[$key] = $callback($value, $info['_request'][$key]['row']['data'] );
+                                        $content[$key] = $callback($value, $info['_request'][$key]['row']['storage'] );
                                 }
 
                                 // update the process status
@@ -375,25 +411,38 @@ class scraper
                 {
                         // Build where clause
                         $where = "where status_process=1 and project_id='".$project_id."'";
-                        if (is_numeric($group_id)) { $where .= "and group_id='".$group_id."'"; }
+                        if (is_numeric($group_id)) { $where .= " and group_id='".$group_id."'"; }
 
                         // Get a list of the files to download, together with updating their download status
-                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, group_id from urls ".$where." order by nr_crt asc limit 0, ".$this->simultaneousProcessing );
+                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, storage, group_id from urls ".$where." order by nr_crt asc limit 0, ".$this->simultaneousProcessing );
                         $rows = starfish::obj('database')->fetchAll( $resource );
                         starfish::obj('database')->free( $resource );
 
                         foreach ($rows as $key=>$value)
                         {
                                 // alter the retrieved data for usage
-                                $value['data'] = @unserialize($value['data']);
-                                $value['parameters'] = @unserialize($value['parameters']);
+                                $value['data'] = unserialize($value['data']);
+                                $value['parameters'] = unserialize($value['parameters']);
+                                $value['storage'] = unserialize($value['storage']);
 
                                 // ensure data is ok
                                 $value['method'] = strtolower($value['method']);
                                 if (!in_array($value['method'], array('get', 'post', 'put', 'delete'))) { $value['method'] = 'get'; }
 
                                 // build the request list
-                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters']);
+                                switch ($value['method'])
+                                {
+                                        case 'get':
+                                        case 'delete':
+                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters']);
+                                                break;
+                                        case 'put':
+                                        case 'post':
+                                                // To be reviewed
+                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data']);
+                                                break;
+                                }
+                                
                                 $request['row'] = $value;
 
                                 $requests[ ] = $request;
@@ -421,7 +470,7 @@ class scraper
 
                                 if ($callback != null)
                                 {
-                                        $content[$key] = $callback($row['content'], $value['row']['data'] );
+                                        $content[$key] = $callback($row['content'], $value['row']['storage'] );
                                 }
                                 else
                                 {

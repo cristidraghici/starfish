@@ -223,8 +223,9 @@ class scraper
          * @param array $parameters Parameters used in the request
          * @param array $data Data to send with the request
          * @param array $storage Data to use when parsing this url
+         * @param array $options Options to use in the request configuration
          */
-        public function addUrl($project_id, $group_id, $type, $url, $method='get', $parameters=array(), $data=array(), $storage=array())
+        public function addUrl($project_id, $group_id, $type, $url, $method='get', $parameters=array(), $data=array(), $storage=array(), $options=array())
         {
                 // Alter the parameters for storage
                 @ksort($parameters);
@@ -233,6 +234,8 @@ class scraper
                 $data = @serialize($data);
                 @ksort($storage);
                 $storage = @serialize($storage);
+                @ksort($options);
+                $options = @serialize($options);
                 
                 // Sanitize the data
                 $project_id = starfish::obj('database')->sanitize($project_id);
@@ -243,9 +246,10 @@ class scraper
                 $parameters = starfish::obj('database')->sanitize($parameters);
                 $data = starfish::obj('database')->sanitize($data);
                 $storage = starfish::obj('database')->sanitize($storage);
+                $options = starfish::obj('database')->sanitize($options);
                 
                 // Add the url to the database
-                $resource = starfish::obj('database')->query("select _url_add('".$project_id."','".$group_id."','".$type."','".$url."','".$method."','".$parameters."','".$data."', '".$storage."')");
+                $resource = starfish::obj('database')->query("select _url_add('".$project_id."','".$group_id."','".$type."','".$url."','".$method."','".$parameters."','".$data."', '".$storage."', '".$options."')");
                 $rows = starfish::obj('database')->fetchAll( $resource );
                 starfish::obj('database')->free( $resource );
 
@@ -315,7 +319,7 @@ class scraper
                         if (is_numeric($group_id)) { $where .= " and group_id='".$group_id."'"; }
 
                         // Get a list of the files to download, together with updating their download status
-                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, storage, group_id from urls ".$where." order by nr_crt asc limit 0, ".$this->simultaneousDownloads );
+                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, storage, options, group_id from urls ".$where." order by nr_crt asc limit 0, ".$this->simultaneousDownloads );
                         $rows = starfish::obj('database')->fetchAll( $resource );
                         starfish::obj('database')->free( $resource );
                         
@@ -334,6 +338,7 @@ class scraper
                                 $value['data'] = unserialize($value['data']);
                                 $value['parameters'] = unserialize($value['parameters']);
                                 $value['storage'] = unserialize($value['storage']);
+                                $value['options'] = unserialize($value['options']);
 
                                 // ensure data is ok
                                 $value['method'] = strtolower($value['method']);
@@ -344,12 +349,12 @@ class scraper
                                 {
                                         case 'get':
                                         case 'delete':
-                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters']);
+                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['options']);
                                                 break;
                                         case 'put':
                                         case 'post':
                                                 // To be reviewed
-                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data']);
+                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data'], $value['options']);
                                                 break;
                                                 
                                 }
@@ -424,6 +429,7 @@ class scraper
                                 $value['data'] = unserialize($value['data']);
                                 $value['parameters'] = unserialize($value['parameters']);
                                 $value['storage'] = unserialize($value['storage']);
+                                $value['options'] = unserialize($value['options']);
 
                                 // ensure data is ok
                                 $value['method'] = strtolower($value['method']);
@@ -434,12 +440,12 @@ class scraper
                                 {
                                         case 'get':
                                         case 'delete':
-                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters']);
+                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['options']);
                                                 break;
                                         case 'put':
                                         case 'post':
                                                 // To be reviewed
-                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data']);
+                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data'], $value['options']);
                                                 break;
                                 }
                                 

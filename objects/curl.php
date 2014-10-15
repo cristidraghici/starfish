@@ -86,7 +86,7 @@ class curl
 
                 // Init the request
                 $ch = curl_init($url);
-                curl_setopt_array($ch, $options);
+                @curl_setopt_array($ch, $options);
                 $output = curl_exec($ch);
 
                 $this->information['_status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -237,7 +237,7 @@ class curl
         public function get($url, $params=array(), $config=array())
         {
                 $exec_url = $this->buildUrl($url, $params);
-                $options = $this->config + $config;
+                $options = $config + $this->config;
 
                 $return = array(
                         'method'   => 'get',
@@ -255,7 +255,7 @@ class curl
         {
                 $exec_url = $this->buildUrl($url, $params);
 
-                $options = $this->config + $config;
+                $options = $config + $this->config;
                 $options[CURLOPT_POST] = true;
                 $options[CURLOPT_POSTFIELDS] = $data;
                 
@@ -278,7 +278,7 @@ class curl
                 $f = fopen('php://temp', 'rw+');
                 fwrite($f, $data);
                 rewind($f);
-                $options = $this->config + $config;
+                $options = $config + $this->config;
                 $options[CURLOPT_PUT] = true;
                 $options[CURLOPT_INFILE] = $f;
                 $options[CURLOPT_INFILESIZE] = strlen($data);
@@ -299,7 +299,7 @@ class curl
         {
                 $exec_url = $this->buildUrl($url, $params);
 
-                $options = $this->config + $config;
+                $options = $config + $this->config;
                 $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
 
                 $return = array(

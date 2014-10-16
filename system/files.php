@@ -257,7 +257,7 @@ class files
                                 }
                         }
                 }
-                
+
                 return $mtime;
         }
 

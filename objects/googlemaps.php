@@ -19,7 +19,7 @@ class googlemaps
                 if (!extension_loaded('curl')) { starfish::obj('errors')->error(400, "PHP required extension - curl - not loaded."); }
                 return true;
         }
-        
+
         public static function location($string)
         {
                 $json = $this->get('http://maps.googleapis.com/maps/api/geocode/json?address='. $string .'&sensor=true&language=ro');

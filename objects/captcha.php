@@ -45,7 +45,7 @@ class captcha
         {
                 $nr_chars = $this->captcha_number_of_chars;
                 $chars = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijkmnopqrstuvwxyz0123456789~!@#$%^&*";
-                
+
                 srand((double)microtime()*1000000);
                 $i = 1;
                 $text = '' ;
@@ -56,10 +56,10 @@ class captcha
                         $text = $text . $tmp;
                         $i++;
                 }
-                
+
                 return $text;
         }
-        
+
         /**
          * Generate an image
          * 

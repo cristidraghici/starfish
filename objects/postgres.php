@@ -23,7 +23,7 @@ class postgres
                 if ($this->connection == null)
                 {
                         $this->connection = pg_connect("host=".$config['host']." port=".$config['port']." dbname=".$config['name']." user=".$config['user']." password=".$config['pass']);
-                        
+
                         // Correct output
                         @pg_query($this->connection, 'SET bytea_output = "escape";');
                 }
@@ -76,12 +76,12 @@ class postgres
         function fetchAll($resource)
         {
                 $result = array();
-                
+
                 while ($row = @pg_fetch_assoc($this->resource))
                 {
                         $result[] = $row;
                 }
-                
+
                 return $result;
         }
 
@@ -97,7 +97,7 @@ class postgres
         {
                 return @pg_num_rows($resource);
         }
-        
+
         /*
          * Free a resource
          * 

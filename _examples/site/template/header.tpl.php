@@ -11,9 +11,9 @@
                 <meta name="author" content="">
 
                 <title>Starfish - The PHP Framework</title>
-                
+
                 <link rel="shortcut icon" href="public/images/starfish-small.png" />
-                
+
                 <!-- Bootstrap Core CSS -->
                 <link href="libraries/bootstrap.min.css" rel="stylesheet">
 
@@ -23,7 +23,7 @@
 
                 <!-- Custom Fonts -->
                 <link href="libraries/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-                
+
                 <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
                 <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
                 <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
@@ -32,9 +32,9 @@
                 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
                 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
                 <!--[if lt IE 9]>
-                <script src="libraries/html5shiv.js"></script>
-                <script src="libraries/respond.min.js"></script>
-                <![endif]-->
+<script src="libraries/html5shiv.js"></script>
+<script src="libraries/respond.min.js"></script>
+<![endif]-->
 
         </head>
 

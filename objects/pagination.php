@@ -30,7 +30,7 @@ class pagination
         {
                 // Load the default language (en) from the helper folder
                 require_once( starfish::config('_starfish', 'root') . 'helpers/pagination/language/en.php' );
-                
+
                 return true;
         }
 
@@ -53,7 +53,7 @@ class pagination
 
                 // Make the limits
                 $limits = $this->setLimits($total, $rows, $page);
-                
+
                 // Generate the links
                 $links = $this->setLinks($limits, $page, $pages, $link);
 
@@ -84,7 +84,7 @@ class pagination
                         {
                                 $this->template = $name;
                         }
-                        
+
                         return true;
 
                         break;
@@ -183,7 +183,7 @@ class pagination
                 {
                         $link = starfish::config('_starfish', 'site_url') . substr($link, 2);
                 }
-                
+
                 // The links list
                 $output = array();
 
@@ -252,11 +252,11 @@ class pagination
                                 );
                         }
                 }
-                
-                
+
+
                 // Order the links
                 $data = array();
-            
+
                 if (isset($output['first']) && is_array($output['first']))
                 {
                         $data[] = $output['first'];
@@ -284,7 +284,7 @@ class pagination
                 {
                         $data[] = $output['last'];
                 }
-                
+
                 return $data;
         }
 
@@ -303,7 +303,7 @@ class pagination
                         case 'helpers-bootstrap':
                         $file = starfish::config('_starfish', 'root') . 'helpers/pagination/themes/bootstrap/pagination.tpl.php';
                         break;
-                        
+
                         case 'helpers-clean':
                         $file = starfish::config('_starfish', 'root') . 'helpers/pagination/themes/clean/pagination.tpl.php';
                         break;
@@ -312,7 +312,7 @@ class pagination
                         $file = starfish::config('_starfish', 'template') . $this->template;
                         break;
                 }
-                
+
                 // Load the template file                
                 return reg::obj('tpl')->view($file, array(
                         'data'=>$links

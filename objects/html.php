@@ -146,7 +146,7 @@ class  html
                 $str = str_replace(array("\r","\n","\t","&nbsp;"),"",$str);    
                 return $str;
         }
-        
+
         /**
          * Make a uniformization for the HTML code
          * 
@@ -159,34 +159,34 @@ class  html
                 $html = str_replace(array("\t", "\r", "\f"), "\n", $html);
                 $html = str_replace(array("&nbsp;", "&nbsp"), " ", $html);
                 $html = preg_replace("/\n+/", "\n", $html);
-                
+
                 // All links in the same format
                 // @see http://www.mkyong.com/regular-expressions/how-to-extract-html-links-with-regular-expression/
                 $html = preg_replace('#\s*(?i)href\s*=\s*(\"([^"]*\")|\'[^\']*\'|([^\'">\s]+))#', ' href="$1" ', $html);
                 $html = preg_replace('#\s*(?i)src\s*=\s*(\"([^"]*\")|\'[^\']*\'|([^\'">\s]+))#', ' src="$1" ', $html);
-                
+
                 $html = preg_replace('#href=""([^"]*)""#is', 'href="$1"', $html);
                 $html = preg_replace('#src=""([^"]*)""#is', 'src="$1"', $html);
-                
-                
+
+
                 // Turn the content of all tags to lowecase
-                
+
                 // Remove table details
                 $html = preg_replace("#<table([^>]*)>#is", "<table>", $html);
                 $html = preg_replace("#<tr([^>]*)>#is", "<tr>", $html);
                 $html = preg_replace("#<td([^>]*)>#is", "<td>", $html);
-                
-                
+
+
                 // remove the script tags
                 $html = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', "", $html);
-                
+
                 // Remove extra spaces
                 $html = preg_replace("#[^\S\n]+#", " ", $html);
                 $html = preg_replace_callback("#([^\n]*)\n#", function($match) { return (strlen(trim(@$match[0])) > 0) ? trim($match[0]) . "\n" : ""; }, $html);
-                
-                
+
+
                 return $html;
-                
+
         }
 
         function cleanHTML($html)
@@ -206,7 +206,7 @@ class  html
                 // return the code
                 return $html;
         }
-        
+
         /**
          * Close open HTML tags inside the provided code
          * 

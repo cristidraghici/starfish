@@ -129,9 +129,12 @@ class starfish
                         static::$constants['operating_system'] = 'Non';
                 }
 
+                // Store the time Starfish started
+                static::$constants['execution_time_start'] = time();
+
                 // Get and store more operating system information
                 static::$constants['php_uname'] = php_uname();
-                
+
                 // Get and set CLI status
                 static::$constants['cli'] = ( php_sapi_name() == 'cli' ) ? true : false;
 
@@ -146,10 +149,10 @@ class starfish
 
                 // Set the project name (used in e.g. Session variable names)
                 static::config('_starfish', 'project', 'Starfish');
-                
+
                 // Set the path for Starfish Framework files
                 $path = static::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);
-                
+
 
                 // Update the initial object list paths
                 foreach (static::$objects as $key=>$value)
@@ -164,7 +167,7 @@ class starfish
 
                 // Set the path for Starfish storage		
                 static::config('_starfish', 'storage', $path . 'storage'  . DIRECTORY_SEPARATOR, false);
-                
+
                 // Set the path for Starfish storage		
                 static::config('_starfish', 'template', $path . 'template'  . DIRECTORY_SEPARATOR, false);
 
@@ -175,12 +178,12 @@ class starfish
                 static::obj('parameters');
                 static::obj('routes');
                 static::obj('databases');
-                
+
                 static::preload($objects);
-                
+
                 return null;
         }
-        
+
         /**
          * Preload certain objects
          * This is useful for using the alias functions
@@ -190,15 +193,15 @@ class starfish
         public static function preload($objects=array())
         {
                 if (gettype($objects) == 'string') { $objects = array($objects); }
-                
+
                 foreach ($objects as $key=>$value)
                 {
                         static::obj($value);
                 }
-                
+
                 return null;
         }
-        
+
         /**
 	 * Configuration function
 	 *
@@ -295,7 +298,7 @@ class starfish
                                 }
                         }
                 }
-                
+
                 // Exception for "base" name
                 if ($names == 'base' && $type['values'] == 'array')
                 {
@@ -307,7 +310,7 @@ class starfish
 
                 return $return;
         }
-        
+
         /**
          * Configuration array - Pass the configuration values through an array
 	 *
@@ -321,7 +324,7 @@ class starfish
                 {
                         static::$config[$module][ $key ] = $value;
                 }
-                
+
                 return true;
         }
 
@@ -430,10 +433,10 @@ class starfish
 
                                 // Run the init method, if it exists
                                 if (method_exists($object, 'init')) { $object->init(); }
-                                
+
                                 // Run the routing registration method, if it exists
                                 if (method_exists($object, 'routes')) { $object->init(); }
-                                
+
                                 // Store the object
                                 static::$instances[$name] = $object;
 
@@ -462,7 +465,7 @@ class starfish
 
                 return false;
         }
-        
+
         /**
 	 * Just create an object, without storing it into the registry
 	 *
@@ -474,9 +477,9 @@ class starfish
         public static function access($name, $configuration=array())
         {
                 $object = static::obj($name, $configuration);
-                
+
                 unset( static::$instances[ $name ]);
-                
+
                 return $object;
         }
 
@@ -496,7 +499,7 @@ class starfish
                 @header("Location: {$path}", true, $code);
                 exit;
         }
-        
+
         /**
          * Get the internal memory usage
          * 
@@ -522,25 +525,35 @@ class starfish
 
                 return "";
         }
-        
-        
+
+        /**
+		* Get the execution time for the script
+		*
+		* @return string The execution time in human readable format
+		*/
+        public static function execution_time()
+        {
+                $difference = time() - static::$constants['execution_time_start'];
+                return static::obj('epoch')->seconds_to_readable($difference);
+        }
+
         /** 
          * Model/View/Controller support functions
          * 
          * @todo Yet to be implemented
          */
-	public static function c($name)
-	{
-		return true;
-	}
-	public static function m($name)
-	{
-		return true;
-	}
-	public static function v($name, $data=array())
-	{
-		return true;
-	}
+        public static function c($name)
+        {
+                return true;
+        }
+        public static function m($name)
+        {
+                return true;
+        }
+        public static function v($name, $data=array())
+        {
+                return true;
+        }
 }
 
 /**

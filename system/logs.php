@@ -13,7 +13,7 @@ class logs
 {
         // The default path to the cache files
         public $path = null;
-        
+
         /**
 	 * Init
 	 *
@@ -25,10 +25,10 @@ class logs
                 // Set the path to the storage files
                 $this->path = starfish::config('_starfish', 'storage') . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR;
                 if (!file_exists($this->path)) { starfish::obj('files')->w($this->path . 'index.html', 'Silence is golden.'); }
-                
+
                 return true;
         }
-        
+
         /**
          * Save information to the log file
          * 
@@ -38,13 +38,13 @@ class logs
         public function saveLog($file, $data)
         {
                 $file = $this->path . $file;
-                
+
                 $data = @json_encode($data) . PHP_EOL;
                 $this->add($file, $data . PHP_EOL, 'a');
-                
+
                 return true;
         }
-        
+
         /**
          * Reset the log file
          * 
@@ -53,9 +53,9 @@ class logs
         public function resetLog($file)
         {
                 $file = $this->path . $file;
-                
+
                 starfish::obj('files')->w($file, "", 'w');
-                
+
                 return true;
         }
 
@@ -68,7 +68,7 @@ class logs
         public static function add($file, $text)
         {
                 $file = $this->path . $file;
-                
+
                 // Make sure we are dealign with a string
                 if (gettype($text) != 'string') { $text = @serialize($text); }
 

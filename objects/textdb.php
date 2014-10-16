@@ -13,10 +13,10 @@ if (!class_exists('starfish')) { die(); }
 class textdb
 {
         private $connection;
-        
+
         private $resource = array();
         private $resource_position = 0;
-        
+
         /*
          * Connect to the database
          * 
@@ -32,10 +32,10 @@ class textdb
                 {
                         $scramble = starfish::obj('scramble');
                         $encrypt  = starfish::obj('encrypt');
-                        
+
                         $scramble->hash($config['scramble']);
                         $encrypt->hash($config['encrypt']);
-                        
+
                         // Store the connection
                         $this->connection = array(
                                 'name' => $config['name'],
@@ -66,16 +66,16 @@ class textdb
         {
                 // Reset the resource
                 $this->resource = array();
-                
+
                 // Reset the resource position index
                 $this->resource_position = 0;
-                
+
                 // Execute the query
                 $this->query_sql($query);
-                
+
                 return $this->resource;
         }
-        
+
         /**
          * Parse an SQL string
          * 
@@ -94,165 +94,165 @@ class textdb
         function query_sql($sql)
         {
                 $query = array();
-                
+
                 // Identify the command
                 $parts = explode(" ", $sql);
                 $command = strtolower($parts[0]);
-                
+
                 // Identify the table
                 $table = $this->query_get_the_table_name($command, $sql);
                 $source = starfish::config('_starfish', 'storage') . $this->connection['name'] . DIRECTORY_SEPARATOR . $table . '.textdb.php';
-                
+
                 // Identify the columns
                 $fields = $this->query_get_the_fields($command, $sql);
-                
+
                 // Identify the values
                 $values = $this->query_get_the_values($command, $sql);
-                
+
                 // Identify the conditions      
                 $conditions = $this->query_get_the_condition($command, $sql);
-                
+
                 // Identify the limits
                 $limits = $this->query_get_the_limit($command, $sql);
-                
+
                 // Execute the command
                 /*if (isset($query['columns'])) { ksort($query['columns']); }*/
                 switch ($command)
                 {
                         case 'select':
-                                // create the comparison function
-                                $comparison = null;
-                                if ($conditions)
+                        // create the comparison function
+                        $comparison = null;
+                        if ($conditions)
+                        {
+                                $comparison = $this->query_comparison_function($conditions);
+                        }
+
+                        // go through the rows
+                        while ($row = starfish::obj('files')->walk($source) )
+                        {
+                                $result = @unserialize($row);
+                                foreach ($result as $key=>$value)
                                 {
-                                        $comparison = $this->query_comparison_function($conditions);
+                                        $result[$key] = $this->query_decode($value);
                                 }
-                        
-                                // go through the rows
-                                while ($row = starfish::obj('files')->walk($source) )
+
+                                if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
                                 {
-                                        $result = @unserialize($row);
-                                        foreach ($result as $key=>$value)
-                                        {
-                                                $result[$key] = $this->query_decode($value);
-                                        }
-                                        
-                                        if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
-                                        {
-                                                $this->resource[] = $result;
-                                        }
+                                        $this->resource[] = $result;
                                 }
+                        }
                         break;
-                        
+
                         case 'insert':
-                                if (count($fields) != count($values) || count($fields) == 0)
-                                {
-                                        starfish::obj('errors')->err(400, 'Incorrect fields and values number!');
-                                }
-                                
-                                $result = array();
-                                for ($a = 0; $a < count($fields); $a++)
-                                {
-                                        $result[ $fields[$a] ] = $this->query_encode( $values[$a] );
-                                }
-                                
-                                ksort($result);
-                                
-                                $string = @serialize($result) . PHP_EOL;                                
-                                starfish::obj('files')->w( $source, $string, 'a' );
+                        if (count($fields) != count($values) || count($fields) == 0)
+                        {
+                                starfish::obj('errors')->err(400, 'Incorrect fields and values number!');
+                        }
+
+                        $result = array();
+                        for ($a = 0; $a < count($fields); $a++)
+                        {
+                                $result[ $fields[$a] ] = $this->query_encode( $values[$a] );
+                        }
+
+                        ksort($result);
+
+                        $string = @serialize($result) . PHP_EOL;                                
+                        starfish::obj('files')->w( $source, $string, 'a' );
                         break;
-                        
+
                         case 'update':
-                                // The new lines to store
-                                $lines = array();
-                        
-                                // create the comparison function
-                                $comparison = null;
-                                if ($conditions)
+                        // The new lines to store
+                        $lines = array();
+
+                        // create the comparison function
+                        $comparison = null;
+                        if ($conditions)
+                        {
+                                $comparison = $this->query_comparison_function($conditions);
+                        }
+
+                        // go through the rows
+                        while ($row = starfish::obj('files')->walk($source) )
+                        {
+                                $result = @unserialize($row);
+                                if (is_array($result))
                                 {
-                                        $comparison = $this->query_comparison_function($conditions);
-                                }
-                        
-                                // go through the rows
-                                while ($row = starfish::obj('files')->walk($source) )
-                                {
-                                        $result = @unserialize($row);
-                                        if (is_array($result))
-                                        {
-                                                foreach ($result as $key=>$value)
-                                                {
-                                                        $result[$key] = $this->query_decode($value);
-                                                }
-                                        }
-                                        
-                                        if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
-                                        {
-                                                for ($a = 0; $a < count($fields); $a++)
-                                                {
-                                                        $result[ $fields[$a] ] = $values[$a];
-                                                }
-                                                
-                                                foreach ($result as $key=>$value)
-                                                {
-                                                        $result[$key] = $this->query_encode( $value );
-                                                }
-                                                
-                                                ksort($result);
-                                                
-                                                $lines[] = @serialize($result);
-                                        }
-                                }
-                                
-                                // write the new lines
-                                starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL );
-                        break;
-                        
-                        case 'delete':
-                                // The new lines to store
-                                $lines = array();
-                        
-                                // create the comparison function
-                                $comparison = null;
-                                if ($conditions)
-                                {
-                                        $comparison = $this->query_comparison_function($conditions);
-                                }
-                        
-                                // go through the rows
-                                while ($row = starfish::obj('files')->walk($source) )
-                                {
-                                        $result = @unserialize($row);
                                         foreach ($result as $key=>$value)
                                         {
                                                 $result[$key] = $this->query_decode($value);
                                         }
-                                        
-                                        if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
-                                        {
-                                                // ignorig the line will lead to deletion
-                                        }
-                                        else
-                                        {
-                                                foreach ($result as $key=>$value)
-                                                {
-                                                        $result[$key] = $this->query_encode( $value );
-                                                }
-                                                
-                                                ksort($result);
-                                                
-                                                $lines[] = @serialize($result);
-                                        }
                                 }
-                        
-                                // write the new lines
-                                starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL );
+
+                                if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
+                                {
+                                        for ($a = 0; $a < count($fields); $a++)
+                                        {
+                                                $result[ $fields[$a] ] = $values[$a];
+                                        }
+
+                                        foreach ($result as $key=>$value)
+                                        {
+                                                $result[$key] = $this->query_encode( $value );
+                                        }
+
+                                        ksort($result);
+
+                                        $lines[] = @serialize($result);
+                                }
+                        }
+
+                        // write the new lines
+                        starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL );
+                        break;
+
+                        case 'delete':
+                        // The new lines to store
+                        $lines = array();
+
+                        // create the comparison function
+                        $comparison = null;
+                        if ($conditions)
+                        {
+                                $comparison = $this->query_comparison_function($conditions);
+                        }
+
+                        // go through the rows
+                        while ($row = starfish::obj('files')->walk($source) )
+                        {
+                                $result = @unserialize($row);
+                                foreach ($result as $key=>$value)
+                                {
+                                        $result[$key] = $this->query_decode($value);
+                                }
+
+                                if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
+                                {
+                                        // ignorig the line will lead to deletion
+                                }
+                                else
+                                {
+                                        foreach ($result as $key=>$value)
+                                        {
+                                                $result[$key] = $this->query_encode( $value );
+                                        }
+
+                                        ksort($result);
+
+                                        $lines[] = @serialize($result);
+                                }
+                        }
+
+                        // write the new lines
+                        starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL );
                         break;
                 }
-                
+
                 // Create the result resource
-                
+
                 return $query;
         }
-        
+
         // create the comparison function
         function query_comparison_function($where)
         {
@@ -264,224 +264,224 @@ class textdb
                         if (isset($match[1]) && isset($match[2]) && isset($match[3]))
                         {
                                 if ($match[2] == '=') { $match[2] = '=='; }
-                                
+
                                 $conditions[] = 'if ($row["'.$match[1].'"] '.$match[2].' '.$match[3].') { } else { $return = false; }';
                         }
                 }
-                
+
                 $function = function ($row) use ($conditions) {
                         $return = true;
-                        
+
                         foreach ($conditions as $value)
                         {
                                 eval($value);
                         }
-                        
+
                         return $return;
                 };
-                
+
                 return $function;
         }
-        
+
         // extract the table name
         function query_get_the_table_name($command, $query)
         {
                 $string = array();
-                
+
                 switch ($command)
                 {
                         case 'select':
-                                preg_match('#from ([^\s]*)#is', $query, $match);
-                                $string = trim($match[1]);
+                        preg_match('#from ([^\s]*)#is', $query, $match);
+                        $string = trim($match[1]);
                         break;
-                        
+
                         case 'insert':
-                                preg_match('#insert into ([^\()]*)\(([^\))]*)\)#is', $query, $match);
-                                $string = trim($match[1]);
+                        preg_match('#insert into ([^\()]*)\(([^\))]*)\)#is', $query, $match);
+                        $string = trim($match[1]);
                         break;
-                        
+
                         case 'update':
-                                preg_match('#update ([^\s]*) set#is', $query, $match);
-                                $string = trim($match[1]);
+                        preg_match('#update ([^\s]*) set#is', $query, $match);
+                        $string = trim($match[1]);
                         break;
-                        
+
                         case 'delete':
-                                preg_match('#delete from ([^\s]*)#is', $query, $match);
-                                $string = trim($match[1]);
+                        preg_match('#delete from ([^\s]*)#is', $query, $match);
+                        $string = trim($match[1]);
                         break;
                 }
-                
+
                 return $string;                
         }
-        
+
         // extract the field names from the query
         function query_get_the_fields($command, $query)
         {
                 $fields = array();
-                
+
                 switch ($command)
                 {
                         case 'select':
-                                preg_match('#select (.*) from#is', $query, $match);
-                                $string = trim($match[1]);
-                        
-                                if ($string == '*')
-                                {
-                                        $fields = true;
-                                }
-                                else
-                                {
-                                        $parts = explode(",", $string);
-                                        foreach ($parts as $key=>$value)
-                                        {
-                                                $fields[] = trim($value);
-                                        }
-                                }
-                        break;
-                        
-                        case 'insert':
-                                preg_match('#insert into ([^\()]*)\(([^\))]*)\)#is', $query, $match);
-                                $string = trim($match[2]);
+                        preg_match('#select (.*) from#is', $query, $match);
+                        $string = trim($match[1]);
+
+                        if ($string == '*')
+                        {
+                                $fields = true;
+                        }
+                        else
+                        {
                                 $parts = explode(",", $string);
                                 foreach ($parts as $key=>$value)
                                 {
                                         $fields[] = trim($value);
                                 }
+                        }
                         break;
-                        
+
+                        case 'insert':
+                        preg_match('#insert into ([^\()]*)\(([^\))]*)\)#is', $query, $match);
+                        $string = trim($match[2]);
+                        $parts = explode(",", $string);
+                        foreach ($parts as $key=>$value)
+                        {
+                                $fields[] = trim($value);
+                        }
+                        break;
+
                         case 'update':
-                                preg_match('#update (.*) set (.*)#is', $query, $match);
-                                $string = trim($match[2]);
-                                $parts = explode("where", $string);
-                                $string = trim($parts[0]);
-                                $parts = explode("limit", $string);
-                                $string = trim($parts[0]);
-                        
-                                $string = trim($string);
-                                preg_match_all("#([^=]*)='([^']*)'#is", $string, $matches);
-                                foreach ($matches[1] as $key=>$value)
-                                {
-                                        $fields[] = trim($value);
-                                }
+                        preg_match('#update (.*) set (.*)#is', $query, $match);
+                        $string = trim($match[2]);
+                        $parts = explode("where", $string);
+                        $string = trim($parts[0]);
+                        $parts = explode("limit", $string);
+                        $string = trim($parts[0]);
+
+                        $string = trim($string);
+                        preg_match_all("#([^=]*)='([^']*)'#is", $string, $matches);
+                        foreach ($matches[1] as $key=>$value)
+                        {
+                                $fields[] = trim($value);
+                        }
                         break;
-                        
+
                         case 'delete':
-                                $fields = true;
+                        $fields = true;
                         break;
                 }
-                
+
                 return $fields;
         }
-        
+
         // extract the values from the query
         function query_get_the_values($command, $query)
         {
                 $values = array();
-                
+
                 switch ($command)
                 {
                         case 'select':
-                                $values = true;
+                        $values = true;
                         break;
-                        
+
                         case 'insert':
-                                preg_match('#insert into ([^\()]*)\(([^\))]*)\) values\(([^\))]*)\)#is', $query, $match);
-                                $string = trim($match[3]);
-                                
-                                preg_match_all("#'([^']*)'#is", $string, $matches);
-                                foreach ($matches[1] as $key=>$value)
-                                {
-                                        $values[] = trim($value);
-                                }
+                        preg_match('#insert into ([^\()]*)\(([^\))]*)\) values\(([^\))]*)\)#is', $query, $match);
+                        $string = trim($match[3]);
+
+                        preg_match_all("#'([^']*)'#is", $string, $matches);
+                        foreach ($matches[1] as $key=>$value)
+                        {
+                                $values[] = trim($value);
+                        }
                         break;
-                        
+
                         case 'update':
-                                preg_match('#update (.*) set (.*)#is', $query, $match);
-                                $string = @trim($match[2]);
-                                $parts = explode("where", $string);
-                                $string = @trim($parts[0]);
-                                $parts = explode("limit", $string);
-                                $string = @trim($parts[0]);
-                        
-                                $string = trim($string);
-                                preg_match_all("#([^=]*)='([^']*)'#is", $string, $matches);
-                                foreach ($matches[2] as $key=>$value)
-                                {
-                                        $values[] = trim($value);
-                                }
+                        preg_match('#update (.*) set (.*)#is', $query, $match);
+                        $string = @trim($match[2]);
+                        $parts = explode("where", $string);
+                        $string = @trim($parts[0]);
+                        $parts = explode("limit", $string);
+                        $string = @trim($parts[0]);
+
+                        $string = trim($string);
+                        preg_match_all("#([^=]*)='([^']*)'#is", $string, $matches);
+                        foreach ($matches[2] as $key=>$value)
+                        {
+                                $values[] = trim($value);
+                        }
                         break;
-                        
+
                         case 'delete':
-                                $values = true;
+                        $values = true;
                         break;
                 }
-                
+
                 return $values;
         }
-        
+
         // identify the condition
         function query_get_the_condition($command, $query)
         {
                 $string = array();
-                
+
                 switch ($command)
                 {
                         case 'select':
-                                preg_match('#where (.*)#is', $query, $match);
-                                $string = @trim($match[1]);
-                                $parts = explode("limit", $string);
-                                $string = @trim($parts[0]);
+                        preg_match('#where (.*)#is', $query, $match);
+                        $string = @trim($match[1]);
+                        $parts = explode("limit", $string);
+                        $string = @trim($parts[0]);
                         break;
-                        
+
                         case 'insert':
-                                $string = true;
+                        $string = true;
                         break;
-                        
+
                         case 'update':
-                                preg_match('#where (.*)#is', $query, $match);
-                                $string = @trim($match[1]);
-                                $parts = @explode("limit", $string);
-                                $string = trim($parts[0]);
+                        preg_match('#where (.*)#is', $query, $match);
+                        $string = @trim($match[1]);
+                        $parts = @explode("limit", $string);
+                        $string = trim($parts[0]);
                         break;
-                        
+
                         case 'delete':
-                                preg_match('#where (.*)#is', $query, $match);
-                                $string = @trim($match[1]);
+                        preg_match('#where (.*)#is', $query, $match);
+                        $string = @trim($match[1]);
                         break;
                 }
-                
+
                 return $string;
         }
-        
+
         // identify the limit
         function query_get_the_limit($command, $query)
         {
                 $string = array();
-                
+
                 switch ($command)
                 {
                         case 'select':
-                                preg_match('#limit (.*)#is', $query, $match);
-                                $string = @trim(@$match[2]);
+                        preg_match('#limit (.*)#is', $query, $match);
+                        $string = @trim(@$match[2]);
                         break;
-                        
+
                         case 'insert':
-                                $string = true;
+                        $string = true;
                         break;
-                        
+
                         case 'update':
-                                $string = true;
+                        $string = true;
                         break;
-                        
+
                         case 'delete':
-                                preg_match('#limit (.*)#is', $query, $match);
-                                $string = @trim($match[2]);
+                        preg_match('#limit (.*)#is', $query, $match);
+                        $string = @trim($match[2]);
                         break;
                 }
-                
+
                 return $string;
         }
-        
+
         // encode a string
         function query_encode($string)
         {
@@ -492,7 +492,7 @@ class textdb
         {
                 return $this->connection['scramble']->decode( $this->connection['encrypt']->decode($string) );
         }
-        
+
         /*
          * Fetch one result from a resource
          * 
@@ -502,7 +502,7 @@ class textdb
         function fetch($resource)
         {
                 $this->resource_position++;
-                
+
                 if (isset($this->resource[$this->resource_position]))
                 {
                         return $this->resource[$this->resource_position];
@@ -512,7 +512,7 @@ class textdb
                         $this->resource_position = 0;
                         return false;
                 }
-                
+
                 return '';
         }
         /*
@@ -537,7 +537,7 @@ class textdb
         {
                 return @count($this->resource);
         }
-        
+
         /*
          * Free a resource
          * 

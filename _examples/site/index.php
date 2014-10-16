@@ -21,8 +21,7 @@ on('post', '/contact', function(){
         starfish::obj('contact')->send();
 });
 
-on('get', '/', function()
-{
+on('get', '/', function(){
         echo starfish::obj('tpl')->view('header');
         echo starfish::obj('tpl')->view('about');
         echo starfish::obj('tpl')->view('examples', array(
@@ -36,8 +35,7 @@ on('get', '/', function()
         echo starfish::obj('tpl')->view('footer');     
 });
 
-on('get', '/:all', function($all)
-{
+on('get', '/:all', function($all){
         echo 'Page does not exist!';
 });
 

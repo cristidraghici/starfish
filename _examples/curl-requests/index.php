@@ -20,13 +20,13 @@ if ($site_url == 'http://<please enter a new value>/starfish/_examples/curl-requ
  * The script itself
  */
 on('get', '/:all', function($all) use ($site_url) {
-	echo starfish::obj('curl')->single(
-		starfish::obj('curl')->post($site_url, array(), 
-			array(
-				'var1' => 'value1',
-				'var2' => 'value2'
-			))
-	);
+        echo starfish::obj('curl')->single(
+                starfish::obj('curl')->post($site_url, array(), 
+                                            array(
+                                                    'var1' => 'value1',
+                                                    'var2' => 'value2'
+                                            ))
+        );
 });
 
 on('post', '/', function(){

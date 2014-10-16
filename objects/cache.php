@@ -13,7 +13,7 @@ class cache
         public $path = '';
         // Cache expiration in minutes; 0 - forever
         public $expires = 0;
-        
+
         /**
          * Init the object
          */
@@ -22,11 +22,11 @@ class cache
                 // Set the path to the storage files
                 $this->path = starfish::config('_starfish', 'storage') . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
                 if (!file_exists($this->path)) { starfish::obj('files')->w($this->path . 'index.html', 'Silence is golden.'); }
-                
+
                 // Set the expiration for the file
                 $this->expires = 0;
         }
-        
+
         /**
          * Set the global number of minutes until the cache expires
          * 
@@ -47,7 +47,7 @@ class cache
         {
                 return $this->path . starfish::obj('files')->filename_validator( substr($file, -100) ) . '-' . md5($file);
         }
-        
+
         /**
          * Quickly return the content of a file 
          * 
@@ -60,10 +60,10 @@ class cache
                 {
                         return $this->get($file);
                 }
-                
+
                 return false;
         }
-        
+
         /**
          * Check if a file exists inside the cache and if it is still available
          * 
@@ -75,10 +75,10 @@ class cache
         function exists($file, $expires=null)
         {
                 if (!is_numeric($expires)) { $expires = $this->expires; }
-                
+
                 // Convert the filename into the cache format
                 $file = $this->name($file);
-                
+
                 // Check the existence
                 if (file_exists($file))
                 {
@@ -86,17 +86,17 @@ class cache
                         {
                                 return true;
                         }
-                        
+
                         $difference = time() - ( filemtime($file) + $expires * 60 );
                         if ($difference <= 0)
                         {
                                 return true;
                         }
                 }
-                
+
                 return false;
         }
-        
+
         /**
          * Read the content of a cache file
          * 
@@ -105,10 +105,10 @@ class cache
         function get($file)
         {
                 $file = $this->name($file);
-                
+
                 return starfish::obj('files')->r($file);
         }
-        
+
         /**
          * Write the content of a cache file
          * 
@@ -118,7 +118,7 @@ class cache
         function add($file, $content)
         {
                 $file = $this->name($file);
-                
+
                 return starfish::obj('files')->w($file, $content);
         }
 }

@@ -21,7 +21,7 @@ class db
 	 */
         private $connection = null;
         private $resource = null;
-        
+
         /**
          * Init the object
          */
@@ -107,7 +107,7 @@ class db
                                 $query = str_replace('{'. $key . '}', $this->sanitize( $parameters[$key], $connection ), $query );
                         }
                 }
-                
+
                 echo $query;
                 exit;
         }
@@ -124,7 +124,7 @@ class db
         {
                 if ($resource == null) { $resource = $this->resource; }
                 if ($connection == null) { $resource = $this->connection; }
-                
+
                 return starfish::obj('database')->fetch($resource, $connection);
         }
 
@@ -140,7 +140,7 @@ class db
         {
                 if ($resource == null) { $resource = $this->resource; }
                 if ($connection == null) { $resource = $this->connection; }
-                
+
                 return starfish::obj('database')->fetchAll($resource, $connection);
         }
 
@@ -156,7 +156,7 @@ class db
         {
                 if ($resource == null) { $resource = $this->resource; }
                 if ($connection == null) { $resource = $this->connection; }
-                
+
                 return starfish::obj('database')->numRows($resource, $connection);
         }
 
@@ -170,7 +170,7 @@ class db
         {
                 if ($resource == null) { $resource = $this->resource; }
                 if ($connection == null) { $resource = $this->connection; }
-                
+
                 return starfish::obj('database')->free($resource, $connection);
         }
 

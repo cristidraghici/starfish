@@ -16,9 +16,9 @@ class scraper
 {	
         // Limit the simultaneous download results
         private $simultaneousDownloads = 10;
-        
+
         // Limit the simultaneous process results
-        private $simultaneousProcessing = 20;
+        private $simultaneousProcessing = 10;
 
         // The name of the mysql database to use for parsing, as specified in the config file
         private $connectionName = null; 
@@ -36,7 +36,7 @@ class scraper
         // Messages
         public $message_total = 1;
         public $message_page = 1;
-        
+
         // Path to the shutdown file
         public $shutdown = '';
 
@@ -53,7 +53,7 @@ class scraper
                 if (starfish::$constants['cli'] == false)
                 {
                         //prevent apache from buffering it for deflate/gzip
-                        header("Content-type: text/html");
+                        header("Content-type: text/html; charset=utf-8");
                         header('Cache-Control: no-cache'); // recommended to prevent caching of event data.
 
                         // Turn off output buffering
@@ -69,7 +69,7 @@ class scraper
                         ini_set('implicit_flush', true);
                         ob_implicit_flush(true);
                 }
-                
+
                 // Remove the emergency shutdown file, if needed
                 $this->shutdown = starfish::config('_starfish', 'storage') . '/_shutdown';
                 if (file_exists($this->shutdown))
@@ -236,7 +236,7 @@ class scraper
                 $storage = @serialize($storage);
                 @ksort($options);
                 $options = @serialize($options);
-                
+
                 // Sanitize the data
                 $project_id = starfish::obj('database')->sanitize($project_id);
                 $group_id = starfish::obj('database')->sanitize($group_id);
@@ -247,7 +247,7 @@ class scraper
                 $data = starfish::obj('database')->sanitize($data);
                 $storage = starfish::obj('database')->sanitize($storage);
                 $options = starfish::obj('database')->sanitize($options);
-                
+
                 // Add the url to the database
                 $resource = starfish::obj('database')->query("select _url_add('".$project_id."','".$group_id."','".$type."','".$url."','".$method."','".$parameters."','".$data."', '".$storage."', '".$options."')");
                 $rows = starfish::obj('database')->fetchAll( $resource );
@@ -275,7 +275,7 @@ class scraper
                 $data = @serialize($data);
                 @ksort($storage);
                 $storage = @serialize($storage);
-                                
+
                 // Sanitize the data
                 $project_id = starfish::obj('database')->sanitize($project_id);
                 $group_id = starfish::obj('database')->sanitize($group_id);
@@ -283,7 +283,7 @@ class scraper
                 $method = starfish::obj('database')->sanitize($method);
                 $parameters = starfish::obj('database')->sanitize($parameters);
                 $data = starfish::obj('database')->sanitize($data);
-                
+
                 // Add the url to the database
                 $resource = starfish::obj('database')->query("delete from urls where project_id='".$project_id."' and group_id='".$group_id."' and url='".$url."' and method='".$method."' and parameters='".$parameters."' and data='".$data."'");
                 starfish::obj('database')->free( $resource );
@@ -304,13 +304,13 @@ class scraper
         public function download($project_id, $group_id=null)
         {
                 $status = $this->status($project_id, $group_id);
-                
+
                 // Halt the execution, if shutdown is enforced
                 if (file_exists($this->shutdown))
                 {
                         return false;
                 }
-                
+
                 // Do the downloading and processing
                 if ($status['downloaded'] < $status['total'])
                 {
@@ -319,10 +319,10 @@ class scraper
                         if (is_numeric($group_id)) { $where .= " and group_id='".$group_id."'"; }
 
                         // Get a list of the files to download, together with updating their download status
-                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, storage, options, group_id from urls ".$where." order by nr_crt asc limit 0, ".$this->simultaneousDownloads );
+                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, storage, options, group_id from urls ".$where." limit 0, ".$this->simultaneousDownloads );
                         $rows = starfish::obj('database')->fetchAll( $resource );
                         starfish::obj('database')->free( $resource );
-                        
+
                         // update the status for the selected files
                         foreach ($rows as $key=>$value)
                         {
@@ -349,14 +349,14 @@ class scraper
                                 {
                                         case 'get':
                                         case 'delete':
-                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['options']);
-                                                break;
+                                        $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['options']);
+                                        break;
                                         case 'put':
                                         case 'post':
-                                                // To be reviewed
-                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data'], $value['options']);
-                                                break;
-                                                
+                                        // To be reviewed
+                                        $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data'], $value['options']);
+                                        break;
+
                                 }
                                 $request['row'] = $value;
 
@@ -366,7 +366,7 @@ class scraper
                         // Execute the query
                         $content = starfish::obj('curl')->multiple($requests);
                         $info = starfish::obj('curl')->info();
-                        
+
                         // Process the downloaded result - apply the group_id corresponding callback function
                         foreach ($content as $key=>$value)
                         {
@@ -419,7 +419,7 @@ class scraper
                         if (is_numeric($group_id)) { $where .= " and group_id='".$group_id."'"; }
 
                         // Get a list of the files to download, together with updating their download status
-                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, storage, group_id from urls ".$where." order by nr_crt asc limit 0, ".$this->simultaneousProcessing );
+                        $resource = starfish::obj('database')->query("select nr_crt, url, method, parameters, data, storage, group_id from urls ".$where." limit 0, ".$this->simultaneousProcessing );
                         $rows = starfish::obj('database')->fetchAll( $resource );
                         starfish::obj('database')->free( $resource );
 
@@ -440,15 +440,15 @@ class scraper
                                 {
                                         case 'get':
                                         case 'delete':
-                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['options']);
-                                                break;
+                                        $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['options']);
+                                        break;
                                         case 'put':
                                         case 'post':
-                                                // To be reviewed
-                                                $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data'], $value['options']);
-                                                break;
+                                        // To be reviewed
+                                        $request = starfish::obj('curl')->{$value['method']}($value['url'], $value['parameters'], $value['data'], $value['options']);
+                                        break;
                                 }
-                                
+
                                 $request['row'] = $value;
 
                                 $requests[ ] = $request;
@@ -568,7 +568,7 @@ class scraper
                                 'finished'      => true
                         );
                 }
-                
+
                 if (!is_numeric($group_id))
                 {
                         $resource = starfish::obj('database')->query("select 
@@ -618,7 +618,8 @@ class scraper
                 // Show the current message
                 if (starfish::$constants['cli'] == false)
                 {
-                        echo '<span>' . $this->message_total . '. </span>' . $text . '<span> ('.starfish::memory_usage().' memory used)</span>';
+                        $text = preg_replace("/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/", "<a href='$0' target='_blank'>$0</a> ", $text);
+                        echo '<span>' . $this->message_total . '. </span>' . $text . '<span> ('.starfish::memory_usage().' memory used - '.starfish::execution_time().')</span>';
                 }
                 else
                 {
@@ -646,16 +647,17 @@ class scraper
                         {
                                 echo '<SCRIPT LANGUAGE=JavaScript>document.body.innerHTML = "";</SCRIPT>';
                                 $this->message_page = 1;
-                                
+
                         }
-                        
+
                         if ($this->message_total == 0 || $this->message_page == 1)
                         {
                                 echo '<style type="text/css">'.
                                         'html, body {font-family: Verdana, Arial, Helvetica, sans-serif;font-size: 11px;}'.
                                         ' a {color: #0099FF; text-decoration: none;} a:hover{text-decoration: underline;}'.
                                         ' span {color: #ccc; text-decoration: none;}'.
-                                        '</style>';
+                                        '</style>' .
+                                        '<meta http-equiv="Content-type" content="text/html; charset=utf-8" />';
 
                                 //Flush (send) the output buffer and turn off output buffering
                                 //ob_end_flush();

@@ -78,7 +78,7 @@ class errors
 
                 return true;
         }
-        
+
         /**
          * Convert an array of errors to a single string
          * 

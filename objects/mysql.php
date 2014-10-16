@@ -22,15 +22,15 @@ class mysql
         {
                 if ($this->connection == null)
                 {
-                        $this->connection = mysqli_connect($config['host'], $config['user'], $config['pass'], $config['name']);
+                        $this->connection = @mysqli_connect($config['host'], $config['user'], $config['pass'], $config['name']);
 
                         // Halt on error
                         if (mysqli_connect_errno()) {
-                                die( "Connect failed: %s\n" . mysqli_connect_errno() );
+                                die( "Connect failed: " . mysqli_connect_error() );
                         }
 
-                        mysqli_query($this->connection, "SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-                        //@mysql_set_charset('utf8', $this->connection);
+                        //mysqli_query($this->connection, "SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+                        mysqli_set_charset($this->connection, 'utf8');
                 }
 
                 return $this;
@@ -90,7 +90,7 @@ class mysql
                 {
                         $result[] = $row;
                 }
-                
+
                 return $result;
         }
 

@@ -40,7 +40,7 @@ class epoch
 
                 return substr($s, 0, -2);
         }
-        
+
         /**
          * Method to return miliseconds
          */

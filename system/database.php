@@ -36,7 +36,7 @@ class database
                                 static::add($key, $value['type'], $value['parameters']);
                         }
                 }
-                
+
                 return true;
         }
 
@@ -82,7 +82,7 @@ class database
                         {
                                 // Get the information about the connection
                                 $info = static::$connections[$name];
-                                
+
                                 // Create the new resource
                                 $conn = null;
 
@@ -90,32 +90,32 @@ class database
                                 {
                                         case 'pgsql':
                                         case 'postgres':
-                                                $conn = starfish::access('postgres')->connect( $info['parameters'] );
-                                                if ($conn != false)
-                                                {
-                                                        static::$resources[$name] = $conn;
-                                                }
+                                        $conn = starfish::access('postgres')->connect( $info['parameters'] );
+                                        if ($conn != false)
+                                        {
+                                                static::$resources[$name] = $conn;
+                                        }
                                         break;
                                         case 'mysql':
-                                                $conn = starfish::access('mysql')->connect( $info['parameters'] );
-                                                if ($conn != false)
-                                                {
-                                                        static::$resources[$name] = $conn;
-                                                }
+                                        $conn = starfish::access('mysql')->connect( $info['parameters'] );
+                                        if ($conn != false)
+                                        {
+                                                static::$resources[$name] = $conn;
+                                        }
                                         break;
                                         case 'textdb':
-                                                $conn = starfish::access('textdb')->connect( $info['parameters'] );
-                                                if ($conn != false)
-                                                {
-                                                        static::$resources[$name] = $conn;
-                                                }
+                                        $conn = starfish::access('textdb')->connect( $info['parameters'] );
+                                        if ($conn != false)
+                                        {
+                                                static::$resources[$name] = $conn;
+                                        }
                                         break;
 
                                         // Break execution if database type is not valid
                                         default: 
-                                                return null;
+                                        return null;
                                 }
-                                
+
                                 return $conn;
                         }
                 }
@@ -144,11 +144,11 @@ class database
                 {
                         case 'string':
                         case 'null':
-                                return static::get($conn);
+                        return static::get($conn);
                         break;
 
                         case 'resource':
-                                return $conn;
+                        return $conn;
                         break;
                 }
 
@@ -189,7 +189,7 @@ class database
                                 $query = str_replace('{'. $key . '}', static::sanitize( $parameters[$key], $connection ), $query );
                         }
                 }
-                
+
                 return static::conn($connection)->query($query);
         }
 
@@ -210,7 +210,7 @@ class database
                                 $query = str_replace('{'. $key . '}', static::sanitize( $parameters[$key], $connection ), $query );
                         }
                 }
-                
+
                 echo $query;
                 exit;
         }
@@ -227,7 +227,7 @@ class database
         public static function fetch($resource, $connection=null, $parameters=array())
         {
                 $row = static::conn($connection)->fetch($resource);
-                
+
                 if (count($parameters) > 0)
                 {
                         foreach ($parameters as $key=>$value)
@@ -235,7 +235,7 @@ class database
                                 if (isset($row[$value])) { $row[$value] = static::escape( $row[$value] ); }
                         }
                 }
-                
+
                 return $row;
         }
 
@@ -251,7 +251,7 @@ class database
         public static function fetchAll($resource, $connection=null, $parameters=array())
         {
                 $rows = static::conn($connection)->fetchAll($resource);
-                
+
                 if (count($parameters) > 0)
                 {
                         foreach ($rows as $k=>$row)
@@ -262,7 +262,7 @@ class database
                                 }
                         }
                 }
-                
+
                 return $rows;
         }
 

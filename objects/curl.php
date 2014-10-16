@@ -37,9 +37,9 @@ class curl
                         CURLOPT_COOKIEJAR => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt',
                         CURLOPT_COOKIEFILE => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt'
                 );
-                
+
                 $this->information = array();
-                
+
                 return true;
         }
 
@@ -57,7 +57,7 @@ class curl
         ###############
         # Execute
         ###############
-        
+
         /**
          * Make a single get request
          */
@@ -65,7 +65,7 @@ class curl
         {
                 return $this->single( $this->get($url) );
         }
-        
+
         /**
          * Make a single request
          * 
@@ -77,10 +77,10 @@ class curl
                 $url = $request['exec_url'];
                 $options = $request['options'];
                 $id = $request['id'];
-                
+
                 // Store the request
                 $this->information['_request'] = $request;
-                
+
                 // Reset the info about the requests
                 $this->resetInfo();
 
@@ -121,15 +121,15 @@ class curl
         {
                 if (!isset($requests[0]) || !is_array($requests[0])) { $requests = array($requests);}
                 $this->_status = array();
-                
+
                 // Reset the info about the requests
                 $this->resetInfo();
-                
+
                 // Add handles for each of the urls
                 $mh = curl_multi_init();
 
                 $handles = array();
-                
+
                 foreach ($requests as $key=>$value)
                 {
                         $ch = curl_init( $value['exec_url'] );
@@ -181,9 +181,9 @@ class curl
                                 list($header, $output) = $this->_processHeader($output, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
                                 $this->information['_header'][$id] = $header;
                         }
-                        
+
                         $content[ $id ] = $output;
-                        
+
                         curl_multi_remove_handle($mh, $ch);
                 }
 
@@ -237,7 +237,7 @@ class curl
         public function get($url, $params=array(), $config=array())
         {
                 $exec_url = $this->buildUrl($url, $params);
-                $options = $config + $this->config;
+                $options = (is_array($config)) ? $config + $this->config : $this->config;
 
                 $return = array(
                         'method'   => 'get',
@@ -254,18 +254,18 @@ class curl
         public function post($url, $params=array(), $data=null, $config=array())
         {
                 $exec_url = $this->buildUrl($url, $params);
+                $options = (is_array($config)) ? $config + $this->config : $this->config;
 
-                $options = $config + $this->config;
                 $options[CURLOPT_POST] = true;
                 $options[CURLOPT_POSTFIELDS] = $data;
-                
+
                 $return = array(
                         'method'   => 'post',
                         'exec_url' => $exec_url,
                         'options'  => $options
                 );
                 $return['id'] = $this->id($return);
-                
+
                 return $return;
         }
         /**
@@ -278,7 +278,8 @@ class curl
                 $f = fopen('php://temp', 'rw+');
                 fwrite($f, $data);
                 rewind($f);
-                $options = $config + $this->config;
+                $options = (is_array($config)) ? $config + $this->config : $this->config;
+
                 $options[CURLOPT_PUT] = true;
                 $options[CURLOPT_INFILE] = $f;
                 $options[CURLOPT_INFILESIZE] = strlen($data);
@@ -299,7 +300,8 @@ class curl
         {
                 $exec_url = $this->buildUrl($url, $params);
 
-                $options = $config + $this->config;
+                $options = (is_array($config)) ? $config + $this->config : $this->config;
+
                 $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
 
                 $return = array(
@@ -324,7 +326,7 @@ class curl
         {
                 if (!is_array($data)) { $data = array(); }
                 $parsed = parse_url($url);
-                
+
                 isset($parsed['query']) ? parse_str($parsed['query'], $parsed['query']) : $parsed['query'] = array();
                 $params = isset($parsed['query']) ? $data + $parsed['query'] : $data;
                 $parsed['query'] = ($params) ? '?' . http_build_query($params) : '';

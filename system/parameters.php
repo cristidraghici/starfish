@@ -236,10 +236,10 @@ class parameters
                         $stub = starfish::config('_starfish', 'site_router') ;
                         $path = preg_replace('@^/?'.preg_quote(trim($stub, '/')).'@i', '', $path);
                 }
-                
+
                 // add begining backslash
                 if (substr($path, 0, 1) != '/') { $path = '/'.$path; }
-                
+
                 static::$cache['path'] = $path;
                 return static::$cache['path'];
         }
@@ -253,7 +253,7 @@ class parameters
         {
                 // Return all values
                 if ($name == null) { return static::sanitize($_GET); }
-                
+
                 // If string exists in cache, return it
                 if (isset(static::$cache['get'][$name])) { return static::$cache['get'][$name]; }
 
@@ -283,7 +283,7 @@ class parameters
                                 return static::sanitize($_POST);
                         }
                 }
-                
+
                 // If string exists in cache, return it
                 if (isset(static::$cache['post'][$name])) { return static::$cache['post'][$name]; }
 
@@ -311,7 +311,7 @@ class parameters
         {
                 // Return all values
                 if ($name == null) { return static::sanitize(static::$cache['request_body']); }
-                
+
                 // If string exists in cache, return it
                 if (isset(static::$cache['put'][$name])) { return static::$cache['put'][$name]; }
 
@@ -330,7 +330,7 @@ class parameters
         {
                 // Return all values
                 if ($name == null) { return static::sanitize(static::$cache['request_body']); }
-                
+
                 // If string exists in cache, return it
                 if (isset(static::$cache['delete'][$name])) { return static::$cache['delete'][$name]; }
 
@@ -350,7 +350,7 @@ class parameters
         {
                 // Return all values
                 if ($name == null) { return static::sanitize(static::$cache['request_body']); }
-                
+
                 // If string exists in cache, return it
                 if (isset(static::$cache['head'][$name])) { return static::$cache['head'][$name]; }
 
@@ -369,7 +369,7 @@ class parameters
         {
                 // Return all values
                 if ($name == null) { return static::sanitize(static::$cache['request_body']); }
-                
+
                 // If string exists in cache, return it
                 if (isset(static::$cache['options'][$name])) { return static::$cache['options'][$name]; }
 
@@ -395,40 +395,40 @@ class parameters
         {
                 $args = func_get_args();
                 $prefix = starfish::config('_starfish', 'project') . '-';
-                
+
                 switch (count($args))
                 {
                         case 0:
-                                session_start();
-                                
-                                foreach ($_SESSION as $key=>$value)
+                        session_start();
+
+                        foreach ($_SESSION as $key=>$value)
+                        {
+                                if (substr($key, 0, strlen($prefix) ) == $prefix)
                                 {
-                                        if (substr($key, 0, strlen($prefix) ) == $prefix)
-                                        {
-                                                static::$cache['session'][ $prefix . $key ] = $value;
-                                        }
+                                        static::$cache['session'][ $prefix . $key ] = $value;
                                 }
-                                
-                                session_write_close();
+                        }
 
-                                return true;
+                        session_write_close();
 
-                                break; // for structured coding
+                        return true;
+
+                        break; // for structured coding
                         case 1:
-                                return isset( static::$cache['session'][ $prefix . $args[0] ] ) ? static::$cache['session'][ $prefix . $args[0] ] : null;
+                        return isset( static::$cache['session'][ $prefix . $args[0] ] ) ? static::$cache['session'][ $prefix . $args[0] ] : null;
 
-                                break; // for structure coding
+                        break; // for structure coding
 
                         case 2:
-                                static::$cache['session'][ $prefix . $args[0] ] = $args[1];
+                        static::$cache['session'][ $prefix . $args[0] ] = $args[1];
 
-                                session_start();
-                                $_SESSION[ $prefix . $args[0] ] = $args[1];
-                                session_write_close();
+                        session_start();
+                        $_SESSION[ $prefix . $args[0] ] = $args[1];
+                        session_write_close();
 
-                                return $args[1];
+                        return $args[1];
 
-                                break; // for structure coding
+                        break; // for structure coding
                 }
         }
 

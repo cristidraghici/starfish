@@ -11,7 +11,7 @@
                 </div>
 
                 <div class="row">
-                        
+
                         <?php foreach ($examples as $key=>$value): ?>
                         <div class="col-md-4 col-sm-6 portfolio-item">
                                 <a href="#portfolio-<?php echo $value['title']; ?>" class="portfolio-link" data-toggle="modal">
@@ -49,9 +49,9 @@
                                                 <h2><?php echo $value['title']; ?></h2>
                                                 <img class="img-responsive" src="<?php echo $value['screenshot']; ?>" alt="">
                                                 <br style="clear: both;">
-                                                
+
                                                 <?php echo $value['content']; ?>
-                                                
+
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
                                         </div>
                                 </div>

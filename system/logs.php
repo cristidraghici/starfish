@@ -12,19 +12,19 @@ if (!class_exists('starfish')) { die(); }
 class logs
 {
         // The default path to the cache files
-        public $path = null;
+        public static $path = null;
 
         /**
-	 * Init
-	 *
-	 * @todo Check the size of the log file, clean it if too big
-	 * @todo Establish the default date format
-	 */
+		* Init
+		*
+		* @todo Check the size of the log file, clean it if too big
+		* @todo Establish the default date format
+		*/
         public function init()
         {
                 // Set the path to the storage files
-                $this->path = starfish::config('_starfish', 'storage') . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR;
-                if (!file_exists($this->path)) { starfish::obj('files')->w($this->path . 'index.html', 'Silence is golden.'); }
+                static::$path = starfish::config('_starfish', 'storage') . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR;
+                if (!file_exists(static::$path)) { starfish::obj('files')->w(static::$path . 'index.html', 'Silence is golden.'); }
 
                 return true;
         }
@@ -35,12 +35,12 @@ class logs
          * @param string $file The name of the file which will store the logs
          * @param mixed $data The data to log
          */
-        public function saveLog($file, $data)
+        public static function saveLog($file, $data)
         {
-                $file = $this->path . $file;
+                $file = static::$path . $file;
 
                 $data = @json_encode($data) . PHP_EOL;
-                $this->add($file, $data . PHP_EOL, 'a');
+                static::add($file, $data . PHP_EOL, 'a');
 
                 return true;
         }
@@ -50,9 +50,9 @@ class logs
          * 
          * @param string $file The name of the file which will store the logs
          */
-        public function resetLog($file)
+        public static function resetLog($file)
         {
-                $file = $this->path . $file;
+                $file = static::$path . $file;
 
                 starfish::obj('files')->w($file, "", 'w');
 
@@ -60,14 +60,14 @@ class logs
         }
 
         /**
-	 * Write into a log file
-	 *
-	 * @param string $file The file where to write the content
-	 * @param mixed $text The content to store
-	 */
+		* Write into a log file
+		*
+		* @param string $file The file where to write the content
+		* @param mixed $text The content to store
+		*/
         public static function add($file, $text)
         {
-                $file = $this->path . $file;
+                $file = static::$path . $file;
 
                 // Make sure we are dealign with a string
                 if (gettype($text) != 'string') { $text = @serialize($text); }
@@ -83,5 +83,5 @@ class logs
 /**
 * Aliases used by class for easier programming
 */
-function log()   { return call_user_func_array(array('logs', 'add'),    func_get_args()); }
+function llog()   { return call_user_func_array(array('logs', 'add'),    func_get_args()); }
 ?>

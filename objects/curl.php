@@ -27,15 +27,17 @@ class curl
                         CURLOPT_HEADER => false,
                         CURLOPT_VERBOSE => true,
                         CURLOPT_AUTOREFERER => true,
+
                         CURLOPT_CONNECTTIMEOUT => 30,
                         CURLOPT_TIMEOUT => 30,
+
                         CURLOPT_SSL_VERIFYPEER => false,
                         CURLOPT_MAXREDIRS => 10,       // stop after 10 redirects
                         CURLOPT_ENCODING => "",       // handle all encodings
                         CURLOPT_USERAGENT => "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5",
 
-                        CURLOPT_COOKIEJAR => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt',
-                        CURLOPT_COOKIEFILE => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt'
+                        //CURLOPT_COOKIEJAR => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt',
+                        //CURLOPT_COOKIEFILE => starfish::config('_starfish', 'storage') .'system/storage/_cookie.txt'
                 );
 
                 $this->information = array();

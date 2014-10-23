@@ -25,7 +25,7 @@ class curl
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HEADER => false,
-                        CURLOPT_VERBOSE => true,
+                        CURLOPT_VERBOSE => false,
                         CURLOPT_AUTOREFERER => true,
 
                         CURLOPT_CONNECTTIMEOUT => 30,

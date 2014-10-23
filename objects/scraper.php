@@ -301,16 +301,22 @@ class scraper
          * 
          * @return boolean True if the process still needs to continue
          */
-        public function download($project_id, $group_id=null)
+        public function download($project_id, $group_id=null, $simultaneous=null)
         {
                 $status = $this->status($project_id, $group_id);
-
+				
                 // Halt the execution, if shutdown is enforced
                 if (file_exists($this->shutdown))
                 {
                         return false;
                 }
 
+				if (is_numeric($simultaneous))
+				{
+					$this->simultaneousDownloads = $simultaneous;
+					$this->simultaneousProcessing = $simultaneous;
+				}
+				
                 // Do the downloading and processing
                 if ($status['downloaded'] < $status['total'])
                 {
@@ -433,7 +439,7 @@ class scraper
                                 $value['data'] = unserialize($value['data']);
                                 $value['parameters'] = unserialize($value['parameters']);
                                 $value['storage'] = unserialize($value['storage']);
-                                $value['options'] = unserialize($value['options']);
+                                $value['options'] = @unserialize($value['options']);
 
                                 // ensure data is ok
                                 $value['method'] = strtolower($value['method']);
@@ -503,6 +509,8 @@ class scraper
                 {
                         return false;
                 }
+				
+				return false;
         }
 
         /**

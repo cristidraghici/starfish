@@ -23,10 +23,6 @@ class scraper
         // The name of the mysql database to use for parsing, as specified in the config file
         private $connectionName = null; 
 
-        // The details about the project
-        private $project_id = null;
-        private $project_name = "";
-
         // Store the processing functions
         private $processing_functions = array();
 
@@ -127,14 +123,12 @@ class scraper
         }
 
         /**
-         * Set the project name
+         * Get the project id by name
          * 
          * @param string $name Name of the project
          */
-        public function setProject($name)
+        public function getProject($name)
         {
-                $this->project_name = $name;
-
                 $resource = starfish::obj('database')->query("select nr_crt from projects where title='".$name."';", $this->connectionName);
                 $row = starfish::obj('database')->fetch( $resource );
                 starfish::obj('database')->free( $resource );
@@ -146,10 +140,8 @@ class scraper
                         $resource = starfish::obj('database')->query("select nr_crt from projects where title='".$name."';", $this->connectionName);
                         $row = starfish::obj('database')->fetch( $resource );
                 }
-
-                $this->project_id = $row['nr_crt'];
-
-                return true;
+                
+                return $row['nr_crt'];
         }
 
         /**

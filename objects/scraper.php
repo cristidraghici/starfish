@@ -43,7 +43,7 @@ class scraper
         // Download storage
         // 0 - no storage, 1 - mysql , 2 - files
         public $download_storage_type = 1;
-        private $scraper_storage_path = 1;
+        private $scraper_storage_path = '';
 
         /**
          * The init function
@@ -83,8 +83,8 @@ class scraper
                 }
 
                 // Download storage check the existence of the storage file
-                static::$scraper_storage_path = starfish::config('_starfish', 'storage') . DIRECTORY_SEPARATOR . 'scraper' . DIRECTORY_SEPARATOR;
-                if (!file_exists(static::$scraper_storage_path)) { starfish::obj('files')->w(static::$scraper_storage_path . 'index.html', 'Silence is golden.'); }
+                $this->scraper_storage_path = starfish::config('_starfish', 'storage') . DIRECTORY_SEPARATOR . 'scraper' . DIRECTORY_SEPARATOR;
+                if (!file_exists($this->scraper_storage_path)) { starfish::obj('files')->w($this->scraper_storage_path . 'index.html', 'Silence is golden.'); }
 
                 return true;
         }

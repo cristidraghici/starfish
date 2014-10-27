@@ -405,13 +405,13 @@ class parameters
                         {
                                 if (substr($key, 0, strlen($prefix) ) == $prefix)
                                 {
-                                        static::$cache['session'][ $prefix . $key ] = $value;
+                                        static::$cache['session'][ $key ] = $value;
                                 }
                         }
 
                         session_write_close();
 
-                        return true;
+                        return static::$cache['session'];
 
                         break; // for structured coding
                         case 1:

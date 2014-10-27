@@ -126,9 +126,17 @@ class scraper
         {
                 $this->project_name = $name;
 
-                $resource = starfish::obj('database')->query("select _project_get_id('".$name."') as nr_crt;", $this->connectionName);
+                $resource = starfish::obj('database')->query("select nr_crt from projects where title='".$name."';", $this->connectionName);
                 $row = starfish::obj('database')->fetch( $resource );
                 starfish::obj('database')->free( $resource );
+                if (!isset($row['nr_crt']))
+                {
+                        $resource = starfish::obj('database')->query("insert into projects(title) values('".$name."')".$name."';", $this->connectionName);
+                        starfish::obj('database')->free( $resource );
+
+                        $resource = starfish::obj('database')->query("select nr_crt from projects where title='".$name."';", $this->connectionName);
+                        $row = starfish::obj('database')->fetch( $resource );
+                }
 
                 $this->project_id = $row['nr_crt'];
 
@@ -249,8 +257,8 @@ class scraper
                 $options = starfish::obj('database')->sanitize($options);
 
                 // Add the url to the database
-                $resource = starfish::obj('database')->query("select _url_add('".$project_id."','".$group_id."','".$type."','".$url."','".$method."','".$parameters."','".$data."', '".$storage."', '".$options."')", $this->connectionName);
-                $rows = starfish::obj('database')->fetchAll( $resource );
+                $resource = starfish::obj('database')->query("insert into urls(url, method, parameters, data, storage, options, project_id, group_id, type, status_download, status_process)
+                values('".$url."', '".$method."', '".$parameters."', '".$data."', '".$storage."', '".$options."', '".$project_id."', '".$group_id."', '".$type."', 1, 1) on duplicate update status_process=1", $this->connectionName);
                 starfish::obj('database')->free( $resource );
 
                 return true;
@@ -304,19 +312,19 @@ class scraper
         public function download($project_id, $group_id=null, $simultaneous=null)
         {
                 $status = $this->status($project_id, $group_id);
-				
+
                 // Halt the execution, if shutdown is enforced
                 if (file_exists($this->shutdown))
                 {
                         return false;
                 }
 
-				if (is_numeric($simultaneous))
-				{
-					$this->simultaneousDownloads = $simultaneous;
-					$this->simultaneousProcessing = $simultaneous;
-				}
-				
+                if (is_numeric($simultaneous))
+                {
+                        $this->simultaneousDownloads = $simultaneous;
+                        $this->simultaneousProcessing = $simultaneous;
+                }
+
                 // Do the downloading and processing
                 if ($status['downloaded'] < $status['total'])
                 {
@@ -332,7 +340,7 @@ class scraper
                         // update the status for the selected files
                         foreach ($rows as $key=>$value)
                         {
-                                $resource = starfish::obj('database')->query("select _url_set_download(".$value['nr_crt'].", 2)", $this->connectionName);
+                                $resource = starfish::obj('database')->query("update urls set status_download=2 where nr_crt='".$value['nr_crt']."'", $this->connectionName);
                                 starfish::obj('database')->free( $resource );
                         }
 
@@ -380,7 +388,7 @@ class scraper
                                 $callback = null;
 
                                 // Update the status
-                                $resource = starfish::obj('database')->query("select _url_set_download(".$info['_request'][$key]['row']['nr_crt'].", 3)", $this->connectionName);
+                                $resource = starfish::obj('database')->query("update urls set status_download=3 where nr_crt='".$info['_request'][$key]['row']['nr_crt']."'", $this->connectionName);
                                 starfish::obj('database')->free( $resource );
 
                                 // Update the content
@@ -413,7 +421,7 @@ class scraper
                                 }
 
                                 // update the process status
-                                $resource = starfish::obj('database')->query("select _url_set_process(".$info['_request'][$key]['row']['nr_crt'].", 2)", $this->connectionName);
+                                $resource = starfish::obj('database')->query("update urls set status_process=2 where nr_crt='".$info['_request'][$key]['row']['nr_crt']."'", $this->connectionName);
                                 starfish::obj('database')->free( $resource );
                         }
 
@@ -496,7 +504,7 @@ class scraper
                                 $info[$key] = $value;
 
                                 // update the process status
-                                $resource = starfish::obj('database')->query("select _url_set_process(".$value['row']['nr_crt'].", 2)", $this->connectionName);
+                                $resource = starfish::obj('database')->query("update urls set status_process=2 where nr_crt='".$value['row']['nr_crt']."'", $this->connectionName);
                                 starfish::obj('database')->free( $resource );
                         }
 
@@ -509,8 +517,8 @@ class scraper
                 {
                         return false;
                 }
-				
-				return false;
+
+                return false;
         }
 
         /**

@@ -40,6 +40,11 @@ class scraper
         // Path to the shutdown file
         public $shutdown = '';
 
+        // Download storage
+        // 0 - no storage, 1 - mysql , 2 - files
+        public $download_storage_type = 1;
+        private $scraper_storage_path = 1;
+
         /**
          * The init function
          */
@@ -76,6 +81,10 @@ class scraper
                 {
                         @unlink( $this->shutdown );
                 }
+
+                // Download storage check the existence of the storage file
+                static::$scraper_storage_path = starfish::config('_starfish', 'storage') . DIRECTORY_SEPARATOR . 'scraper' . DIRECTORY_SEPARATOR;
+                if (!file_exists(static::$scraper_storage_path)) { starfish::obj('files')->w(static::$scraper_storage_path . 'index.html', 'Silence is golden.'); }
 
                 return true;
         }
@@ -258,7 +267,7 @@ class scraper
 
                 // Add the url to the database
                 $resource = starfish::obj('database')->query("insert into urls(url, method, parameters, data, storage, options, project_id, group_id, type, status_download, status_process)
-                values('".$url."', '".$method."', '".$parameters."', '".$data."', '".$storage."', '".$options."', '".$project_id."', '".$group_id."', '".$type."', 1, 1) on duplicate update status_process=1", $this->connectionName);
+                values('".$url."', '".$method."', '".$parameters."', '".$data."', '".$storage."', '".$options."', '".$project_id."', '".$group_id."', '".$type."', 1, 1) on duplicate key update status_process=1", $this->connectionName);
                 starfish::obj('database')->free( $resource );
 
                 return true;

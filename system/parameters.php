@@ -411,7 +411,7 @@ class parameters
 
                         session_write_close();
 
-                        return static::$cache['session'];
+                        return isset(static::$cache['session']) ? static::$cache['session'] : null;
 
                         break; // for structured coding
                         case 1:

@@ -12,4 +12,11 @@ starfish::init();
 /**
  * The script itself
  */
+obj('authentication');
+obj('categories');
+obj('notes');
+obj('users');
+
+// Execute the router
+on();
 ?>

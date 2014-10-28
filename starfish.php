@@ -148,7 +148,7 @@ class starfish
                 }
 
                 // Set the project name (used in e.g. Session variable names)
-                static::config('_starfish', 'project', 'Starfish');
+                static::config('_starfish', 'project', 'Starfish', false);
 
                 // Set the path for Starfish Framework files
                 $path = static::config('_starfish', 'root', @realpath(__DIR__) . DIRECTORY_SEPARATOR);

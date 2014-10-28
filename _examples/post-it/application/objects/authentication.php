@@ -10,15 +10,6 @@ class authentication
 	
 	public function routes()
 	{
-                // With parameter
-                on('get', '/:alpha', function($param) {
-                        echo 'With param: ' . starfish::obj('scramble')->decode( starfish::obj('scramble')->encode($param) );
-                });
-
-                // The default path
-                on('get', '/:all', function() {
-                        echo 'Stuff is working well!';
-                });
 		return true;
 	}
 }

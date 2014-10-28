@@ -9,6 +9,9 @@ if (!class_exists('starfish')) { die(); }
  * @package starfish
  * @subpackage starfish.objects.textdb
  * @todo This object can massively be updated, upon request
+ * @todo Naming the column convention:
+ *              * - unique column       
+ *              + - autoincrement
  */
 class textdb
 {
@@ -102,7 +105,7 @@ class textdb
                 // Identify the table
                 $table = $this->query_get_the_table_name($command, $sql);
                 $source = starfish::config('_starfish', 'storage') . $this->connection['name'] . DIRECTORY_SEPARATOR . $table . '.textdb.php';
-
+                                
                 // Identify the columns
                 $fields = $this->query_get_the_fields($command, $sql);
 
@@ -128,17 +131,21 @@ class textdb
                         }
 
                         // go through the rows
+                        starfish::obj('files')->walk($source);
                         while ($row = starfish::obj('files')->walk($source) )
                         {
                                 $result = @unserialize($row);
-                                foreach ($result as $key=>$value)
+                                if ($result)
                                 {
-                                        $result[$key] = $this->query_decode($value);
-                                }
+                                        foreach ($result as $key=>$value)
+                                        {
+                                                $result[$key] = $this->query_decode($value);
+                                        }
 
-                                if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
-                                {
-                                        $this->resource[] = $result;
+                                        if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
+                                        {
+                                                $this->resource[] = $result;
+                                        }
                                 }
                         }
                         break;
@@ -157,7 +164,14 @@ class textdb
 
                         ksort($result);
 
-                        $string = @serialize($result) . PHP_EOL;                                
+                        $string = @serialize($result) . PHP_EOL;     
+                        
+                        // Add the security row
+                        if (!file_exists($source))
+                        {
+                                starfish::obj('files')->w( $source, '<'.'?php /* Starfish TextDB storage protection */ die(); ?'.'>' . PHP_EOL );
+                        }
+                        // Add the row
                         starfish::obj('files')->w( $source, $string, 'a' );
                         break;
 
@@ -173,37 +187,42 @@ class textdb
                         }
 
                         // go through the rows
+                        starfish::obj('files')->walk($source);
                         while ($row = starfish::obj('files')->walk($source) )
                         {
                                 $result = @unserialize($row);
-                                if (is_array($result))
+                                if ($result)
                                 {
-                                        foreach ($result as $key=>$value)
+                                        if (is_array($result))
                                         {
-                                                $result[$key] = $this->query_decode($value);
-                                        }
-                                }
-
-                                if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
-                                {
-                                        for ($a = 0; $a < count($fields); $a++)
-                                        {
-                                                $result[ $fields[$a] ] = $values[$a];
+                                                foreach ($result as $key=>$value)
+                                                {
+                                                        $result[$key] = $this->query_decode($value);
+                                                }
                                         }
 
-                                        foreach ($result as $key=>$value)
+                                        if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
                                         {
-                                                $result[$key] = $this->query_encode( $value );
+                                                for ($a = 0; $a < count($fields); $a++)
+                                                {
+                                                        $result[ $fields[$a] ] = $values[$a];
+                                                }
+
+                                                foreach ($result as $key=>$value)
+                                                {
+                                                        $result[$key] = $this->query_encode( $value );
+                                                }
+
+                                                ksort($result);
+
+                                                $lines[] = @serialize($result);
                                         }
-
-                                        ksort($result);
-
-                                        $lines[] = @serialize($result);
                                 }
                         }
 
                         // write the new lines
-                        starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL );
+                        starfish::obj('files')->w( $source, '<'.'?php /* Starfish TextDB storage protection */ die(); ?'.'>' . PHP_EOL );
+                        starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL, 'a' );
                         break;
 
                         case 'delete':
@@ -218,33 +237,38 @@ class textdb
                         }
 
                         // go through the rows
+                        starfish::obj('files')->walk($source);
                         while ($row = starfish::obj('files')->walk($source) )
                         {
                                 $result = @unserialize($row);
-                                foreach ($result as $key=>$value)
-                                {
-                                        $result[$key] = $this->query_decode($value);
-                                }
-
-                                if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
-                                {
-                                        // ignorig the line will lead to deletion
-                                }
-                                else
+                                if ($result)
                                 {
                                         foreach ($result as $key=>$value)
                                         {
-                                                $result[$key] = $this->query_encode( $value );
+                                                $result[$key] = $this->query_decode($value);
                                         }
 
-                                        ksort($result);
+                                        if (!is_callable($comparison) || (is_callable($comparison) && $comparison($result)))
+                                        {
+                                                // ignorig the line will lead to deletion
+                                        }
+                                        else
+                                        {
+                                                foreach ($result as $key=>$value)
+                                                {
+                                                        $result[$key] = $this->query_encode( $value );
+                                                }
 
-                                        $lines[] = @serialize($result);
+                                                ksort($result);
+
+                                                $lines[] = @serialize($result);
+                                        }
                                 }
                         }
 
                         // write the new lines
-                        starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL );
+                        starfish::obj('files')->w( $source, '<'.'?php /* Starfish TextDB storage protection */ die(); ?'.'>' . PHP_EOL );
+                        starfish::obj('files')->w( $source, @implode(PHP_EOL, $lines) . PHP_EOL, 'a' );
                         break;
                 }
 
@@ -501,11 +525,9 @@ class textdb
          */
         function fetch($resource)
         {
-                $this->resource_position++;
-
                 if (isset($this->resource[$this->resource_position]))
                 {
-                        return $this->resource[$this->resource_position];
+                        return $this->resource[$this->resource_position++];
                 }
                 else
                 {

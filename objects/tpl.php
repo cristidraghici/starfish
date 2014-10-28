@@ -183,4 +183,9 @@ class tpl
                 return $html;
         }
 }
+
+/**
+* Aliases used by class for easier programming
+*/
+function view()   { return call_user_func_array(array('tpl', 'view'),    func_get_args()); }
 ?>

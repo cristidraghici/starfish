@@ -418,7 +418,7 @@ class scraper
                                 }
                                 else
                                 {
-                                        $content[$key] = $row['content'];
+                                        $content[$key] = $value;
                                 }
 
                                 // update the process status

@@ -20,7 +20,14 @@ obj('users');
 
 // The default path
 on('get', '/:all', function() {
-        echo 'Stuff is working well!';
+        if (obj('authentication')->check() == false)
+        {
+                redirect('./login');
+        }
+        else
+        {
+                redirect('./notes');
+        }
 });
 
 // Execute the router

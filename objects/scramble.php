@@ -40,18 +40,22 @@ class scramble
         {
                 if (strlen($string) > 0)
                 {
+                        $string = (string)$string;
                         $hash   = $this->letters;
 
                         $string = preg_replace('#\s#', '', $string);
                         for ($a=0; $a<strlen($string); $a++)
                         {
-                                $letter  = $string[$a];
-                                $hash = $letter . str_replace($letter, '', $hash);
+                                $letter  = (string)$string[$a];
+                                if (stristr($hash, $letter))
+                                {
+                                        $hash = str_replace($letter, '', $hash) . $letter;
+                                }
                         }
 
                         $this->hash = $hash;
                 }
-
+                
                 return true;
         }
 
@@ -64,9 +68,11 @@ class scramble
 	 */
         public function encode($string)
         { 
+                $string = (string)$string;
+                
                 for ($a=0; $a<strlen($string); $a++)
                 {
-                        $letter  = $string[$a];
+                        $letter  = (string)$string[$a];
                         $pos     = strpos($this->letters, $letter);
                         if (is_numeric($pos))
                         {
@@ -76,7 +82,7 @@ class scramble
 
                         unset($replace, $pos, $letter);
                 }
-
+                
                 return $string;
         }
 
@@ -89,9 +95,11 @@ class scramble
 	 */
         public function decode($string)
         {
+                $string = (string)$string;
+                
                 for ($a=0; $a<strlen($string); $a++)
                 {
-                        $letter  = $string[$a];
+                        $letter  = (string)$string[$a];
                         $pos     = strpos($this->hash, $letter);
                         if (is_numeric($pos))
                         {
@@ -101,7 +109,7 @@ class scramble
 
                         unset($replace, $pos, $letter);
                 }
-
+                
                 return $string;
         }
 }

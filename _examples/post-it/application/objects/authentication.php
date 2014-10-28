@@ -22,7 +22,7 @@ class authentication
         public function routes()
         {
                 on('get', '/login', function(){
-                        redirect('./notes', 302, $this->status == true );
+                        redirect('./notes', 302, obj('authentication')->check() );
                         
                         echo 'login';
                 });

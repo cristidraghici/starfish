@@ -161,7 +161,9 @@ class textdb
                         {
                                 $result[ $fields[$a] ] = $this->query_encode( $values[$a] );
                         }
-
+                        
+                        $result['_id'] = $this->query_encode( $this->_id($table) );
+                                                
                         ksort($result);
 
                         $string = @serialize($result) . PHP_EOL;     
@@ -276,7 +278,24 @@ class textdb
 
                 return $query;
         }
-
+        
+        // Calculate the _id for the row
+        function _id($table)
+        {
+                $max = 0;
+                $resource = $this->query('select * from '.$table);
+                
+                while ($row = $this->fetch($resource))
+                {
+                        if ((int)$row['_id'] > $max)
+                        {
+                                $max = (int)$row['_id'];
+                        }
+                }
+                
+                return ++$max;
+        }
+        
         // create the comparison function
         function query_comparison_function($where)
         {
@@ -510,11 +529,13 @@ class textdb
         function query_encode($string)
         {
                 return $this->connection['encrypt']->encode( $this->connection['scramble']->encode($string) );
+                //return $string;
         }
         // decode a string
         function query_decode($string)
         {
                 return $this->connection['scramble']->decode( $this->connection['encrypt']->decode($string) );
+                //return $string;
         }
 
         /*

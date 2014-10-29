@@ -1,0 +1,373 @@
+
+/** Login */
+.form-signin
+{
+        max-width: 380px;
+        padding: 15px;
+        margin: 0 auto;
+}
+.form-signin .form-signin-heading, .form-signin .checkbox
+{
+        margin-bottom: 10px;
+}
+.form-signin .checkbox
+{
+        font-weight: normal;
+}
+.form-signin .form-control
+{
+        position: relative;
+        font-size: 16px;
+        height: auto;
+        padding: 10px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+}
+.form-signin .form-control:focus
+{
+        z-index: 2;
+}
+.form-signin input,
+.form-signin button
+{
+        margin-bottom: 10px;
+}
+
+.account-wall
+{
+}
+.login-title
+{
+        color: #555;
+        font-weight: 400;
+        display: block;
+}
+.login-description 
+{
+        color: #555;
+}
+.profile-img
+{
+        margin: 0 auto;
+        display: block;
+}
+.need-help
+{
+        margin-top: 10px;
+}
+.new-account
+{
+        display: block;
+        margin-top: 10px;
+}
+
+
+/* Notes */
+.add-note {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        
+        display: none;
+}
+
+
+/** Spectacular CSS */
+ul.stories * {
+	text-align: left;
+}
+
+/** sizes */
+@media (min-width: 600px) {
+	ul.stories li {
+		width: 50%;
+	}
+}
+@media (min-width: 800px) {
+	ul.stories li {
+		width: 33%;
+	}
+}
+@media (min-width: 960px) {
+	ul.stories li {
+		width: 25%;
+	}
+}
+@media (min-width: 1000px) {
+	ul.stories li {
+		width: 20%;
+	}
+}
+/** Other important elements */
+@media (min-width: 600px) {
+	ul.stories {
+		margin: 0;
+		padding: 10px;
+	}
+
+	ul.stories li {
+		list-style: none;
+		list-style-type: none;
+		float: left;
+		position: relative;
+		overflow: hidden;
+		
+		min-height: 2em;
+		-moz-box-shadow:-8px -2px 19px rgba(33,33,33,1);
+		-webkit-box-shadow: -2px 19px 7px rgba(33,33,33,.7);
+		box-shadow: -2px 5px 19px rgba(33,33,33,.7);
+		-moz-transition:-moz-transform .3s linear;
+		-o-transition:-o-transform .3s linear;
+		-webkit-transition:-webkit-transform .3s linear;
+		
+		background: #fff;
+	}
+	ul.stories p.note,
+	ul.stories a.note {
+		text-decoration:none;
+		color: #262626;
+		display:block;
+		padding: 1em 1em 1em 2em;
+		
+		word-wrap:break-word;
+	}
+	ul.stories a.del {
+		padding: 2px 7px 2px 7px;
+		background: #ff0000;
+		font-size: 11px;
+		text-decoration: none;
+		
+		position: absolute;
+		bottom: 0 !important;
+		left: 0 !important;
+		color: #fff !important;
+	}
+	ul.stories a.del small {
+		color: #fff !important;
+	}
+
+	ul.stories li.story {
+	}
+	ul.stories li.story:nth-child(even) {
+		position:relative;
+		top:5px;
+	}
+	ul.stories li.story:nth-child(3n) {
+		position:relative;
+		top:-5px;
+	}
+	ul.stories li.story:nth-child(5n) {
+		position:relative;
+		top:-10px;
+	}
+	ul.stories li.story:hover,
+	ul.stories li.story:focus{
+		box-shadow:9px 11px 45px rgba(0,0,0,.7);
+		-moz-box-shadow:9px 11px 45px rgba(0,0,0,.7);
+		-webkit-box-shadow: 9px 11px 45px rgba(0,0,0,.7);
+		-webkit-transform: scale(1.25);
+		-moz-transform: scale(1.25);
+		-o-transform: scale(1.25);
+		position:relative;
+		z-index:15;
+	}
+}
+
+
+/* General Demo Style */
+body, html { font-size: 100%; padding: 0; margin: 0;}
+/* Reset */
+*,
+*:after,
+*:before {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+}
+/* Clearfix hack by Nicolas Gallagher: http://nicolasgallagher.com/micro-clearfix-hack/ */
+.clearfix:before,
+.clearfix:after {
+        content: " ";
+        display: table;
+}
+.clearfix:after {
+        clear: both;
+}
+body {
+        font-family: Calibri, Arial, sans-serif;
+        color: #47a3da;
+}
+a {
+        
+        text-decoration: none;
+}
+a:hover {
+        color: #000;
+}
+.main,
+.container > header {
+        width: 90%;
+        margin: 0 auto;
+        padding: 0 4em 3.125em 6em;
+}
+.main {
+        color: #333;
+        font-weight: 300;
+        line-height: 1.5;
+        text-align: justify;
+}
+.main p {
+        font-size: 140%;
+}
+.main h2 {
+        color: #ccc;
+        background: #f8f8f8;
+        padding: 10px;
+        text-align: left;
+        font-size: 1.5em;
+        line-height: 1.5em;
+}
+.container > header {
+        padding: 2.875em 4em 1.875em 6em;
+}
+.container > header h1 {
+        font-size: 2.125em;
+        line-height: 1.3;
+        margin: 0;
+        float: left;
+        font-weight: 400;
+}
+.container > header span {
+        display: block;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5em;
+        padding: 0 0 0.6em 0.1em;
+}
+.container > header nav {
+        float: right;
+}
+.container > header nav a {
+        display: block;
+        float: left;
+        position: relative;
+        width: 2.5em;
+        height: 2.5em;
+        background: #fff;
+        border-radius: 50%;
+        color: transparent;
+        margin: 0 0.1em;
+        border: 4px solid #47a3da;
+        text-indent: -8000px;
+}
+.container > header nav a:after {
+        content: attr(data-info);
+        color: #47a3da;
+        position: absolute;
+        width: 600%;
+        top: 120%;
+        text-align: right;
+        right: 0;
+        opacity: 0;
+        pointer-events: none;
+}
+.container > header nav a:hover:after {
+        opacity: 1;
+}
+.container > header nav a:hover {
+        background: #47a3da;
+}
+.icon-drop:before,
+.icon-arrow-left:before {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 2;
+        text-align: center;
+        color: #47a3da;
+        -webkit-font-smoothing: antialiased;
+        text-indent: 8000px;
+        padding-left: 8px;
+}
+.container > header nav a:hover:before {
+        color: #fff;
+}
+.icon-drop:before {
+        content: "\e000";
+}
+.icon-arrow-left:before {
+        content: "\f060";
+}
+
+
+.cbp-vimenu {
+        position: fixed;
+        overflow: hidden;
+        top: 0;
+        left: 0;
+        height: 100%;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        background: #f7f7f7;
+}
+.cbp-vimenu li a {
+        display: block;
+        height: 5em;
+        width: 5em;
+        line-height: 5em;
+        text-align: center;
+        color: #999;
+        position: relative;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        -webkit-transition: background 0.1s ease-in-out;
+        -moz-transition: background 0.1s ease-in-out;
+        transition: background 0.1s ease-in-out;
+        
+        text-decoration: none;
+}
+.cbp-vimenu li a:hover,
+.cbp-vimenu li:first-child a{
+        background: #47a3da;
+        color: #fff;
+}
+/* class for current item */
+.cbp-vimenu li.cbp-vicurrent a {
+        background: #fff;
+        color: #47a3da;
+}
+.cbp-vimenu li a:before {
+        font-family: 'ecoico';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        text-indent: 0em;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 1.4em;
+        -webkit-font-smoothing: antialiased;
+}
+.cbp-vimenu li a.icon-logo:before {
+        font-weight: 700;
+        font-size: 300%;
+        font-family: Calibri, Arial, sans-serif;
+}
+
+.cbp-vimenu li a.logout {
+        position: absolute;
+        bottom: 0;
+}
+/* Example for media query (depends on total height of menu) */
+@media screen and (max-height: 34.9375em) {
+        .cbp-vimenu {
+                font-size: 70%;
+        }
+}

@@ -8,6 +8,9 @@ starfish::config('_starfish', 'storage', @realpath(__DIR__) . DIRECTORY_SEPARATO
 
 starfish::config('_starfish', 'site_url', 'http://'.$_SERVER['HTTP_HOST'].'/starfish/_examples/post-it/');
 
+starfish::config('_starfish', 'site_title', 'PostIT Notes');
+starfish::config('_starfish', 'site_description', 'Keep track of your important things');
+
 // Add a connection to the database
 starfish::config('_starfish', 'databases', array(
         'postit' => array(

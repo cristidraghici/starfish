@@ -37,17 +37,14 @@ class tpl
                         $this->path .= '/';
                 }
 
-                // Get base values
-                $base = starfish::config('_starfish', 'base');
-
                 // Current path
-                $current = $base['site_url'] . substr( starfish::obj('parameters')->path() , 1);
+                $current = starfish::config('_starfish', 'site_url') . substr( starfish::obj('parameters')->path() , 1);
 
                 // Store automatic variables
-                $this->set('site_url', $base['site_url'] );
-                $this->set('site_title', $base['site_title'] );
-                $this->set('site_description', $base['site_description'] );
-                $this->set('/', $base['site_url'] );
+                $this->set('site_url', starfish::config('_starfish', 'site_url') );
+                $this->set('site_title',starfish::config('_starfish', 'site_title') );
+                $this->set('site_description', starfish::config('_starfish', 'site_description') );
+                $this->set('/', starfish::config('_starfish', 'site_url') );
                 $this->set('./', $current );
 
                 return true;
@@ -187,5 +184,5 @@ class tpl
 /**
 * Aliases used by class for easier programming
 */
-function view()   { return call_user_func_array(array('tpl', 'view'),    func_get_args()); }
+function view()   { return call_user_func_array(array( obj('tpl') , 'view'),    func_get_args()); }
 ?>

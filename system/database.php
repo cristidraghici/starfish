@@ -332,7 +332,7 @@ class database
          * @param string $name String to alter
          * @return string String returned after processing
          */
-        public static function escape($string)
+        public static function escape($string, $connection=null)
         {
                 return static::conn($connection)->escape($string);
         }

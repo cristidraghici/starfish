@@ -13,10 +13,20 @@ class users
 	
 	public function routes()
 	{
+                on('get', '/users', function(){
+                        redirect('./login', 302, !obj('authentication')->check() );
+                        
+                        echo view('header');
+                        echo view('users', array(
+                                'list' => obj('users')->list
+                        ));
+                        echo view('footer');
+                });
+                
                 on('post', '/users/add', function(){
                         if (strlen(post('user')) > 0 && strlen(post('pass')) > 0) 
                         {
-                                $this->add(post('user'), post('pass'));
+                                obj('users')->add(post('user'), post('pass'));
                         }
                         
                         redirect('./users/');
@@ -25,15 +35,10 @@ class users
                 on('get', '/users/delete/:alpha', function($user){
                         if (strlen($user) > 0) 
                         {
-                                $this->del($user);
+                                obj('users')->del($user);
                         }
                         
                         redirect('./users/');
-                });
-                
-                
-                on('get', '/users', function(){
-                        echo 'Userlist';
                 });
                 
 		return true;
@@ -51,6 +56,9 @@ class users
                 
                 $this->list = $list;
                 
+                // Ensure the is at least one user
+                if (count($list) == 0) { $this->add('admin', 'admin'); $list = $this->all(); }
+                
                 return $list;
         }
         
@@ -61,9 +69,9 @@ class users
                 return true;
         }
         
-        public function del($user)
+        public function del($id)
         {
-                starfish::obj('database')->query("delete from users where name='".$user."'");
+                starfish::obj('database')->query("delete from users where _id='".$id."'");
                 $this->all();
                 return true;
         }

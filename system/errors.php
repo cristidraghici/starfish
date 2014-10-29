@@ -11,7 +11,6 @@ if (!class_exists('starfish')) { die(); }
  */
 class errors
 {
-
         /**
          * Main message function
          * 
@@ -41,6 +40,33 @@ class errors
                 return $message;
         }
 
+        /**
+         * Display the error message, if needed
+         * 
+         * @param string $location Location of the error
+         * @param string $before HTML to show before the errors
+         * @param string $after HTML to show after
+         * @param boolean $echo If true, then the message is sent, otherwise returned
+         * 
+         * @return string HTML string with the result
+         */
+        public static function display($location, $before='', $after='', $echo=true)
+        {
+                if ($message = starfish::obj('errors')->message($location))
+                {
+                        if ($echo == true)
+                        {
+                                echo $before . $message . $after;
+                        }
+                        else
+                        {
+                                return $before . $message . $after;
+                        }
+                }
+                
+                return true;
+        }
+        
         /**
          * Main error function
          * 

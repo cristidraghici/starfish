@@ -601,7 +601,7 @@ class textdb
          */
         function sanitize($string, $connection=null)
         {
-                return htmlentities($string);
+                return htmlentities($string, ENT_QUOTES);
         }
 
         /** 

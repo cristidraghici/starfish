@@ -14,6 +14,10 @@ class authentication
                         {
                                 $this->status = true;
                         }
+                        else
+                        {
+                                starfish::obj('errors')->message('authentication_error', 'The authentication has expired.');
+                        }
                 }
 
                 return true;
@@ -24,11 +28,25 @@ class authentication
                 on('get', '/login', function(){
                         redirect('./notes', 302, obj('authentication')->check() );
                         
-                        echo 'login';
+                        echo view('header');
+                        echo view('login');
+                        echo view('footer');
                 });
+                
+                on('post', '/login', function(){
+                        redirect('./notes', 302, obj('authentication')->login(post('user'), post('pass'), post('encode'), post('encrypt')) );
+                        
+                        starfish::obj('errors')->message('authentication_error', 'The authentication information is not correct.');
+                        redirect('./login');
+                });
+                
                 on('get', '/logout', function(){
-                        echo 'logout';
+                        obj('authentication')->logout();
+                        
+                        starfish::obj('errors')->message('authentication_error', 'You have been logged out from your account.');
+                        redirect('./login');
                 });
+                
                 return true;
         }
 
@@ -46,12 +64,21 @@ class authentication
         public function login($user, $pass, $encode, $encrypt)
         {
                 if ($this->status == true) { return true; }
-                $list = obj('users')->list;
+                $users = obj('users')->list;
+                $list = array();
+                $ids = array();
+                
+                foreach ($users as $key=>$value)
+                {
+                        $list[$value['name']] = $value['pass'];
+                        $ids[$value['name']] = $value['_id'];
+                }
                 
                 if (isset($list[$user]) && $list[$user] == md5($pass))
                 {
                         session('authentication', true);
                         session('user', $user);
+                        session('user_id', $ids[$user]);
                         
                         session('encode', $encode);
                         session('encrypt', $encrypt);
@@ -71,6 +98,7 @@ class authentication
                 {
                         session('authentication', false);
                         session('user', null);
+                        session('user_id', null);
                         
                         session('encode', null);
                         session('encrypt', null);

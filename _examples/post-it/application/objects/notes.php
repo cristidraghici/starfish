@@ -3,47 +3,77 @@ if (!class_exists('starfish')) { die(); }
 
 class notes
 {
-	public function init()
-	{
-		return true;
-	}
-	
-	public function routes()
-	{
+        public $list = array();
+
+        public function init()
+        {
+                $this->all();
+                return true;
+        }
+
+        public function routes()
+        {
                 on('get', '/notes', function(){
                         redirect('./login', 302, !obj('authentication')->check() );
-                        
-                        echo 'notes';
+
+                        echo view('header');
+                        echo view('notes', array(
+                                'categories'=>obj('categories')->list,
+                                'notes'=>obj('notes')->list
+                        ));
+                        echo view('footer');
                 });
-		return true;
-	}
-        
+
+
+                on('post', '/notes/add', function(){
+                        if (strlen(post('content')) > 0 && strlen(post('category_id')) > 0) 
+                        {
+                                obj('notes')->add(post('content'), post('category_id'));
+                        }
+                        
+                        redirect('./notes/');
+                });
+                
+                on('get', '/notes/delete/:alpha', function($user){
+                        if (strlen($user) > 0) 
+                        {
+                                obj('notes')->del($user);
+                        }
+                        
+                        redirect('./notes/');
+                });
+
+                return true;
+        }
+
         public function all()
         {
                 $list = array();
-                
-                $resource = starfish::obj('database')->query("select * from notes where owner='".session('user')."'");
+
+                $resource = starfish::obj('database')->query("select * from notes where owner_id='".session('user_id')."'");
                 while ($row = starfish::obj('database')->fetch($resource))
                 {
                         $list[] = $row;
                 }
-                
+
                 $this->list = $list;
-                
+
                 return $list;
         }
-        
-        public function add($name)
+
+        public function add($content, $category_id)
         {
-                starfish::obj('database')->query("insert into notes(name, owner) values('".$name."', '".session('user')."')");
+                starfish::obj('database')->query("insert into notes(content, category_id, owner_id) values('".$content."', '".$category_id."', '".session('user_id')."')");
                 $this->all();
+                
                 return true;
         }
-        
-        public function del($name)
+
+        public function del($id)
         {
-                starfish::obj('database')->query("delete from notes where name='".$name."' and owner='".session('user')."'");
+                starfish::obj('database')->query("delete from notes where _id='".$id."' and owner_id='".session('user_id')."'");
                 $this->all();
+                
                 return true;
         }
 }

@@ -57,7 +57,7 @@ class notes
                 }
 
                 $this->list = $list;
-
+                
                 return $list;
         }
 

@@ -13,6 +13,7 @@ class authentication
                         if ( time() - $time <= 3600 && session('id') == session_id() )
                         {
                                 $this->status = true;
+                                session('time', time());
                         }
                         else
                         {

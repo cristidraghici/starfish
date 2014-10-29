@@ -428,9 +428,10 @@ class textdb
                         break;
 
                         case 'insert':
-                        preg_match('#insert into ([^\()]*)\(([^\))]*)\) values\(([^\))]*)\)#is', $query, $match);
+                        preg_match('#<query> insert into ([^\()]*)\(([^\))]*)\) values\((.*?)\) </query>#is', '<query> '.$query.' </query>', $match);
                         $string = trim($match[3]);
-
+                        
+                        
                         preg_match_all("#'([^']*)'#is", $string, $matches);
                         foreach ($matches[1] as $key=>$value)
                         {
@@ -601,7 +602,7 @@ class textdb
          */
         function sanitize($string, $connection=null)
         {
-                return htmlentities($string, ENT_QUOTES);
+                return htmlentities($string);
         }
 
         /** 

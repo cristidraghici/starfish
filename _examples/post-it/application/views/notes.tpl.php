@@ -16,17 +16,20 @@
 
                                 <?php foreach ($categories as $key=>$value): ?>
                                 <h2><?php echo $value['name']; ?></h2>
-                                <?php $count = 0; ?>
                                 
                                 <ul class="stories">
-                                <?php foreach ($notes as $k2=>$v2): if ($v2['category_id'] == $value['_id']): $count++; ?>
+                                <?php $count = 0; foreach ($notes as $k2=>$v2): if ($v2['category_id'] == $value['_id']): $count++; ?>
                                 <li class="story">
-                                       <a class="note" href="{/}notes/edit/<?php echo $value['_id']; ?>"><?php echo nl2br($v2['content']); ?></a>
+                                       <a class="note" href="{/}notes/edit/<?php echo $v2['_id']; ?>"><?php echo nl2br($v2['content']); ?></a>
 	                               <div class="clearfix"></div>
-	                               <a href="{/}notes/delete/<?php echo $value['nr_crt']; ?>" class="del"><small>x</small></a>
+	                               <a href="{/}notes/delete/<?php echo $v2['_id']; ?>" class="del"><small>x</small></a>
                                 </li>
                                 <?php endif; endforeach; ?>
                                 </ul>
+                                
+                                <?php if ($count == 0): ?>
+                                <p>There are no notes in this category.</p>
+                                <?php endif; ?>
                                 
                                 <div class="clearfix"></div>
                                 <?php endforeach; ?>

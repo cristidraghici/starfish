@@ -34,10 +34,10 @@ class notes
                         redirect('./notes/');
                 });
                 
-                on('get', '/notes/delete/:alpha', function($user){
-                        if (strlen($user) > 0) 
+                on('get', '/notes/delete/:alpha', function($id){
+                        if (strlen($id) > 0) 
                         {
-                                obj('notes')->del($user);
+                                obj('notes')->del($id);
                         }
                         
                         redirect('./notes/');

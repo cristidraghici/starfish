@@ -153,3 +153,10 @@ Parts of code or inspiration was obtained from the following software:
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 ```
+
+* Leaflet
+
+```html
+<link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.css">
+<script src="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+```

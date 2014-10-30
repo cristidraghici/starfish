@@ -30,17 +30,32 @@ class notes
                         {
                                 obj('notes')->add(post('content'), post('category_id'));
                         }
-                        
+
                         redirect('./notes/');
                 });
-                
+
                 on('get', '/notes/delete/:alpha', function($id){
                         if (strlen($id) > 0) 
                         {
                                 obj('notes')->del($id);
                         }
-                        
+
                         redirect('./notes/');
+                });
+
+                on('get', '/notes/export', function(){
+                        header("Content-type: text/csv");
+                        header("Content-Disposition: attachment; filename=export.csv");
+                        header("Pragma: no-cache");
+                        header("Expires: 0");
+                        
+                        // Send to the output buffer
+                        $output = @fopen("php://output", 'w');
+                        foreach(obj('notes')->export() as $val) 
+                        {
+                                @fputcsv($output, $val);
+                        }
+                        @fclose($output);
                 });
 
                 return true;
@@ -57,7 +72,7 @@ class notes
                 }
 
                 $this->list = $list;
-                
+
                 return $list;
         }
 
@@ -65,7 +80,7 @@ class notes
         {
                 starfish::obj('database')->query("insert into notes(content, category_id, owner_id) values('".$content."', '".$category_id."', '".session('user_id')."')");
                 $this->all();
-                
+
                 return true;
         }
 
@@ -73,8 +88,30 @@ class notes
         {
                 starfish::obj('database')->query("delete from notes where _id='".$id."' and owner_id='".session('user_id')."'");
                 $this->all();
-                
+
                 return true;
+        }
+
+        public function export()
+        {                
+                $notes = $this->list;
+
+                $categories = array();
+                $categoriesList = obj('categories')->list;
+                foreach ($categoriesList as $key=>$value)
+                {
+                        $categories[$value['_id']] = $value['name'];
+                }
+
+                foreach ($notes as $key=>$value)
+                {
+                        $notes[$key]['category'] = $categories[$value['category_id']];
+                        unset($notes[$key]['category_id']);
+                        unset($notes[$key]['_id']);
+                        unset($notes[$key]['owner_id']);
+                }
+
+                return $notes;
         }
 }
 ?>

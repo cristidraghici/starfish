@@ -39,6 +39,9 @@ a.black {
         border: 1px solid #ccc;
 }
 
+.portfolio-item {
+        min-height: 300px;
+}
 .portfolio-modal .modal-content {
         background: #fff;
         overflow: hidden;

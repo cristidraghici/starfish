@@ -93,6 +93,8 @@ class textdb
          * @return array An array containing information on how to interrogate the TXT file
          * 
          * @todo Update and delete are very resource consuming
+         * @todo Add count(*) as select fields
+         * @todo Add as <name> for fields in select
          */
         function query_sql($sql)
         {

@@ -38,15 +38,24 @@
                         <div class="col-md-3">
                                 <h3>Add a new note</h3>
                                 <form action="{/}notes/add" method="post" role="form">
+                                        <?php if (isset($item['_id'])): ?>
+                                        <input type="hidden" name="_id" value="<?php echo $item['_id']; ?>">
+                                        <?php endif; ?>
                                         <div class="form-group">
                                                 <label for="note">Content</label>
-                                                <textarea class="form-control" id="content" name="content" rows=10 required=""></textarea>
+                                                <textarea class="form-control" id="content" name="content" rows=10 required=""><?php if (isset($item['content'])) { echo $item['content']; } ?></textarea>
                                         </div>
                                         <div class="form-group">
                                                 <?php foreach ($categories as $key=>$value) : ?>
                                                 <div class="radio">
                                                         <label>
-                                                                <input type="radio" name="category_id" value="<?php echo $value['_id']; ?>" <?php if ($key==0) { echo 'checked=true'; } ?> >
+                                                                <input type="radio" name="category_id" value="<?php echo $value['_id']; ?>" <?php 
+                                                                        if (
+                                                                                (!isset($item['category_id']) && $key==0) ||
+                                                                                (isset($item['category_id']) && $value['_id']==$item['category_id'])
+                                                                        )
+                                                                        { echo 'checked=true'; } 
+                                                                ?> >
                                                                 <?php echo $value['name']; ?>
                                                         </label>
                                                 </div>

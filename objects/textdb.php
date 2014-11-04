@@ -402,6 +402,7 @@ class textdb
                         $parts = explode("limit", $string);
                         $string = trim($parts[0]);
 
+                        $string = str_replace(',',' ',$string);
                         $string = trim($string);
                         preg_match_all("#([^=]*)='([^']*)'#is", $string, $matches);
                         foreach ($matches[1] as $key=>$value)

@@ -71,7 +71,7 @@ class routes
         {
                 // called method() from ./system/parameters
                 $method = method();
-
+                
                 if (isset(static::$routes[$method]) && is_array(static::$routes[$method]))
                 {
                         foreach (static::$routes[$method] as $key=>$value)

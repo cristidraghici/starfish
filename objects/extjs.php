@@ -153,8 +153,8 @@ class extjs
                 return $limits;
         }
         /*
-    Build the JSON tree
-    */
+        Build the JSON tree
+        */
         function build_tree_json($data, $parent_name, $parent_id=null )
         {
                 $output = array();

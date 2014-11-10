@@ -163,35 +163,41 @@ class extjs
                 $parents = array();
 
                 // Parents
-                foreach ($data as $key=>$value)
+                if (is_array($data))
                 {
-                        if ($value[$parent_name] == $parent_id)
-                        {
-                                $output[$a] = $value;
-                                $output[$a]['id'] = $key;
-                                $output[$a]['leaf'] = true;
-                                $parents[$key] = $a;
 
-                                $a++;
-                        }
+                        foreach ($data as $key=>$value)
+                        {
+                                if ($value[$parent_name] == $parent_id)
+                                {
+                                        $output[$a] = $value;
+                                        $output[$a]['id'] = $key;
+                                        $output[$a]['leaf'] = true;
+                                        $parents[$key] = $a;
+
+                                        $a++;
+                                }
+                        }       
                 }
 
                 // Children
-                foreach ($data as $key=>$value)
+                if (is_array($data))
                 {
-                        if ($value[$parent_name] != $parent_id && isset($parents[ $value[$parent_name] ]))
+                        foreach ($data as $key=>$value)
                         {
-                                $children = $this->build_tree_json($data, $parent_name, $value[$parent_name] );
-
-                                if (count($children) > 0)
+                                if ($value[$parent_name] != $parent_id && isset($parents[ $value[$parent_name] ]))
                                 {
-                                        $output[ $parents[ $value[$parent_name] ] ]['children'] = $children;
-                                        $output[ $parents[ $value[$parent_name] ] ]['leaf'] = false;
-                                        $output[ $parents[ $value[$parent_name] ] ]['expanded'] = true;
+                                        $children = $this->build_tree_json($data, $parent_name, $value[$parent_name] );
+
+                                        if (count($children) > 0)
+                                        {
+                                                $output[ $parents[ $value[$parent_name] ] ]['children'] = $children;
+                                                $output[ $parents[ $value[$parent_name] ] ]['leaf'] = false;
+                                                $output[ $parents[ $value[$parent_name] ] ]['expanded'] = true;
+                                        }
                                 }
                         }
                 }
-
                 return $output;
         }
 

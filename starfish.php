@@ -176,6 +176,7 @@ class starfish
 
                 // Proper initialization
                 static::obj('parameters');
+                static::obj('files');
                 static::obj('routes');
                 static::obj('databases');
 

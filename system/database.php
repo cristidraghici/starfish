@@ -11,36 +11,36 @@ if (!class_exists('starfish')) { die(); }
  */
 class database
 {
-        /**
+	/**
 	 * Declare used variables
 	 *
 	 * $connections - The list of information regarding connections
 	 * $resources - The list of resources stored as connections
 	 */
-        private static $connections = array();
-        private static $resources = array();
+	private static $connections = array();
+	private static $resources = array();
 
-        /**
+	/**
 	 * Init the object. Connect to any database in the configuration, if needed
 	 * 
 	 * @todo Maybe add connections that start automatically
 	 */
-        public static function init()
-        {
-                $databases = starfish::config('_starfish', 'databases');
+	public static function init()
+	{
+		$databases = starfish::config('_starfish', 'databases');
 
-                if (is_array($databases))
-                {
-                        foreach ($databases as $key=>$value)
-                        {
-                                static::add($key, $value['type'], $value['parameters']);
-                        }
-                }
+		if (is_array($databases))
+		{
+			foreach ($databases as $key=>$value)
+			{
+				static::add($key, $value['type'], $value['parameters']);
+			}
+		}
 
-                return true;
-        }
+		return true;
+	}
 
-        /**
+	/**
          * Add a new connection
          * 
          * @param string $name Name of the connection
@@ -52,126 +52,126 @@ class database
          *                              - password
          *                              - database
          */
-        public static function add($name, $type='textdb', $parameters=array())
-        {
-                static::$connections[$name] = array(
-                        'type' => $type, 
-                        'parameters' => $parameters
-                );
+	public static function add($name, $type='textdb', $parameters=array())
+	{
+		static::$connections[$name] = array(
+			'type' => $type, 
+			'parameters' => $parameters
+		);
 
-                return true;
-        }
+		return true;
+	}
 
-        /** 
+	/** 
          * Retrieve/create a connection
          * 
          * @param string $name Name of the connections
          * @return resource The connection requested
          */
-        public static function get($name=null)
-        {
-                // If a name is specified
-                if ($name != null)
-                {	
-                        // Get the stored resource
-                        if (isset(static::$resources[$name]))
-                        {
-                                return static::$resources[$name];
-                        }
-                        elseif (isset(static::$connections[$name]))
-                        {
-                                // Get the information about the connection
-                                $info = static::$connections[$name];
+	public static function get($name=null)
+	{
+		// If a name is specified
+		if ($name != null)
+		{	
+			// Get the stored resource
+			if (isset(static::$resources[$name]))
+			{
+				return static::$resources[$name];
+			}
+			elseif (isset(static::$connections[$name]))
+			{
+				// Get the information about the connection
+				$info = static::$connections[$name];
 
-                                // Create the new resource
-                                $conn = null;
+				// Create the new resource
+				$conn = null;
 
-                                switch ($info['type'])
-                                {
-                                        case 'pgsql':
-                                        case 'postgres':
-                                        $conn = starfish::access('postgres')->connect( $info['parameters'] );
-                                        if ($conn != false)
-                                        {
-                                                static::$resources[$name] = $conn;
-                                        }
-                                        break;
-                                        case 'mysql':
-                                        $conn = starfish::access('mysql')->connect( $info['parameters'] );
-                                        if ($conn != false)
-                                        {
-                                                static::$resources[$name] = $conn;
-                                        }
-                                        break;
-                                        case 'textdb':
-                                        $conn = starfish::access('textdb')->connect( $info['parameters'] );
-                                        if ($conn != false)
-                                        {
-                                                static::$resources[$name] = $conn;
-                                        }
-                                        break;
+				switch ($info['type'])
+				{
+					case 'pgsql':
+					case 'postgres':
+					$conn = starfish::access('postgres')->connect( $info['parameters'] );
+					if ($conn != false)
+					{
+						static::$resources[$name] = $conn;
+					}
+					break;
+					case 'mysql':
+					$conn = starfish::access('mysql')->connect( $info['parameters'] );
+					if ($conn != false)
+					{
+						static::$resources[$name] = $conn;
+					}
+					break;
+					case 'textdb':
+					$conn = starfish::access('textdb')->connect( $info['parameters'] );
+					if ($conn != false)
+					{
+						static::$resources[$name] = $conn;
+					}
+					break;
 
-                                        // Break execution if database type is not valid
-                                        default: 
-                                        return null;
-                                }
+					// Break execution if database type is not valid
+					default: 
+					return null;
+				}
 
-                                return $conn;
-                        }
-                }
-                // Only one connection, no name specified
-                elseif (count(static::$connections) >= 1)
-                {
-                        // Get the name of the connection
-                        $connections = array_keys(static::$connections);
+				return $conn;
+			}
+		}
+		// Only one connection, no name specified
+		elseif (count(static::$connections) >= 1)
+		{
+			// Get the name of the connection
+			$connections = array_keys(static::$connections);
 
-                        // Call this function again
-                        return static::get( $connections[0] );
-                }
+			// Call this function again
+			return static::get( $connections[0] );
+		}
 
-                return null;
-        }
+		return null;
+	}
 
-        /** 
+	/** 
          * Convert the connection string inside this object's methods into a connection resource
          * 
          * @param mixed $conn Name of the connections
          * @return resource The connection requested
          */
-        private static function conn($conn)
-        {
-                switch (strtolower(gettype($conn)))
-                {
-                        case 'string':
-                        case 'null':
-                        return static::get($conn);
-                        break;
+	private static function conn($conn)
+	{
+		switch (strtolower(gettype($conn)))
+		{
+			case 'string':
+			case 'null':
+			return static::get($conn);
+			break;
 
-                        case 'resource':
-                        return $conn;
-                        break;
-                }
+			case 'resource':
+			return $conn;
+			break;
+		}
 
-                return null;
-        }
+		return null;
+	}
 
-        /** 
+	/** 
          * Return the connection information for the given connection
          * 
          * @param string $name Name of the connection to return info about
          * @return array Information about the connection
          */
-        private static function connectionInfo($name)
-        {
-                if (isset(static::$connections[$name]))
-                {
-                        return static::$connections[$name];
-                }
+	private static function connectionInfo($name)
+	{
+		if (isset(static::$connections[$name]))
+		{
+			return static::$connections[$name];
+		}
 
-                return null;
-        }
+		return null;
+	}
 
-        /** 
+	/** 
          * Send a query to the connection
          * 
          * @param mixed $query Name of the connections
@@ -180,20 +180,20 @@ class database
          * 
          * @return resource The resource containing the result
          */
-        public static function query($query, $connection=null, $parameters=array() )
-        {
-                if (count($parameters) > 0)
-                {
-                        foreach ($parameters as $key=>$value)
-                        {
-                                $query = str_replace('{'. $key . '}', static::sanitize( $parameters[$key], $connection ), $query );
-                        }
-                }
+	public static function query($query, $connection=null, $parameters=array() )
+	{
+		if (count($parameters) > 0)
+		{
+			foreach ($parameters as $key=>$value)
+			{
+				$query = str_replace('{'. $key . '}', static::sanitize( $parameters[$key], $connection ), $query );
+			}
+		}
 
-                return static::conn($connection)->query($query);
-        }
+		return static::conn($connection)->query($query);
+	}
 
-        /** 
+	/** 
          * Verify a query
          * 
          * @param mixed $query Name of the connections
@@ -201,21 +201,21 @@ class database
          * 
          * @return resource The resource containing the result
          */
-        public static function eecho($query, $connection=null, $parameters=array() )
-        {
-                if (count($parameters) > 0)
-                {
-                        foreach ($parameters as $key=>$value)
-                        {
-                                $query = str_replace('{'. $key . '}', static::sanitize( $parameters[$key], $connection ), $query );
-                        }
-                }
+	public static function eecho($query, $connection=null, $parameters=array() )
+	{
+		if (count($parameters) > 0)
+		{
+			foreach ($parameters as $key=>$value)
+			{
+				$query = str_replace('{'. $key . '}', static::sanitize( $parameters[$key], $connection ), $query );
+			}
+		}
 
-                echo $query;
-                exit;
-        }
+		echo $query;
+		exit;
+	}
 
-        /** 
+	/** 
          * Fetch a result from a returned query resource
          * 
          * @param resource $resource The resource to be interpreted
@@ -224,22 +224,22 @@ class database
          * 
          * @return array An array containing the fetched result
          */
-        public static function fetch($resource, $connection=null, $parameters=array())
-        {
-                $row = static::conn($connection)->fetch($resource);
+	public static function fetch($resource, $connection=null, $parameters=array())
+	{
+		$row = static::conn($connection)->fetch($resource);
 
-                if (count($parameters) > 0)
-                {
-                        foreach ($parameters as $key=>$value)
-                        {
-                                if (isset($row[$value])) { $row[$value] = static::escape( $row[$value] ); }
-                        }
-                }
+		if (count($parameters) > 0)
+		{
+			foreach ($parameters as $key=>$value)
+			{
+				if (isset($row[$value])) { $row[$value] = static::escape( $row[$value] ); }
+			}
+		}
 
-                return $row;
-        }
+		return $row;
+	}
 
-        /** 
+	/** 
          * Fetch all results from a returned query resource
          * 
          * @param resource $resource The resource to be interpreted
@@ -248,25 +248,42 @@ class database
          * 
          * @return array An array containing the fetched result
          */
-        public static function fetchAll($resource, $connection=null, $parameters=array())
-        {
-                $rows = static::conn($connection)->fetchAll($resource);
+	public static function fetchAll($resource, $connection=null, $parameters=array())
+	{
+		$rows = static::conn($connection)->fetchAll($resource);
 
-                if (count($parameters) > 0)
-                {
-                        foreach ($rows as $k=>$row)
-                        {
-                                foreach ($parameters as $key=>$value)
-                                {
-                                        if (isset($rows[$k][$value])) { $rows[$k][$value] = static::escape( $rows[$k][$value] ); }
-                                }
-                        }
-                }
+		if (count($parameters) > 0)
+		{
+			foreach ($rows as $k=>$row)
+			{
+				foreach ($parameters as $key=>$value)
+				{
+					if (isset($rows[$k][$value])) { $rows[$k][$value] = static::escape( $rows[$k][$value] ); }
+				}
+			}
+		}
 
-                return $rows;
-        }
+		return $rows;
+	}
 
-        /** 
+
+	/** 
+         * Fetch the json output from a database
+         * 
+         * @param resource $resource The resource to be interpreted
+         * @param string $connection Name of the connection
+         * @param array $parameters Parameters to escape as they will be sent to the browser
+         * 
+         * @return string The JSON string returned
+         */
+	public static function json($resource, $connection=null, $parameters=array())
+	{
+		$row = static::conn($connection)->fetch($resource);
+		$row = array_values($row);
+		return $row[0];
+	}
+
+	/** 
          * Count the results matching the given conditions
          * 
          * @param resource $resource The resource to be interpreted
@@ -274,68 +291,68 @@ class database
          * 
          * @return number The number of results
          */
-        public static function numRows($resource, $connection=null)
-        {
-                return static::conn($connection)->numRows($resource);
-        }
+	public static function numRows($resource, $connection=null)
+	{
+		return static::conn($connection)->numRows($resource);
+	}
 
-        /** 
+	/** 
          * Free a resource
          * 
          * @param resource $resource The resource to be interpreted
          * @param string $connection Name of the connection
          */
-        public static function free($resource, $connection=null)
-        {
-                return static::conn($connection)->free($resource);
-        }
+	public static function free($resource, $connection=null)
+	{
+		return static::conn($connection)->free($resource);
+	}
 
-        /** 
+	/** 
          * Disconnect a connection
          * 
          * @param string $name Name of the connections
          */
-        public static function disconnect($connection=null)
-        {
-                // Get the object
-                $obj = static::conn($connection);
+	public static function disconnect($connection=null)
+	{
+		// Get the object
+		$obj = static::conn($connection);
 
-                // Disconnect from the database
-                $obj->disconnect();
+		// Disconnect from the database
+		$obj->disconnect();
 
-                // Delete from the resources list
-                foreach (static::$resources as $key=>$value)
-                {
-                        if ($value == $obj) { unset(static::$resources[$key]); break; }
-                }
+		// Delete from the resources list
+		foreach (static::$resources as $key=>$value)
+		{
+			if ($value == $obj) { unset(static::$resources[$key]); break; }
+		}
 
-                // Destroy the object
-                unset($obj);
+		// Destroy the object
+		unset($obj);
 
-                return true;
-        }
+		return true;
+	}
 
-        /** 
+	/** 
          * Sanitize string
          * 
          * @param string $name String to alter
          * @return string String returned after processing
          */
-        public static function sanitize($string, $connection=null)
-        {
-                return static::conn($connection)->sanitize($string);
-        }
+	public static function sanitize($string, $connection=null)
+	{
+		return static::conn($connection)->sanitize($string);
+	}
 
-        /** 
+	/** 
          * Escape string
          * 
          * @param string $name String to alter
          * @return string String returned after processing
          */
-        public static function escape($string, $connection=null)
-        {
-                return static::conn($connection)->escape($string);
-        }
+	public static function escape($string, $connection=null)
+	{
+		return static::conn($connection)->escape($string);
+	}
 }
 
 /**

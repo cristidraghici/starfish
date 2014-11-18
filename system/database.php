@@ -279,6 +279,7 @@ class database
 	public static function json($resource, $connection=null, $parameters=array())
 	{
 		$row = static::conn($connection)->fetch($resource);
+		static::conn($connection)->free($resource, $connection);
 		$row = array_values($row);
 		return $row[0];
 	}

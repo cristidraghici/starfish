@@ -8,6 +8,9 @@ if (!class_exists('starfish')) { die(); }
  * 
  * @package starfish
  * @subpackage starfish.system.routes
+ *
+ * @todo When running obj(<>)->routes(), skip init()
+ *
  */
 
 class routes

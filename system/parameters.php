@@ -137,29 +137,25 @@ class parameters
 
                 // Create the string in cache and return it
                 $content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : false;
-
-                switch($content_type)
-                {
-                        case 'application/xml':
-                        $request_content_type = 'xml';
-                        break;
-
-                        case 'application/json':
-                        $request_content_type = 'json';
-                        break;
-
-                        case "application/x-www-form-urlencoded":
-                        $request_content_type = 'html';
-                        break;
-
-
-                        case 'text/html':
-                        default:
-                        $request_content_type = 'html';
-                        break;
-                }
+				
+				$content_type_list = array(
+					'application/xml'=>'xml',
+					'application/json'=>'json',
+					'application/x-www-form-urlencoded'=>'html',
+					'text/html'=>'html',
+				);
+				
+				$request_content_type = 'html';
+				foreach ($content_type_list as $key=>$value)
+				{
+					if (stristr(strtolower($content_type), strtolower($key)))
+					{
+						 $request_content_type = $value;
+					}
+				}
 
                 static::$cache['request_content_type'] = $request_content_type;
+			
                 return $request_content_type;
         }
 

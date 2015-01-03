@@ -83,11 +83,17 @@ class notes
 
         public function all()
         {
+		starfish::obj('encrypt')->hash( session('encrypt') );
+		starfish::obj('scramble')->hash( session('encode') );
+	
                 $list = array();
 
                 $resource = starfish::obj('database')->query("select * from notes where owner_id='".session('user_id')."'");
                 while ($row = starfish::obj('database')->fetch($resource))
                 {
+			$row['content'] = starfish::obj('encrypt')->decode( $row['content'] );
+			$row['content'] = starfish::obj('scramble')->decode( $row['content'] );
+			
                         $list[] = $row;
                 }
 
@@ -98,6 +104,12 @@ class notes
 
         public function add($content, $category_id, $id=null)
         {
+		starfish::obj('encrypt')->hash( session('encrypt') );
+		starfish::obj('scramble')->hash( session('encode') );
+	
+		$content = starfish::obj('scramble')->encode( $content );
+		$content = starfish::obj('encrypt')->encode( $content );
+		
                 if ($id == null)
                 {
                         starfish::obj('database')->query("insert into notes(content, category_id, owner_id) values('".$content."', '".$category_id."', '".session('user_id')."')");

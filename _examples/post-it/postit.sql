@@ -12,7 +12,7 @@ USE `postit`;
 
 -- Dumping structure for table postit.categories
 CREATE TABLE IF NOT EXISTS `categories` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) COLLATE utf8_bin NOT NULL,
   `owner_id` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
 
 -- Dumping structure for table postit.notes
 CREATE TABLE IF NOT EXISTS `notes` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `content` text COLLATE utf8_bin,
   `category_id` int(20) unsigned DEFAULT NULL,
   `owner_id` int(20) unsigned DEFAULT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `notes` (
 
 -- Dumping structure for table postit.users
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
+  `_id` int(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) COLLATE utf8_bin NOT NULL,
   `pass` varchar(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)

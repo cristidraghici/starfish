@@ -6,6 +6,8 @@ if (!class_exists('starfish')) { die(); }
  *
  * @package starfish
  * @subpackage starfish.objects.proxy
+ * 
+ * @todo Check https://github.com/Esri/resource-proxy/tree/master/PHP
  */class proxy
  {
 	 public $url = '';

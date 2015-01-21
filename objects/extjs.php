@@ -16,6 +16,93 @@ class extjs
 	{
 	}
 
+	/*
+     * Build where clause 
+     */
+	public static function build_where_clause($string=null, $where='')
+	{
+		$decode = array();
+		if ($string != null && strlen($string) > 0)
+		{
+			$string = htmlspecialchars_decode($string);
+			$decode = @json_decode($string, true);
+		}
+
+		if (count($decode) > 0)
+		{
+			foreach ($decode as $key=>$value)
+			{
+				$operator = isset($value['operator']) && strlen($value['operator']) > 0 ? $value['operator'] : '=';
+
+				$value['property'] .= '::varchar';
+
+				if ($value['exactMatch'] == false)
+				{
+					$value['value'] = '\'\'%' . $value['value'] . '%\'\'';
+					$operator = 'like';
+				}
+				else
+				{
+					$value['value'] = '\'\'' . $value['value'] . '\'\'';
+				}
+
+
+				if ($value['caseSensitive'] == false)
+				{
+					$value['property'] = 'lower('.$value['property'].')';
+					$value['value'] = 'lower('.$value['value'].')';
+				}
+
+				if (strlen($where) > 0)
+				{
+					$where .= ' and ' . $value['property'] . ' ' .$operator . ' ' . $value['value'];
+				}
+				else
+				{
+					$where = $value['property'] . ' ' . $operator . ' ' . $value['value'];
+				}
+			}
+
+			return $where;
+		}
+
+		return null;
+	}
+
+	/*
+     * Build sort clause 
+     */
+	public static function build_sort_clause($string=null, $sort='')
+	{
+		$decode = array();
+		if ($string != null && strlen($string) > 0)
+		{
+			$string = htmlspecialchars_decode($string);
+			$decode = @json_decode($string, true);
+		}
+
+		if (count($decode) > 0)
+		{
+			$sort = '';
+
+			foreach ($decode as $key=>$value)
+			{
+				if (strlen($sort) > 0)
+				{
+					$sort .= ' , ' . $value['property'] . ' ' . $value['direction'];
+				}
+				else
+				{
+					$sort = $value['property'] . ' ' . $value['direction'];
+				}
+			}
+
+			return $sort;
+		}
+
+		return null;
+	}
+
 	// Extract the filters from the filter string
 	function filterslist($string)
 	{

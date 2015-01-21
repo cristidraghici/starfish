@@ -3,24 +3,24 @@ if (!class_exists('starfish')) { die(); }
 
 class team
 {
-        function getMembers()
-        {
-                $url = 'https://api.github.com/repos/cristidraghici/starfish/contributors';
+	function getMembers()
+	{
+		$url = 'https://api.github.com/repos/cristidraghici/starfish/contributors';
 
-                if (starfish::obj('cache')->exists($url, 3600))
-                {
-                        $content = starfish::obj('cache')->get($url);
-                }
-                else
-                {
-                        $content = starfish::obj('curl')->quickGet($url);
-                        starfish::obj('cache')->add($url, $content);
-                }
+		if (starfish::obj('cache')->exists($url, 3600))
+		{
+			$content = starfish::obj('cache')->get($url);
+		}
+		else
+		{
+			$content = starfish::obj('curl')->quickGet($url);
+			starfish::obj('cache')->add($url, $content);
+		}
 
-                $content = @json_decode($content, true);
+		$content = @json_decode($content, true);
 
-                return $content;
-        }
+		return $content;
+	}
 }
 
 ?>

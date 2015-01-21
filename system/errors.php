@@ -11,125 +11,125 @@ if (!class_exists('starfish')) { die(); }
  */
 class errors
 {
-        /**
-         * Main message function
-         * 
-         * This function stores a message in the session if two parameters are specified, or retrieves one and deletes it from the session, when only one parameter is given.
-         * 
-         * @param string $location Location of the error
-         * @param string $message Body of the error
-         */
-        public static function message()
-        {
-                $args = func_get_args();
-                $message = '';
+	/**
+	 * Main message function
+	 * 
+	 * This function stores a message in the session if two parameters are specified, or retrieves one and deletes it from the session, when only one parameter is given.
+	 * 
+	 * @param string $location Location of the error
+	 * @param string $message Body of the error
+	 */
+	public static function message()
+	{
+		$args = func_get_args();
+		$message = '';
 
-                switch (count($args))
-                {
-                        case 1:
-                        $message = session('_starfish_errors-' . $args[0]);
-                        session('_starfish_errors-' . $args[0], null);
-                        break;
+		switch (count($args))
+		{
+			case 1:
+			$message = session('_starfish_errors-' . $args[0]);
+			session('_starfish_errors-' . $args[0], null);
+			break;
 
-                        case 2:
-                        $message = $args[1];
-                        session('_starfish_errors-' . $args[0], $args[1]);
-                        break;
-                }
+			case 2:
+			$message = $args[1];
+			session('_starfish_errors-' . $args[0], $args[1]);
+			break;
+		}
 
-                return $message;
-        }
+		return $message;
+	}
 
-        /**
-         * Display the error message, if needed
-         * 
-         * @param string $location Location of the error
-         * @param string $before HTML to show before the errors
-         * @param string $after HTML to show after
-         * @param boolean $echo If true, then the message is sent, otherwise returned
-         * 
-         * @return string HTML string with the result
-         */
-        public static function display($location, $before='', $after='', $echo=true)
-        {
-                if ($message = starfish::obj('errors')->message($location))
-                {
-                        if ($echo == true)
-                        {
-                                echo $before . $message . $after;
-                        }
-                        else
-                        {
-                                return $before . $message . $after;
-                        }
-                }
-                
-                return true;
-        }
-        
-        /**
-         * Main error function
-         * 
-         * @param string $code Code of the error
-         * @param string $message Body of the error
-         */
-        public static function err($code, $message='Page error')
-        {
-                // Ensure the code is a string
-                $code = (string) $code;
+	/**
+	 * Display the error message, if needed
+	 * 
+	 * @param string $location Location of the error
+	 * @param string $before HTML to show before the errors
+	 * @param string $after HTML to show after
+	 * @param boolean $echo If true, then the message is sent, otherwise returned
+	 * 
+	 * @return string HTML string with the result
+	 */
+	public static function display($location, $before='', $after='', $echo=true)
+	{
+		if ($message = starfish::obj('errors')->message($location))
+		{
+			if ($echo == true)
+			{
+				echo $before . $message . $after;
+			}
+			else
+			{
+				return $before . $message . $after;
+			}
+		}
 
-                // set the response code
-                header(
-                        "{$_SERVER['SERVER_PROTOCOL']} {$code} {$message}",
-                        true,
-                        (int) $code
-                );
+		return true;
+	}
 
-                // set the response message
-                //$message = "{$code} {$message}";
-                echo $message;
+	/**
+	 * Main error function
+	 * 
+	 * @param string $code Code of the error
+	 * @param string $message Body of the error
+	 */
+	public static function err($code, $message='Page error')
+	{
+		// Ensure the code is a string
+		$code = (string) $code;
 
-                if (starfish::config('_starfish', 'debug') == true) { static::backtrace(); exit; }
-        }
+		// set the response code
+		header(
+			"{$_SERVER['SERVER_PROTOCOL']} {$code} {$message}",
+			true,
+			(int) $code
+		);
 
-        /**
-         * Show the backtrace for the error
-         */
-        public static function backtrace()
-        {
-                echo PHP_EOL;
-                echo '<pre>';
-                print_r(debug_backtrace());
-                echo '</pre>';
+		// set the response message
+		//$message = "{$code} {$message}";
+		echo $message;
 
-                return true;
-        }
+		if (starfish::config('_starfish', 'debug') == true) { static::backtrace(); exit; }
+	}
 
-        /**
-         * Convert an array of errors to a single string
-         * 
-         * @param mixed $err The error/errors
-         * @return string The only error string
-         */
-        public function toString($err='')
-        {
-                $string = '';
+	/**
+	 * Show the backtrace for the error
+	 */
+	public static function backtrace()
+	{
+		echo PHP_EOL;
+		echo '<pre>';
+		print_r(debug_backtrace());
+		echo '</pre>';
 
-                if (gettype($err) == 'array')
-                {
-                        foreach ($err as $key=>$value)
-                        {
-                                $string .= $key . ': ' . $value . ', ';
-                        }
-                        $string = substr($string, 0, -2);
-                }
-                else
-                {
-                        $string = (string)$err;
-                }
+		return true;
+	}
 
-                return $string;
-        }
+	/**
+	 * Convert an array of errors to a single string
+	 * 
+	 * @param mixed $err The error/errors
+	 * @return string The only error string
+	 */
+	public function toString($err='')
+	{
+		$string = '';
+
+		if (gettype($err) == 'array')
+		{
+			foreach ($err as $key=>$value)
+			{
+				$string .= $key . ': ' . $value . ', ';
+			}
+			$string = substr($string, 0, -2);
+		}
+		else
+		{
+			$string = (string)$err;
+		}
+
+		return $string;
+	}
 }
 
 /**

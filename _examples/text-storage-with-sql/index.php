@@ -16,14 +16,14 @@ starfish::config('_starfish', 'storage', @realpath(__DIR__) . DIRECTORY_SEPARATO
 
 // Add a connection to the database
 starfish::config('_starfish', 'databases', array(
-        'test' => array(
-                'type' => 'textdb', 
-                'parameters' => array(
-                        'name'      => 'test',
-                        'scramble'      => 'test',
-                        'encrypt'       => 'test'
-                )
-        )
+	'test' => array(
+		'type' => 'textdb', 
+		'parameters' => array(
+			'name'      => 'test',
+			'scramble'      => 'test',
+			'encrypt'       => 'test'
+		)
+	)
 ));
 
 // Initiate Starfish
@@ -40,13 +40,13 @@ starfish::obj('database')->query("insert into people(nume, prenume, gen) values(
 $resource = starfish::obj('database')->query("select * from people where nume='Ionescu2' and prenume='Vasile1'");
 while ($row = starfish::obj('database')->fetch($resource))
 {
-        print_r($row);
+	print_r($row);
 }
 
 $resource = starfish::obj('database')->query("select * from people");
 while ($row = starfish::obj('database')->fetch($resource))
 {
-        print_r($row);
+	print_r($row);
 }
 
 $resource = starfish::obj('database')->query("delete from people");

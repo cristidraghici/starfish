@@ -15,13 +15,13 @@ starfish::init('tpl');
 
 // The default path
 on('get', '/:all', function(){
-        
-        echo view('header');
-        
-        echo view('map');
-        
-        echo view('footer');
-        
+
+	echo view('header');
+
+	echo view('map');
+
+	echo view('footer');
+
 } );
 
 // Execute the router

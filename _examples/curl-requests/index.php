@@ -13,24 +13,24 @@ starfish::init();
 
 if ($site_url == 'http://<please enter a new value>/starfish/_examples/curl-requests/')
 {
-        starfish::obj('errors')->err(401, 'Please edit the main file of this example at line #9!');
+	starfish::obj('errors')->err(401, 'Please edit the main file of this example at line #9!');
 }
 
 /**
  * The script itself
  */
 on('get', '/:all', function($all) use ($site_url) {
-        echo starfish::obj('curl')->single(
-                starfish::obj('curl')->post($site_url, array(), 
-                                            array(
-                                                    'var1' => 'value1',
-                                                    'var2' => 'value2'
-                                            ))
-        );
+	echo starfish::obj('curl')->single(
+		starfish::obj('curl')->post($site_url, array(), 
+									array(
+										'var1' => 'value1',
+										'var2' => 'value2'
+									))
+	);
 });
 
 on('post', '/', function(){
-        print_r( post() );
+	print_r( post() );
 });
 
 // Execute the router

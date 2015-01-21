@@ -41,17 +41,17 @@ class database
 	}
 
 	/**
-         * Add a new connection
-         * 
-         * @param string $name Name of the connection
-         * @param string $type Type of connection: pqsql, mysql, textdb
-         * @param mixed $parameters Parameters for the connection
-         *                              - host
-         *                              - port
-         *                              - user
-         *                              - password
-         *                              - database
-         */
+	 * Add a new connection
+	 * 
+	 * @param string $name Name of the connection
+	 * @param string $type Type of connection: pqsql, mysql, textdb
+	 * @param mixed $parameters Parameters for the connection
+	 *                              - host
+	 *                              - port
+	 *                              - user
+	 *                              - password
+	 *                              - database
+	 */
 	public static function add($name, $type='textdb', $parameters=array())
 	{
 		static::$connections[$name] = array(
@@ -63,11 +63,11 @@ class database
 	}
 
 	/** 
-         * Retrieve/create a connection
-         * 
-         * @param string $name Name of the connections
-         * @return resource The connection requested
-         */
+	 * Retrieve/create a connection
+	 * 
+	 * @param string $name Name of the connections
+	 * @return resource The connection requested
+	 */
 	public static function get($name=null)
 	{
 		// If a name is specified
@@ -133,11 +133,11 @@ class database
 	}
 
 	/** 
-         * Convert the connection string inside this object's methods into a connection resource
-         * 
-         * @param mixed $conn Name of the connections
-         * @return resource The connection requested
-         */
+	 * Convert the connection string inside this object's methods into a connection resource
+	 * 
+	 * @param mixed $conn Name of the connections
+	 * @return resource The connection requested
+	 */
 	private static function conn($conn)
 	{
 		switch (strtolower(gettype($conn)))
@@ -156,11 +156,11 @@ class database
 	}
 
 	/** 
-         * Return the connection information for the given connection
-         * 
-         * @param string $name Name of the connection to return info about
-         * @return array Information about the connection
-         */
+	 * Return the connection information for the given connection
+	 * 
+	 * @param string $name Name of the connection to return info about
+	 * @return array Information about the connection
+	 */
 	private static function connectionInfo($name)
 	{
 		if (isset(static::$connections[$name]))
@@ -172,14 +172,14 @@ class database
 	}
 
 	/** 
-         * Send a query to the connection
-         * 
-         * @param mixed $query Name of the connections
-         * @param string $connection Name of the connection
-         * @param array $parameters Parameters to replace in the query, after sanitization
-         * 
-         * @return resource The resource containing the result
-         */
+	 * Send a query to the connection
+	 * 
+	 * @param mixed $query Name of the connections
+	 * @param string $connection Name of the connection
+	 * @param array $parameters Parameters to replace in the query, after sanitization
+	 * 
+	 * @return resource The resource containing the result
+	 */
 	public static function query($query, $connection=null, $parameters=array() )
 	{
 		if (count($parameters) > 0)
@@ -194,13 +194,13 @@ class database
 	}
 
 	/** 
-         * Verify a query
-         * 
-         * @param mixed $query Name of the connections
-         * @param string $connection Name of the connection
-         * 
-         * @return resource The resource containing the result
-         */
+	 * Verify a query
+	 * 
+	 * @param mixed $query Name of the connections
+	 * @param string $connection Name of the connection
+	 * 
+	 * @return resource The resource containing the result
+	 */
 	public static function eecho($query, $connection=null, $parameters=array() )
 	{
 		if (count($parameters) > 0)
@@ -216,14 +216,14 @@ class database
 	}
 
 	/** 
-         * Fetch a result from a returned query resource
-         * 
-         * @param resource $resource The resource to be interpreted
-         * @param string $connection Name of the connection
-         * @param array $parameters Parameters to escape as they will be sent to the browser
-         * 
-         * @return array An array containing the fetched result
-         */
+	 * Fetch a result from a returned query resource
+	 * 
+	 * @param resource $resource The resource to be interpreted
+	 * @param string $connection Name of the connection
+	 * @param array $parameters Parameters to escape as they will be sent to the browser
+	 * 
+	 * @return array An array containing the fetched result
+	 */
 	public static function fetch($resource, $connection=null, $parameters=array())
 	{
 		$row = static::conn($connection)->fetch($resource);
@@ -240,14 +240,14 @@ class database
 	}
 
 	/** 
-         * Fetch all results from a returned query resource
-         * 
-         * @param resource $resource The resource to be interpreted
-         * @param string $connection Name of the connection
-         * @param array $parameters Parameters to escape as they will be sent to the browser
-         * 
-         * @return array An array containing the fetched result
-         */
+	 * Fetch all results from a returned query resource
+	 * 
+	 * @param resource $resource The resource to be interpreted
+	 * @param string $connection Name of the connection
+	 * @param array $parameters Parameters to escape as they will be sent to the browser
+	 * 
+	 * @return array An array containing the fetched result
+	 */
 	public static function fetchAll($resource, $connection=null, $parameters=array())
 	{
 		$rows = static::conn($connection)->fetchAll($resource);
@@ -268,14 +268,14 @@ class database
 
 
 	/** 
-         * Fetch the json output from a database
-         * 
-         * @param resource $resource The resource to be interpreted
-         * @param string $connection Name of the connection
-         * @param array $parameters Parameters to escape as they will be sent to the browser
-         * 
-         * @return string The JSON string returned
-         */
+	 * Fetch the json output from a database
+	 * 
+	 * @param resource $resource The resource to be interpreted
+	 * @param string $connection Name of the connection
+	 * @param array $parameters Parameters to escape as they will be sent to the browser
+	 * 
+	 * @return string The JSON string returned
+	 */
 	public static function json($resource, $connection=null, $parameters=array())
 	{
 		$row = static::conn($connection)->fetch($resource);
@@ -285,34 +285,34 @@ class database
 	}
 
 	/** 
-         * Count the results matching the given conditions
-         * 
-         * @param resource $resource The resource to be interpreted
-         * @param string $connection Name of the connection
-         * 
-         * @return number The number of results
-         */
+	 * Count the results matching the given conditions
+	 * 
+	 * @param resource $resource The resource to be interpreted
+	 * @param string $connection Name of the connection
+	 * 
+	 * @return number The number of results
+	 */
 	public static function numRows($resource, $connection=null)
 	{
 		return static::conn($connection)->numRows($resource);
 	}
 
 	/** 
-         * Free a resource
-         * 
-         * @param resource $resource The resource to be interpreted
-         * @param string $connection Name of the connection
-         */
+	 * Free a resource
+	 * 
+	 * @param resource $resource The resource to be interpreted
+	 * @param string $connection Name of the connection
+	 */
 	public static function free($resource, $connection=null)
 	{
 		return static::conn($connection)->free($resource);
 	}
 
 	/** 
-         * Disconnect a connection
-         * 
-         * @param string $name Name of the connections
-         */
+	 * Disconnect a connection
+	 * 
+	 * @param string $name Name of the connections
+	 */
 	public static function disconnect($connection=null)
 	{
 		// Get the object
@@ -334,22 +334,22 @@ class database
 	}
 
 	/** 
-         * Sanitize string
-         * 
-         * @param string $name String to alter
-         * @return string String returned after processing
-         */
+	 * Sanitize string
+	 * 
+	 * @param string $name String to alter
+	 * @return string String returned after processing
+	 */
 	public static function sanitize($string, $connection=null)
 	{
 		return static::conn($connection)->sanitize($string);
 	}
 
 	/** 
-         * Escape string
-         * 
-         * @param string $name String to alter
-         * @return string String returned after processing
-         */
+	 * Escape string
+	 * 
+	 * @param string $name String to alter
+	 * @return string String returned after processing
+	 */
 	public static function escape($string, $connection=null)
 	{
 		return static::conn($connection)->escape($string);

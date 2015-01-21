@@ -12,16 +12,16 @@ $bgs = array();
 $all = starfish::obj('files')->all( @realpath(__DIR__) . DIRECTORY_SEPARATOR );
 foreach ($all['files'] as $key=>$value)
 {
-        if (in_array(starfish::obj('files')->extension($value), array('png')))
-        {
-                $bgs[] = $value;
-        }
+	if (in_array(starfish::obj('files')->extension($value), array('png')))
+	{
+		$bgs[] = $value;
+	}
 }
 
 // Establish the captcha value to show
 if (starfish::obj('parameters')->get('mode') == 'new' || starfish::obj('parameters')->session('captcha')  != starfish::obj('captcha')->captcha_number_of_chars)
 {
-        starfish::obj('captcha')->refreshCaptcha();
+	starfish::obj('captcha')->refreshCaptcha();
 }
 $string = reg::obj('captcha')->returnCaptcha();
 

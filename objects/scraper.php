@@ -266,15 +266,15 @@ class scraper
 	}
 
 	/**
-         * Remove a url from the list
-         * 
-         * @param number $project_id Id of the project in use
-         * @param number $group_id Group of urls inside the project
-         * @param string $url URL to download
-         * @param string $method Method to use for downloading the urls
-         * @param array $parameters Parameters used in the request
-         * @param array $data Data to use when parsing this url
-         */
+	 * Remove a url from the list
+	 * 
+	 * @param number $project_id Id of the project in use
+	 * @param number $group_id Group of urls inside the project
+	 * @param string $url URL to download
+	 * @param string $method Method to use for downloading the urls
+	 * @param array $parameters Parameters used in the request
+	 * @param array $data Data to use when parsing this url
+	 */
 	public function removeUrl($project_id, $group_id, $url, $method='get', $parameters=array(), $data=array())
 	{
 		// Alter the parameters for storage
@@ -301,15 +301,15 @@ class scraper
 	}
 
 	/**
-         * Download the established urls - starts a download process for the urls inside the database
-         * 
-         * e.g. while ( starfish::obj('scraper')->download(1, 1) ) { starfish::obj('scraper')->message('Download in progress.'); }
-         * 
-         * @param number $project_id Id of the project in use
-         * @param number $group_id Group of urls inside the project
-         * 
-         * @return boolean True if the process still needs to continue
-         */
+	 * Download the established urls - starts a download process for the urls inside the database
+	 * 
+	 * e.g. while ( starfish::obj('scraper')->download(1, 1) ) { starfish::obj('scraper')->message('Download in progress.'); }
+	 * 
+	 * @param number $project_id Id of the project in use
+	 * @param number $group_id Group of urls inside the project
+	 * 
+	 * @return boolean True if the process still needs to continue
+	 */
 	public function download($project_id, $group_id=null, $simultaneous=null)
 	{
 		$status = $this->status($project_id, $group_id);
@@ -394,11 +394,11 @@ class scraper
 
 				// Update the content
 				$resource = starfish::obj('database')->query("insert into url_download(url_id, content) values('{url_id}', '{content}') on duplicate key update content='{content}'", $this->connectionName,
-									     array(
-										     'url_id'=>$info['_request'][$key]['row']['nr_crt'],
-										     'content'=>$value
-									     )
-									    );
+															 array(
+																 'url_id'=>$info['_request'][$key]['row']['nr_crt'],
+																 'content'=>$value
+															 )
+															);
 				starfish::obj('database')->free( $resource );
 
 
@@ -523,16 +523,16 @@ class scraper
 	}
 
 	/**
-         * Process the downloaded urls
-         * 
-         * This method stores inside the current object a list of functions to apply to the downloaded content.
-         * 
-         * @param number $project_id Id of the project in use
-         * @param number $group_id Group of urls inside the project
-         * @param function $callback 
-         *                      - $html - the downloaded html to processing
-         *                      - $data - the suplimentary data to use when processing
-         */
+	 * Process the downloaded urls
+	 * 
+	 * This method stores inside the current object a list of functions to apply to the downloaded content.
+	 * 
+	 * @param number $project_id Id of the project in use
+	 * @param number $group_id Group of urls inside the project
+	 * @param function $callback 
+	 *                      - $html - the downloaded html to processing
+	 *                      - $data - the suplimentary data to use when processing
+	 */
 	public function process($project_id, $group_id, $callback)
 	{
 		$this->processing_functions [ $project_id ][ $group_id ] = $callback;
@@ -540,16 +540,16 @@ class scraper
 	}
 
 	/**
-         * Method to test the functions which will be added in the process lists
-         * 
-         * @param function $callback
-         *                      - $html - the downloaded html to processing
-         *                      - $data - the suplimentary data to use when processing
-         * @param mixed $request
-         *                      - case type is string, then a url request is sent on the get method
-         *                      - case type is object, then $request is the request object itself
-         * @param array $data Data to use when processing the HTML
-         */
+	 * Method to test the functions which will be added in the process lists
+	 * 
+	 * @param function $callback
+	 *                      - $html - the downloaded html to processing
+	 *                      - $data - the suplimentary data to use when processing
+	 * @param mixed $request
+	 *                      - case type is string, then a url request is sent on the get method
+	 *                      - case type is object, then $request is the request object itself
+	 * @param array $data Data to use when processing the HTML
+	 */
 	public function processFunction($callback, $request, $data)
 	{
 		// Request the HTML
@@ -566,17 +566,17 @@ class scraper
 	}
 
 	/**
-         * Return the status of parsing from the database
-         * 
-         * @param number $project_id Id of the project in use
-         * @param number $group_id Group of urls inside the project
-         * 
-         * @return array        
-         *              - total - total number of pages to download
-         *              - downloaded - number of files downloaded so far
-         *              - processed - number of files processed
-         *              - finished - boolean - whether the process is finished or not
-         */
+	 * Return the status of parsing from the database
+	 * 
+	 * @param number $project_id Id of the project in use
+	 * @param number $group_id Group of urls inside the project
+	 * 
+	 * @return array        
+	 *              - total - total number of pages to download
+	 *              - downloaded - number of files downloaded so far
+	 *              - processed - number of files processed
+	 *              - finished - boolean - whether the process is finished or not
+	 */
 	public function status($project_id, $group_id=null)
 	{
 		// Halt the execution, if shutdown is enforced
@@ -629,11 +629,11 @@ class scraper
 	}
 
 	/**
-         * Output a message to the browser/command line
-         * 
-         * @param string $text The text of the message
-         * @param number $max The maximum messages to show before the content of the page is reset
-         */
+	 * Output a message to the browser/command line
+	 * 
+	 * @param string $text The text of the message
+	 * @param number $max The maximum messages to show before the content of the page is reset
+	 */
 	public function message($text, $max=50)
 	{
 		// Show the current message
@@ -654,10 +654,10 @@ class scraper
 	}
 
 	/**
-         * Show css for displaying the messages
-         * 
-         * @param number $max The maximum messages to show before the content of the page is reset
-         */
+	 * Show css for displaying the messages
+	 * 
+	 * @param number $max The maximum messages to show before the content of the page is reset
+	 */
 	public function message_helper($max)
 	{
 		if (starfish::$constants['cli'] == false)

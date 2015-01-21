@@ -1,4 +1,4 @@
 <?php /* Starfish Framework Template protection */ die(); ?>
 
-        </body>
+</body>
 </html>

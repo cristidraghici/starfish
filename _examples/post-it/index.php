@@ -19,14 +19,14 @@ obj('notes');
 
 // The default path
 function defaultPath () {
-        if (obj('authentication')->check() == false)
-        {
-                redirect('./login');
-        }
-        else
-        {
-                redirect('./notes');
-        }
+	if (obj('authentication')->check() == false)
+	{
+		redirect('./login');
+	}
+	else
+	{
+		redirect('./notes');
+	}
 }
 on('get', '/:all', 'defaultPath' );
 on('post', '/:all', 'defaultPath' );

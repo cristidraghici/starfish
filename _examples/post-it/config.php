@@ -13,14 +13,14 @@ starfish::config('_starfish', 'site_description', 'Keep track of your important 
 
 // Add a connection to the database
 starfish::config('_starfish', 'databases', array(
-        'postit' => array(
-                'type' => 'textdb', 
-                'parameters' => array(
-                        'name'      => 'postit',
-                        'scramble'      => 'post-it',
-                        'encrypt'       => 'post-it'
-                )
-        )
+	'postit' => array(
+		'type' => 'textdb', 
+		'parameters' => array(
+			'name'      => 'postit',
+			'scramble'      => 'post-it',
+			'encrypt'       => 'post-it'
+		)
+	)
 ));
 
 ?>

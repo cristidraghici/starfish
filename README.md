@@ -1,5 +1,3 @@
-
-
 # Starfish ![Starfish PHP Framework](/storage/starfish-small.png "Starfish PHP Framework")
 
 **Starfish PHP Framework** is a minimum Registry microframework primarily desiged to serve JSON content and use objects.

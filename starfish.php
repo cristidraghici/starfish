@@ -33,9 +33,9 @@ class starfish
 	 * Declare used variables
 	 *
 	 * $initialized - boolean Needs to be true for Starfish to run
-         *
+     *
 	 * $config    - configuration variables
-         * $constants - Starfish "constants": framework specific values for later use
+     * $constants - Starfish "constants": framework specific values for later use
 	 * $variables - variable values set throughout the application and accessible from anywhere
 	 * 
 	 * $objects 	- a list of objects 
@@ -179,6 +179,9 @@ class starfish
 		static::obj('files');
 		static::obj('routes');
 		static::obj('databases');
+		static::obj('errors');
+		static::obj('logs');
+		static::obj('email');
 
 		static::preload($objects);
 

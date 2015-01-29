@@ -11,7 +11,17 @@ class mysql
 {
 	private $connection = null;
 	private $resource = null;
-
+    
+    /*
+     * Init requirements
+     */
+    function init()
+    {
+		if (!extension_loaded('mysqli')) { starfish::obj('errors')->err(400, "PHP required extension - mysqli - not loaded."); }
+        
+        return true;
+    }
+    
 	/*
 	 * Connect to the database
 	 * 

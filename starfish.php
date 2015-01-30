@@ -412,7 +412,8 @@ class starfish
 			if (!class_exists($class))
 			{
 				$path = isset( static::$objects[$name]['path'] ) ? static::$objects[$name]['path'] : null;
-
+				$path = $path == null && isset($configuration['path']) ? $configuration['path'] : null;
+				
 				if ($path != null)
 				{
 					require_once( $path );

@@ -320,5 +320,12 @@ class pagination
 	}
 
 
+	/**
+	* Calculate the offset
+	*/
+	function offset($page, $itemsPerPage)
+	{
+		return ($page - 1) * $itemsPerPage;
+	}
 }
 ?>

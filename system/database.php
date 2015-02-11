@@ -280,7 +280,12 @@ class database
 	{
 		$row = static::conn($connection)->fetch($resource);
 		static::conn($connection)->free($resource, $connection);
-		$row = array_values($row);
+		$row = @array_values($row);
+		
+		if ($row == null)
+		{
+			return @json_encode(array('success'=>false, 'message'=>'The data could not be retrieved.'));
+		}
 		return $row[0];
 	}
 

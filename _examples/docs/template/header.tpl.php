@@ -11,7 +11,15 @@
 		<meta name="author" content="">
 
 		<title>Starfish - The PHP Framework - Documentation</title>
+
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+		<link rel="stylesheet" type="text/css" media="all" href="{/}public/style.css" />
+
+		<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	</head>
 
-	<body id="page-top" class="index">
-		<h2>Header</h2>
+	<body>
+		<div class="container-fluid">

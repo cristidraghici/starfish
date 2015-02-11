@@ -18,6 +18,74 @@ class files
 	private static $walkNumRow = 0;
 
 	/**
+	 * Make the tree for the specified path
+	 * 
+	 * @param string $path Path to the directory
+	 * @param array $except List of paths to except from the tree
+	 * @return array Directory tree
+	 */
+	public function tree($path, $except=array())
+	{
+		$list = array();
+
+		if (file_exists($path) && is_dir($path) && is_readable($path) && !$this->is_directory_list_exception($path, $except))
+		{
+			if ($dir_handler = opendir($path)) 
+			{
+				while (($file = readdir($dir_handler)) !== false) 
+				{
+					if ($file != '.' && $file != '..')
+					{
+						if (filetype($path . $file) == 'file')
+						{
+							$list[] = array('name'=>$file, 'type'=>'file', 'path'=> $path . $file);
+						}
+						elseif ( !$this->is_directory_list_exception($path . $file . '/', $except) )
+						{
+							$list[] = array('name'=>$file, 'type'=>'folder', 'path'=> $path . $file, 'content'=> $this->tree($path . $file . '/', $except) );
+						}
+					}
+				}
+			}
+		}
+
+		return $list;
+	}
+
+	/**
+	 * Check if a directory path corresponds to the exception list
+	 * 
+	 * @param string $path Path to check
+	 * @param array $except List of exceptions
+	 * @return boolean True if it is an exception
+	 */
+	private function is_directory_list_exception($path, $except)
+	{
+		$boolean = false;
+
+		if (count($except) > 0)
+		{
+			foreach ($except as $key=>$value)
+			{
+				if ($value == $path)
+				{
+					$boolean = true;
+				}
+				else
+				{
+					$value = str_replace('/', '\/', $value);
+
+					if (preg_match('/' . $value . '/ui', $path, $matched))
+					{
+						$boolean = true;
+					}	
+				}
+			}
+		}
+		return $boolean;
+	}
+
+	/**
 	 * Read the content of a directory
 	 *
 	 * @param string $path Path to the directory
@@ -276,9 +344,9 @@ class files
 		$chunksize = 10 * (1024 * 1024); // 10 Megs
 
 		/**
-                * parse_url breaks a part a URL into it's parts, i.e. host, path,
-                * query string, etc.
-                */
+		* parse_url breaks a part a URL into it's parts, i.e. host, path,
+		* query string, etc.
+		*/
 		$parts = parse_url($infile);
 		$i_handle = fsockopen($parts['host'], 80, $errstr, $errcode, 5);
 		$o_handle = fopen($outfile, 'wb');
@@ -292,8 +360,8 @@ class files
 		}
 
 		/**
-                * Send the request to the server for the file
-                */
+		* Send the request to the server for the file
+		*/
 		$request = "GET {$parts['path']} HTTP/1.1\r\n";
 		$request .= "Host: {$parts['host']}\r\n";
 		$request .= "User-Agent: Mozilla/5.0\r\n";
@@ -302,9 +370,9 @@ class files
 		fwrite($i_handle, $request);
 
 		/**
-                * Now read the headers from the remote server. We'll need
-                * to get the content length.
-                */
+		* Now read the headers from the remote server. We'll need
+		* to get the content length.
+		*/
 		$headers = array();
 		while(!feof($i_handle)) {
 			$line = fgets($i_handle);
@@ -313,9 +381,9 @@ class files
 		}
 
 		/**
-                * Look for the Content-Length header, and get the size
-                * of the remote file.
-                */
+		* Look for the Content-Length header, and get the size
+		* of the remote file.
+		*/
 		$length = 0;
 		$exists = true;
 		foreach($headers as $header) {
@@ -328,9 +396,9 @@ class files
 		}
 
 		/**
-                * Start reading in the remote file, and writing it to the
-                * local file one chunk at a time.
-                */
+		* Start reading in the remote file, and writing it to the
+		* local file one chunk at a time.
+		*/
 		$cnt = 0;
 		while(!feof($i_handle)) {
 			$buf = '';
@@ -342,8 +410,8 @@ class files
 			$cnt += $bytes;
 
 			/**
-                        * We're done reading when we've reached the conent length
-                        */
+			* We're done reading when we've reached the conent length
+			*/
 			if ($cnt >= $length) break;
 		}
 

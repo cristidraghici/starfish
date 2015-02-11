@@ -17,24 +17,20 @@ starfish::init();
  * The script itself
  */
 
-on('post', '/contact', function(){ 
-	starfish::obj('contact')->send();
+// Preload the objects
+$files = starfish::obj('files')->all('application/');
+foreach ($files['files'] as $key=>$value)
+{
+    $parts = explode('.', $value);
+    starfish::obj($parts[0]);
+}
+
+
+on('get', '/generate', function(){
+	obj('generator')->generate();
 });
 
-on('get', '/', function(){
-	echo starfish::obj('tpl')->view('header');
-	echo starfish::obj('tpl')->view('about');
-	echo starfish::obj('tpl')->view('examples', array(
-		'examples' => obj('examples')->getExamples()
-	));
-	echo starfish::obj('tpl')->view('history');
-	echo starfish::obj('tpl')->view('team', array(
-		'contributors' => obj('team')->getMembers()
-	));
-	echo starfish::obj('tpl')->view('contact');
-	echo starfish::obj('tpl')->view('footer');     
-});
-
+// Other paths
 on('get', '/:all', function($all){
 	echo 'Page does not exist!';
 });

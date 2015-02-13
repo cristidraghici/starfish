@@ -59,7 +59,7 @@ class files
 	 * @param array $except List of exceptions
 	 * @return boolean True if it is an exception
 	 */
-	private function is_directory_list_exception($path, $except)
+	public function is_directory_list_exception($path, $except)
 	{
 		$boolean = false;
 

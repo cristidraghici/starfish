@@ -10,6 +10,18 @@ if (!class_exists('starfish')) { die(); }
 class epoch
 {	
 	/**
+	* Convert date
+	*/
+	function convert($from_format, $to_format, $string)
+	{
+		$d = DateTime::createFromFormat($from_format, $string);
+		if ($d === false) {
+			return false;
+		}
+		echo $d->format($to_format);
+	}
+	
+	/**
 	 * Convert seconds to readable
 	 * 
 	 * @param number $secs Seconds to converting

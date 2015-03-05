@@ -43,6 +43,7 @@ class extjs
 				}
 				else
 				{
+					if (gettype($value['value']) == 'boolean') { $value['value'] = $value['value'] == true ? 'true' : 'false'; }
 					$value['value'] = '\'\'' . $value['value'] . '\'\'';
 				}
 

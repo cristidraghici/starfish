@@ -138,6 +138,9 @@ class starfish
 		// Get and set CLI status
 		static::$constants['cli'] = ( php_sapi_name() == 'cli' ) ? true : false;
 
+		// Check if it is an ajax request
+        static::$constants['ajax'] = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? true : false;
+
 		// Get and set client IP address
 		static::$constants['ip'] = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
 

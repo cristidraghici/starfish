@@ -11,6 +11,22 @@ if (!class_exists('starfish')) { die(); }
  */
 class errors
 {
+    // Errors constructor
+    function __construct() {
+        ob_start();
+    }
+    
+	// Check if error message exists
+	public static function exists($location) 
+	{
+		if (strlen(session('_starfish_errors-' . $location)) > 0) 
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Main message function
 	 * 
@@ -52,6 +68,7 @@ class errors
 	 */
 	public static function display($location, $before='', $after='', $echo=true)
 	{
+        $html = @ob_get_clean();
 		if ($message = starfish::obj('errors')->message($location))
 		{
 			if ($echo == true)
@@ -63,7 +80,8 @@ class errors
 				return $before . $message . $after;
 			}
 		}
-
+        
+		if (strlen($html) > 0 ) { echo $html; }
 		return true;
 	}
 

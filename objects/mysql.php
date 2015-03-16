@@ -91,12 +91,6 @@ class mysql
     function fetch($resource)
     {
         $row = @mysqli_fetch_assoc($resource);
-
-        if (!@mysqli_more_results($this->connection))
-        {
-            $resource->close();
-        }
-
         return $row;
     }
     /*

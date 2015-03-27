@@ -7,19 +7,37 @@ require_once('../../starfish.php');
 require_once('config.php');
 
 // Initiate Starfish
-starfish::init();
+starfish::init('tpl');
 
 /**
  * The script itself
  */
 
-// The default path
-starfish::obj('routes')->on('get', '/:all', function($from='en', $to='ro') {
-	$string = strlen(get('t')) > 0 ? get('t') : 'Hello world!';
+on('post', '/:all', function(){
+
+	$translation = obj('process')->translate();
 	
-	echo obj('googletranslate')->translate($string, $from, $to);
-});
+	echo view('header');
+
+	echo view('form', array(
+		'translation'=>$translation
+	));
+
+	echo view('footer');
+
+} );
+
+// The default path
+on('get', '/:all', function(){
+
+	echo view('header');
+
+	echo view('form');
+
+	echo view('footer');
+
+} );
 
 // Execute the router
-starfish::obj('routes')->run();
+on();
 ?>

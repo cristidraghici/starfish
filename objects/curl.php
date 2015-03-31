@@ -19,7 +19,7 @@ class curl
 
 	public function init()
 	{
-		if (!extension_loaded('curl')) { starfish::obj('errors')->error(400, "PHP required extension - curl - not loaded."); }
+		if (!extension_loaded('curl')) { starfish::obj('errors')->err(400, "PHP required extension - curl - not loaded."); }
 
 		$this->config = array(
 			CURLOPT_RETURNTRANSFER => true,

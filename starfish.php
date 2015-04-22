@@ -142,7 +142,7 @@ class starfish
         static::$constants['ajax'] = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? true : false;
 
 		// Get and set client IP address
-		static::$constants['ip'] = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
+		static::$constants['ip'] = static::get_client_ip();
 
 		// Register aliases
 		if (static::config('_starfish', 'aliases') != null && is_array( static::config('_starfish', 'aliases') ))
@@ -548,6 +548,35 @@ class starfish
 		return static::obj('epoch')->seconds_to_readable($difference);
 	}
 
+	/**
+	 * Get the IP address of the client
+	 * @see http://stackoverflow.com/questions/1634782/what-is-the-most-accurate-way-to-retrieve-a-users-correct-ip-address-in-php
+	 * 
+	 * @return string The ip addpress of the client
+	 */
+	public static function get_client_ip() 
+	{
+		$string = '';
+		$verify = array_values(array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'));
+		
+		for ($a=0; $a<count($verify) && $string == ''; $a++) 
+		{
+			if (isset($_SERVER[$verify[$a]]) && $value = trim($_SERVER[$verify[$a]]))
+			{
+				if (starfish::config('_starfish', 'debug') == false)
+				{
+					$string = filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ? $value : '';
+				}
+				else
+				{
+					$string = filter_var($value, FILTER_VALIDATE_IP) ? $value : '';
+				}
+			}
+		}
+		
+		return $string;
+	}
+	
 	/** 
 	 * Model/View/Controller support functions
 	 * 

@@ -305,12 +305,13 @@ class textdb
 		$parts = explode("and", $where);
 		foreach ($parts as $key=>$value)
 		{
-			preg_match('#(.*)(<|>|=|==|<=|>=)(.*)#is', trim($value), $match);
+			preg_match('#(.*)(<|>|=|==|<=|>=)(.*)#ims', trim($value), $match);
+			print_r($match);
 			if (isset($match[1]) && isset($match[2]) && isset($match[3]))
 			{
 				if ($match[2] == '=') { $match[2] = '=='; }
 
-				$conditions[] = 'if ($row["'.$match[1].'"] '.$match[2].' '.$match[3].') { } else { $return = false; }';
+				$conditions[] = 'if (!(md5($row["'.$match[1].'"]) '.$match[2].' "'.md5($match[3]).'")) { $return = false; }';
 			}
 		}
 
@@ -532,15 +533,15 @@ class textdb
 	// encode a string
 	function query_encode($string)
 	{
-		//return $this->connection['encrypt']->encode( $this->connection['scramble']->encode($string) );
-		return $this->connection['scramble']->encode($string);
+		return $this->connection['encrypt']->encode( $this->connection['scramble']->encode($string) );
+		//return $this->connection['scramble']->encode($string);
 		//return $string;
 	}
 	// decode a string
 	function query_decode($string)
 	{
-		//return $this->connection['scramble']->decode( $this->connection['encrypt']->decode($string) );
-		return $this->connection['scramble']->decode( $string );
+		return $this->connection['scramble']->decode( $this->connection['encrypt']->decode($string) );
+		//return $this->connection['scramble']->decode( $string );
 		//return $string;
 	}
 

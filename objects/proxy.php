@@ -47,7 +47,7 @@ class proxy
 			{
 				$url = $_SERVER['HTTP_SERVERURL'];
 			}
-			else
+			elseif (isset($_REQUEST['url']))
 			{
 				$url = $_REQUEST['url'];
 			}

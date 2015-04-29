@@ -21,6 +21,8 @@ class encrypt
 	 */
 	function __construct()
 	{
+		if (!extension_loaded('mcrypt')) { starfish::obj('errors')->err(400, "PHP required extension - mcrypt - not loaded."); }
+		
 		if (strlen(starfish::config('_encrypt', 'hash')) > 0)
 		{
 			$this->hash( md5(starfish::config('_encrypt', 'hash')) );
@@ -37,12 +39,14 @@ class encrypt
 	 * Set a new hash
 	 *
 	 * @param string $string The new hash
+	 * 
+	 * @todo Make the hash md5 (Not yet implemented due to other existing projects)
 	 */
 	public function hash($string=null)
 	{
 		if ($string != null)
 		{
-			$this->hash = $string;
+			$this->hash = substr($string, 0, 10);
 		}
 
 		return true;

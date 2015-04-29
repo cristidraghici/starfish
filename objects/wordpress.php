@@ -15,7 +15,7 @@ class wordpress
 	function __construct()
 	{
 		// Die if wp is not loaded
-		if (!isset(ABSPATH)) { die('Please load the WP environment.'); }
+		if (!defined(ABSPATH)) { die('Please load the WP environment.'); }
 
 		return true;
 	}

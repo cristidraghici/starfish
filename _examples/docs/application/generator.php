@@ -41,11 +41,11 @@ class generator
             }
             else
             {
-                obj('db')->query("insert into tree(title, type, path) values('".$value['name']."', ''2,'".$value['path']."', '".$parent."')");
+                obj('db')->query("insert into tree(title, type, path, parent) values('".$value['name']."', '2','".$value['path']."', '".$parent."')");
                 $row = obj('db')->fetch( obj('db')->query("select * from tree where title='".$value['name']."' and type='2' and path='".$value['path']."' and parent='".$parent."'") );
                 
                 $show = $this->analyze_obj('curl.php','../../objects/curl.php');
-                //print_r($show);
+                print_r($show);
             }
         }
 	}

@@ -532,13 +532,15 @@ class textdb
 	// encode a string
 	function query_encode($string)
 	{
-		return $this->connection['encrypt']->encode( $this->connection['scramble']->encode($string) );
+		//return $this->connection['encrypt']->encode( $this->connection['scramble']->encode($string) );
+		return $this->connection['scramble']->encode($string);
 		//return $string;
 	}
 	// decode a string
 	function query_decode($string)
 	{
-		return $this->connection['scramble']->decode( $this->connection['encrypt']->decode($string) );
+		//return $this->connection['scramble']->decode( $this->connection['encrypt']->decode($string) );
+		return $this->connection['scramble']->decode( $string );
 		//return $string;
 	}
 

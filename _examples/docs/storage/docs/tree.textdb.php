@@ -1,3 +1,34 @@
 <?php /* Starfish TextDB storage protection */ die(); ?>
 
-a:5:{s:3:"_id";s:43:"WL11Y0OGgp7-_peY4tKsA7mY4uWETC9VJaF0L8FAgs4";s:6:"parent";b:0;s:4:"path";s:43:"mGwJpNnmf9S80vIKKnjteoYLl6NUVjVBuLFfdapnu9g";s:5:"title";s:43:"jakF5fh1FeLzaOt246x6D4-8NdUDq5L8iJWY_tsxKns";s:4:"type";s:43:"WL11Y0OGgp7-_peY4tKsA7mY4uWETC9VJaF0L8FAgs4";}
+a:5:{s:3:"_id";s:1:"!";s:6:"parent";s:0:"";s:4:"path";s:13:"aa/aa/UcmgEZY";s:5:"title";s:7:"UcmgEZY";s:4:"type";s:1:"!";}
+a:5:{s:3:"_id";s:1:"$";s:6:"parent";s:1:"!";s:4:"path";s:23:"aa/aa/UcmgEZY/EBEkgaVkV";s:5:"title";s:9:"EBEkgaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:1:"*";s:6:"parent";s:1:"!";s:4:"path";s:25:"aa/aa/UcmgEZY/EBVZEkBaVkV";s:5:"title";s:11:"EBVZEkBaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:1:"+";s:6:"parent";s:1:"!";s:4:"path";s:22:"aa/aa/UcmgEZY/E0XPaVkV";s:5:"title";s:8:"E0XPaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:1:"-";s:6:"parent";s:1:"!";s:4:"path";s:20:"aa/aa/UcmgEZY/FcaVkV";s:5:"title";s:6:"FcaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:1:"?";s:6:"parent";s:1:"!";s:4:"path";s:25:"aa/aa/UcmgEZY/gREX8VZaVkV";s:5:"title";s:11:"gREX8VZaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:1:"@";s:6:"parent";s:1:"!";s:4:"path";s:23:"aa/aa/UcmgEZY/gVUEkaVkV";s:5:"title";s:9:"gVUEkaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:1:"#";s:6:"parent";s:1:"!";s:4:"path";s:23:"aa/aa/UcmgEZY/g6ZmYaVkV";s:5:"title";s:9:"g6ZmYaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:1:"t";s:6:"parent";s:1:"!";s:4:"path";s:21:"aa/aa/UcmgEZY/IZVaVkV";s:5:"title";s:7:"IZVaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!,";s:6:"parent";s:1:"!";s:4:"path";s:28:"aa/aa/UcmgEZY/jUUjPgQBVYaVkV";s:5:"title";s:14:"jUUjPgQBVYaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!!";s:6:"parent";s:1:"!";s:4:"path";s:33:"aa/aa/UcmgEZY/jUUjPgZXBRYPBZgaVkV";s:5:"title";s:19:"jUUjPgZXBRYPBZgaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!$";s:6:"parent";s:1:"!";s:4:"path";s:22:"aa/aa/UcmgEZY/kZQPaVkV";s:5:"title";s:8:"kZQPaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!*";s:6:"parent";s:1:"!";s:4:"path";s:22:"aa/aa/UcmgEZY/kZZVaVkV";s:5:"title";s:8:"kZZVaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!+";s:6:"parent";s:1:"!";s:4:"path";s:25:"aa/aa/UcmgEZY/mYURXVEaVkV";s:5:"title";s:11:"mYURXVEaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!-";s:6:"parent";s:1:"!";s:4:"path";s:23:"aa/aa/UcmgEZY/Q8YWPaVkV";s:5:"title";s:9:"Q8YWPaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!?";s:6:"parent";s:1:"!";s:4:"path";s:28:"aa/aa/UcmgEZY/VBjlRBZlURaVkV";s:5:"title";s:14:"VBjlRBZlURaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!@";s:6:"parent";s:1:"!";s:4:"path";s:26:"aa/aa/UcmgEZY/VUYZjXgYaVkV";s:5:"title";s:12:"VUYZjXgYaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!#";s:6:"parent";s:1:"!";s:4:"path";s:23:"aa/aa/UcmgEZY/VXU68aVkV";s:5:"title";s:9:"VXU68aVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"!t";s:6:"parent";s:1:"!";s:4:"path";s:26:"aa/aa/UcmgEZY/YEXBQcPgaVkV";s:5:"title";s:12:"YEXBQcPgaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"$,";s:6:"parent";s:1:"!";s:4:"path";s:25:"aa/aa/UcmgEZY/YEXBVgXaVkV";s:5:"title";s:11:"YEXBVgXaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"$!";s:6:"parent";s:1:"!";s:4:"path";s:24:"aa/aa/UcmgEZY/Zg6ZFcaVkV";s:5:"title";s:10:"Zg6ZFcaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"$$";s:6:"parent";s:1:"!";s:4:"path";s:21:"aa/aa/UcmgEZY/ZVPaVkV";s:5:"title";s:7:"ZVPaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"$*";s:6:"parent";s:1:"!";s:4:"path";s:27:"aa/aa/UcmgEZY/4UXFVXgYYaVkV";s:5:"title";s:13:"4UXFVXgYYaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"$+";s:6:"parent";s:0:"";s:4:"path";s:18:"aa/aa/YZBXIlYkaVkV";s:5:"title";s:12:"YZBXIlYkaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"$-";s:6:"parent";s:0:"";s:4:"path";s:12:"aa/aa/Y8YZgQ";s:5:"title";s:6:"Y8YZgQ";s:4:"type";s:1:"!";}
+a:5:{s:3:"_id";s:2:"$?";s:6:"parent";s:2:"$-";s:4:"path";s:25:"aa/aa/Y8YZgQ/FBZBcBYgaVkV";s:5:"title";s:12:"FBZBcBYgaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"$@";s:6:"parent";s:2:"$-";s:4:"path";s:22:"aa/aa/Y8YZgQ/gQBlPaVkV";s:5:"title";s:9:"gQBlPaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"$#";s:6:"parent";s:2:"$-";s:4:"path";s:23:"aa/aa/Y8YZgQ/gXXUXYaVkV";s:5:"title";s:10:"gXXUXYaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"$t";s:6:"parent";s:2:"$-";s:4:"path";s:22:"aa/aa/Y8YZgQ/IlPgYaVkV";s:5:"title";s:9:"IlPgYaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"*,";s:6:"parent";s:2:"$-";s:4:"path";s:21:"aa/aa/Y8YZgQ/PUjYaVkV";s:5:"title";s:8:"PUjYaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"*!";s:6:"parent";s:2:"$-";s:4:"path";s:27:"aa/aa/Y8YZgQ/VBXBQgZgXYaVkV";s:5:"title";s:14:"VBXBQgZgXYaVkV";s:4:"type";s:1:"$";}
+a:5:{s:3:"_id";s:2:"*$";s:6:"parent";s:2:"$-";s:4:"path";s:23:"aa/aa/Y8YZgQ/XU0ZgYaVkV";s:5:"title";s:10:"XU0ZgYaVkV";s:4:"type";s:1:"$";}

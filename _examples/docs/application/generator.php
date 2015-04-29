@@ -24,7 +24,7 @@ class generator
         // Update the database
 		$this->update_db($list);
         
-        //print_r( obj('db')->fetchAll( obj('db')->query("select * from tree") ) );
+        print_r( obj('db')->fetchAll( obj('db')->query("select * from tree") ) );
         
 		return true;
 	}
@@ -36,8 +36,18 @@ class generator
         {
             if ($value['type'] === 'folder') 
             {
-                obj('db')->query("insert into tree(title, type, path, parent) values('".$value['name']."', '1','".$value['path']."', '".$parent."')");
-                $row = obj('db')->fetch( obj('db')->query("select * from tree where title='".$value['name']."' and type='1' and path='".$value['path']."' and parent='".$parent."'") );
+                obj('db')->query("insert into tree(title, type, path, parent) values('{tile}', '{type}','{path}', '{parent}')", null, array(
+					'title'=>$value['name'],
+					'type'=>1,
+					'path'=>$value['path'],
+					'parent'=>$parent
+				));
+                $row = obj('db')->fetch( obj('db')->query("select * from tree where title='{tile}' and type='{type}' and path='{path}' and parent='{parent}'", null, array(
+					'title'=>$value['name'],
+					'type'=>1,
+					'path'=>$value['path'],
+					'parent'=>$parent
+				)));
                 $this->update_db($value['content'], $row['_id']);
             }
             else

@@ -26,7 +26,7 @@
  * @package starfish
  * @subpackage starfish
  * 
- * @todo The database system needs improvements urgently
+ * @todo The database system needs improvements
  */
 
 class starfish

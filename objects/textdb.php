@@ -95,6 +95,7 @@ class textdb
 	 * @todo Update and delete are very resource consuming
 	 * @todo Add count(*) as select fields
 	 * @todo Add as <name> for fields in select
+	 * @todo Mind the string "and" inside the sql
 	 */
 	function query_sql($sql)
 	{
@@ -302,7 +303,7 @@ class textdb
 	function query_comparison_function($where)
 	{
 		$conditions = array();
-		$parts = explode("and", $where);
+		$parts = explode(" and ", $where);
 		foreach ($parts as $key=>$value)
 		{
 			preg_match('#(.*)(<|>|=|==|<=|>=)(.*)#ims', trim($value), $match);

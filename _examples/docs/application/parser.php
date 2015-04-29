@@ -7,13 +7,34 @@ class parser
 	{
 		$info = array(
 			'name' => $reflector->name,
-			'comments' => $reflector->getDocComment(),
+			'comments' => $this->cleanComment($reflector->getDocComment()),
 			'constants'=> $reflector->getConstants(),
 			'properties' => $reflector->getProperties()
 		);
 		
 		return $info;
 	}
+    public function cleanComment($string) 
+    {
+        $parts = explode("\n", $string);
+        foreach ($parts as $key=>$value) 
+        {
+            $value = trim($value);
+            if (substr($value, 0, 2) === '/*') { $value = substr($value, 2); }
+            if (substr($value, 0, 2) === '*/') { $value = substr($value, 2); }
+            if (substr($value, 0, 1) === '*') { $value = substr($value, 1); }
+            if (strlen($value) > 0)
+            {
+                $parts[$key] = $value;
+            }
+            else
+            {
+                unset($parts[$key]);
+            }
+        }
+        
+        return implode("\n", $parts);
+    }
 
 	public function methods($reflector)
 	{
@@ -24,7 +45,7 @@ class parser
 		{
 			$info[] = array(
 				'name' => $value->name,
-				'comments' => $value->getDocComment(),
+				'comments' => $this->cleanComment($value->getDocComment()),
 				'parameters' => $value->getParameters()
 			);
 		}

@@ -85,8 +85,6 @@ class db
 	public function query($query, $connection=null, $parameters=array() )
 	{
 		$this->resource = starfish::obj('database')->query($query, $connection, $parameters);
-		echo $query."<br>";
-		print_r($this->resource);
 		return $this;
 	}
 

@@ -8,7 +8,7 @@ starfish::config('_starfish', 'template', @realpath(__DIR__) . DIRECTORY_SEPARAT
 
 // Add a connection to the database
 starfish::config('_starfish', 'databases', array(
-	'test' => array(
+	'db' => array(
 		'type' => 'textdb', 
 		'parameters' => array(
 			'name'      => 'docs',

@@ -38,9 +38,12 @@ class files
 					{
 						if (filetype($path . $file) == 'file')
 						{
-							$list[] = array('name'=>$file, 'type'=>'file', 'path'=> $path . $file);
+                            if ( !$this->is_file_list_exception($path . $file, $except) ) 
+                            {
+                                $list[] = array('name'=>$file, 'type'=>'file', 'path'=> $path . $file);
+                            }
 						}
-						elseif ( !$this->is_directory_list_exception($path . $file . '/', $except) )
+						elseif ( !$this->is_directory_list_exception($path . $file, $except) )
 						{
 							$list[] = array('name'=>$file, 'type'=>'folder', 'path'=> $path . $file, 'content'=> $this->tree($path . $file . '/', $except) );
 						}
@@ -60,6 +63,39 @@ class files
 	 * @return boolean True if it is an exception
 	 */
 	public function is_directory_list_exception($path, $except)
+	{
+		$boolean = false;
+
+		if (count($except) > 0)
+		{
+			foreach ($except as $key=>$value)
+			{
+				if ($value == $path)
+				{
+					$boolean = true;
+				}
+				else
+				{
+					$value = str_replace('/', '\/', $value);
+
+					if (preg_match('/' . $value . '/ui', $path, $matched))
+					{
+						$boolean = true;
+					}	
+				}
+			}
+		}
+		return $boolean;
+	}
+
+	/**
+	 * Check if a file path corresponds to the exception list
+	 * 
+	 * @param string $path Path to check
+	 * @param array $except List of exceptions
+	 * @return boolean True if it is an exception
+	 */
+	public function is_file_list_exception($path, $except)
 	{
 		$boolean = false;
 

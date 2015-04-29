@@ -33,6 +33,14 @@ starfish::init();
  * The script itself
  */
 
+starfish::obj('database')->query("insert into people(nume, prenume, gen) values('Ionescu".rand(1, 10)."', 'Vasile".rand(1, 10)."', 'Masculin')");
+
+$resource = starfish::obj('database')->query("select * from people");
+while ($row = starfish::obj('database')->fetch($resource))
+{
+	print_r($row);
+}
+
 starfish::obj('database')->query("update people set nume='Cristi'");
 
 starfish::obj('database')->query("insert into people(nume, prenume, gen) values('Ionescu".rand(1, 10)."', 'Vasile".rand(1, 10)."', 'Masculin')");

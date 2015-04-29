@@ -307,19 +307,20 @@ class textdb
 		foreach ($parts as $key=>$value)
 		{
 			preg_match('#(.*)(<|>|=|==|<=|>=)(.*)#ims', trim($value), $match);
-			print_r($match);
 			if (isset($match[1]) && isset($match[2]) && isset($match[3]))
 			{
-				if ($match[2] == '=') { $match[2] = '=='; }
+				if ($match[2] == '=') { $match[2] = '==='; }
+                $f = $match[1];
+                $v = substr($match[3], 1, -1);
 
-				$conditions[] = 'if (!(md5($row["'.$match[1].'"]) '.$match[2].' "'.md5($match[3]).'")) { $return = false; }';
+				$conditions[] = 'if (!(md5((string)trim($row["'.$f.'"])) '.$match[2].' "'.md5((string)trim($v)).'")) { $return = false; }';
 			}
 		}
 
 		$function = function ($row) use ($conditions) {
 			$return = true;
-
-			foreach ($conditions as $value)
+            
+            foreach ($conditions as $value)
 			{
 				eval($value);
 			}

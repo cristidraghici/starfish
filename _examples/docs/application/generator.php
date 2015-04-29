@@ -24,7 +24,8 @@ class generator
         // Update the database
 		$this->update_db($list);
         
-        print_r( obj('db')->fetchAll( obj('db')->query("select * from tree") ) );
+        //print_r( obj('db')->fetchAll( obj('db')->query("select * from tree") ) );
+        print_r( obj('db')->fetchAll( obj('db')->query("select * from classes") ) );
         
 		return true;
 	}
@@ -36,32 +37,52 @@ class generator
         {
             if ($value['type'] === 'folder') 
             {
-                obj('db')->query("insert into tree(title, type, path, parent) values('{tile}', '{type}','{path}', '{parent}')", null, array(
+                obj('db')->query("insert into tree(title, type, path, parent) values('{title}', '{type}','{path}', '{parent}')", null, array(
 					'title'=>$value['name'],
 					'type'=>1,
 					'path'=>$value['path'],
 					'parent'=>$parent
 				));
-                $row = obj('db')->fetch( obj('db')->query("select * from tree where title='{tile}' and type='{type}' and path='{path}' and parent='{parent}'", null, array(
+                $row = obj('db')->fetch( obj('db')->query("select _id from tree where title='{title}' and type='{type}' and path='{path}' and parent='{parent}'", null, array(
 					'title'=>$value['name'],
 					'type'=>1,
 					'path'=>$value['path'],
 					'parent'=>$parent
 				)));
+                
                 $this->update_db($value['content'], $row['_id']);
             }
             else
             {
-                obj('db')->query("insert into tree(title, type, path, parent) values('".$value['name']."', '2','".$value['path']."', '".$parent."')");
-                $row = obj('db')->fetch( obj('db')->query("select * from tree where title='".$value['name']."' and type='2' and path='".$value['path']."' and parent='".$parent."'") );
+                obj('db')->query("insert into tree(title, type, path, parent) values('{title}', '{type}','{path}', '{parent}')", null, array(
+					'title'=>$value['name'],
+					'type'=>2,
+					'path'=>$value['path'],
+					'parent'=>$parent
+                ));
+                $row = obj('db')->fetch( obj('db')->query("select * from tree where title='{title}' and type='{type}' and path='{path}' and parent='{parent}'", null, array(
+					'title'=>$value['name'],
+					'type'=>2,
+					'path'=>$value['path'],
+					'parent'=>$parent
+                )) );
+                
                 $file_id = $row['_id'];
 				
                 $info = $this->analyze_obj($value['name'], $value['path']);
                 
 				// Class
 				$list = $info['class'];
-				obj('db')->query("insert into classes(file_id, title, comments) values('".$file_id."', '".$list['name']."', '".$list['comments']."')");
-                $row = obj('db')->fetch( obj('db')->query("select * from classes where file_id='".$file_id."' and title='".$list['name']."' and comments='".$list['comments']."'") );
+                obj('db')->query("insert into classes(file_id, title, comments) values('{file_id}', '{title}', '{comments}')", null, array(
+					'file_id'=>$file_id,
+					'title'=>$list['name'],
+					'comments'=>$list['comments']
+                ));
+                $row = obj('db')->fetch( obj('db')->query("select * from classes where file_id='{file_id}' and title='{title}' and comments='{comments}'", null, array(
+					'file_id'=>$file_id,
+					'title'=>$list['name'],
+					'comments'=>$list['comments']
+                )) );
                 $id = $row['_id'];
 				
 				// Methods

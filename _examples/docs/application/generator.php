@@ -20,12 +20,16 @@ class generator
         // Clean the database
         obj('db')->query('delete from tree');
         obj('db')->query('delete from classes');
+        obj('db')->query('delete from classes_methods');
+        obj('db')->query('delete from classes_methods_parameters');
         
         // Update the database
 		$this->update_db($list);
         
         //print_r( obj('db')->fetchAll( obj('db')->query("select * from tree") ) );
-        print_r( obj('db')->fetchAll( obj('db')->query("select * from classes") ) );
+        //print_r( obj('db')->fetchAll( obj('db')->query("select * from classes") ) );
+        //print_r( obj('db')->fetchAll( obj('db')->query("select * from classes_methods") ) );
+        print_r( obj('db')->fetchAll( obj('db')->query("select * from classes_methods_parameters") ) );
         
 		return true;
 	}
@@ -83,10 +87,33 @@ class generator
 					'title'=>$list['name'],
 					'comments'=>$list['comments']
                 )) );
-                $id = $row['_id'];
+                $class_id = $row['_id'];
 				
 				// Methods
 				$list = $info['methods'];
+                foreach ($list as $k1=>$v1) 
+                {
+                    obj('db')->query("insert into classes_methods(class_id, title, comments) values('{class_id}', '{title}', '{comments}')", null, array(
+                        'class_id'=>$class_id,
+                        'title'=>$v1['name'],
+                        'comments'=>$v1['comments']
+                    ));
+                    
+                    $row = obj('db')->fetch( obj('db')->query("select * from classes_methods where class_id='{class_id}' and title='{title}' and comments='{comments}'", null, array(
+                        'class_id'=>$class_id,
+                        'title'=>$v1['name'],
+                        'comments'=>$v1['comments']
+                    )) );
+                    $method_id = $row['_id'];
+                    
+                    foreach ($v1['parameters'] as $k2=>$v2)
+                    {
+                        obj('db')->query("insert into classes_methods_parameters(method_id, title) values('{method_id}', '{title}')", null, array(
+                            'method_id'=>$method_id,
+                            'title'=>$v1['name']
+                        ));
+                    }
+                }
 				
 				// Aliases
 				$list = $info['aliases'];

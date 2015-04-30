@@ -27,7 +27,20 @@ foreach ($files['files'] as $key=>$value)
 
 
 on('get', '/generate', function(){
-	obj('generator')->generate();
+	
+	if (file_exists('ru.n') && is_writable('ru.n'))
+	{
+		set_time_limit(0);
+		obj('generator')->generate();
+
+		echo 'Job done!';
+		
+		@unlink('ru.n');
+	}
+	else
+	{
+		echo 'You hit the failsafe for unauthorized updating.';
+	}
 });
 
 // Other paths

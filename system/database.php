@@ -192,7 +192,17 @@ class database
 
 		return static::conn($connection)->query($query);
 	}
-
+	
+	/*
+	 * Retrieve the id of the last inserted value
+	 * 
+	 * @return int Numeric value of the last id
+	 */
+	public static function insert_id($connection=null)
+	{
+		return static::conn($connection)->insert_id();
+	}
+	
 	/** 
 	 * Verify a query
 	 * 

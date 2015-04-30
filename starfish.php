@@ -2,6 +2,8 @@
 /**
  * Starfish PHP Framework is a minimum Registry microframework primarily desiged to serve JSON content and use objects.
  * 
+ * Entry point of Starfish PHP Framework: this acts like a Registry for all the other objects used
+ * 
  * @link        http://www.starfish.ml
  * 
  * @author  	Cristi DRAGHICI
@@ -18,10 +20,6 @@
  * 
  * @license 	MIT
  * @link    	http://opensource.org/licenses/MIT
- */
-
-/**
- * Entry point of Starfish PHP Framework: this acts like a Registry for all the other objects used
  * 
  * @package starfish
  * @subpackage starfish

@@ -23,17 +23,11 @@ class parser
             if (substr($value, 0, 2) === '/*') { $value = substr($value, 2); }
             if (substr($value, 0, 2) === '*/') { $value = substr($value, 2); }
             if (substr($value, 0, 1) === '*') { $value = substr($value, 1); }
-            if (strlen($value) > 0)
-            {
-                $parts[$key] = $value;
-            }
-            else
-            {
-                unset($parts[$key]);
-            }
+			$parts[$key] = $value;
         }
-        
-        return implode("\n", $parts);
+        $string = implode("\n", $parts); 
+		
+        return $string;
     }
 
 	public function methods($reflector)

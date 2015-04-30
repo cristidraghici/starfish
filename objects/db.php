@@ -87,6 +87,13 @@ class db
 		$this->resource = starfish::obj('database')->query($query, $connection, $parameters);
 		return $this;
 	}
+	/*
+	 * Return the last insert id
+	 */
+	public function insert_id($connection = null)
+	{
+		return starfish::obj('database')->insert_id($connection);
+	}
 
 	/** 
 	 * Verify a query

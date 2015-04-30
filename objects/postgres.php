@@ -57,6 +57,17 @@ class postgres
 
 		return $this->resource;
 	}
+	
+	/*
+	 * Return the last insert id
+	 * 
+	 * Last insert id is not available in PG
+	 */
+	function insert_id()
+	{
+		return null;
+	}
+	
 	/*
 	 * Fetch one result from a resource
 	 * 

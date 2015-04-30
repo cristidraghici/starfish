@@ -19,6 +19,7 @@ class textdb
 
 	private $resource = array();
 	private $resource_position = 0;
+	private $last_insert_id = null;
 
 	/*
 	 * Connect to the database
@@ -74,9 +75,18 @@ class textdb
 		$this->resource_position = 0;
 
 		// Execute the query
+		$this->last_insert_id = null;
 		$this->query_sql($query);
 
 		return $this->resource;
+	}
+
+	/*
+	 * Return the last insert id
+	 */
+	function insert_id()
+	{
+		return $this->last_insert_id;
 	}
 
 	/**
@@ -165,7 +175,9 @@ class textdb
 				$result[ $fields[$a] ] = $this->query_encode( $values[$a] );
 			}
 
+			$id = $this->_id($table);
 			$result['_id'] = $this->query_encode( $this->_id($table) );
+			$this->last_insert_id = $id;
 
 			ksort($result);
 
@@ -310,8 +322,8 @@ class textdb
 			if (isset($match[1]) && isset($match[2]) && isset($match[3]))
 			{
 				if ($match[2] == '=') { $match[2] = '==='; }
-                $f = $match[1];
-                $v = substr($match[3], 1, -1);
+				$f = $match[1];
+				$v = substr($match[3], 1, -1);
 
 				$conditions[] = 'if (!(md5((string)trim($row["'.$f.'"])) '.$match[2].' "'.md5((string)trim($v)).'")) { $return = false; }';
 			}
@@ -319,8 +331,8 @@ class textdb
 
 		$function = function ($row) use ($conditions) {
 			$return = true;
-            
-            foreach ($conditions as $value)
+
+			foreach ($conditions as $value)
 			{
 				eval($value);
 			}
@@ -610,7 +622,7 @@ class textdb
 	 */
 	function sanitize($string, $connection=null)
 	{
-		return htmlentities($string);
+		return htmlentities($string, ENT_QUOTES);
 	}
 
 	/** 
@@ -621,7 +633,7 @@ class textdb
 	 */
 	function escape($string)
 	{
-		return htmlspecialchars($string);
+		return html_entity_decode($string);
 	}
 }
 ?>

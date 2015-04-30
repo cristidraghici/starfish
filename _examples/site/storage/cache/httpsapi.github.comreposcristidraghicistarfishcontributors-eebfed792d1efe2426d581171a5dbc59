@@ -2,7 +2,7 @@
   {
     "login": "cristidraghici",
     "id": 6725091,
-    "avatar_url": "https://avatars.githubusercontent.com/u/6725091?v=2",
+    "avatar_url": "https://avatars.githubusercontent.com/u/6725091?v=3",
     "gravatar_id": "",
     "url": "https://api.github.com/users/cristidraghici",
     "html_url": "https://github.com/cristidraghici",
@@ -17,12 +17,12 @@
     "received_events_url": "https://api.github.com/users/cristidraghici/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 185
+    "contributions": 232
   },
   {
     "login": "metalnot",
     "id": 8871727,
-    "avatar_url": "https://avatars.githubusercontent.com/u/8871727?v=2",
+    "avatar_url": "https://avatars.githubusercontent.com/u/8871727?v=3",
     "gravatar_id": "",
     "url": "https://api.github.com/users/metalnot",
     "html_url": "https://github.com/metalnot",
@@ -37,6 +37,6 @@
     "received_events_url": "https://api.github.com/users/metalnot/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 1
+    "contributions": 4
   }
 ]

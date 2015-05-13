@@ -8,6 +8,7 @@ if (!class_exists('starfish')) { die(); }
  * @subpackage starfish.system.database
  *
  * @todo Connect to the parameters object to help with sanitization
+ * @see https://github.com/Wikunia/Medoo/blob/master/medoo.php
  */
 class database
 {
@@ -90,21 +91,21 @@ class database
 				{
 					case 'pgsql':
 					case 'postgres':
-					$conn = starfish::access('postgres')->connect( $info['parameters'] );
+					$conn = starfish::access('postgres', array('path'=>starfish::config('_starfish', 'root') . 'helpers/database/postgres.php'))->connect( $info['parameters'] );
 					if ($conn != false)
 					{
 						static::$resources[$name] = $conn;
 					}
 					break;
 					case 'mysql':
-					$conn = starfish::access('mysql')->connect( $info['parameters'] );
+					$conn = starfish::access('mysql', array('path'=>starfish::config('_starfish', 'root') . 'helpers/database/mysql.php'))->connect( $info['parameters'] );
 					if ($conn != false)
 					{
 						static::$resources[$name] = $conn;
 					}
 					break;
 					case 'textdb':
-					$conn = starfish::access('textdb')->connect( $info['parameters'] );
+					$conn = starfish::access('textdb', array('path'=>starfish::config('_starfish', 'root') . 'helpers/database/textdb.php'))->connect( $info['parameters'] );
 					if ($conn != false)
 					{
 						static::$resources[$name] = $conn;
@@ -192,7 +193,7 @@ class database
 
 		return static::conn($connection)->query($query);
 	}
-	
+
 	/*
 	 * Retrieve the id of the last inserted value
 	 * 
@@ -202,7 +203,7 @@ class database
 	{
 		return static::conn($connection)->insert_id();
 	}
-	
+
 	/** 
 	 * Verify a query
 	 * 
@@ -291,7 +292,7 @@ class database
 		$row = static::conn($connection)->fetch($resource);
 		static::conn($connection)->free($resource, $connection);
 		$row = @array_values($row);
-		
+
 		if ($row == null)
 		{
 			return @json_encode(array('success'=>false, 'message'=>'The data could not be retrieved.'));

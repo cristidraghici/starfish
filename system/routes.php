@@ -6,6 +6,9 @@ if (!class_exists('starfish')) { die(); }
  *
  * @uses https://github.com/fightbulc/simplon_router
  * 
+ * @see https://github.com/noodlehaus/dispatch
+ * @see https://github.com/fightbulc/simplon_router
+ * 
  * @package starfish
  * @subpackage starfish.system.routes
  *

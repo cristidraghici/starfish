@@ -56,8 +56,8 @@ $.fn.extend({
 
 //Initialization of treeviews
 
-$('#tree1').treed();
+$('.tree').treed();
 
-$('#tree2').treed({openedClass:'glyphicon-folder-open', closedClass:'glyphicon-folder-close'});
+$('.tree').treed({openedClass:'glyphicon-folder-open', closedClass:'glyphicon-folder-close'});
 
 $('#tree3').treed({openedClass:'glyphicon-chevron-right', closedClass:'glyphicon-chevron-down'});

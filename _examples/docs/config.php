@@ -5,7 +5,15 @@ if (!class_exists('starfish')) { die(); }
 starfish::config('_starfish', 'app_objects', @realpath(__DIR__) . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR);
 starfish::config('_starfish', 'storage', @realpath(__DIR__) . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR);
 starfish::config('_starfish', 'template', @realpath(__DIR__) . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR);
-starfish::config('_starfish', 'site_url', 'http://'.$_SERVER['HTTP_HOST'].'/starfish/_examples/docs/');
+
+// Check the settings for the production version
+if (file_exists('/var/www/production')) {
+	starfish::config('_starfish', 'site_url', 'http://'.$_SERVER['HTTP_HOST'].'/');
+}
+else
+{
+	starfish::config('_starfish', 'site_url', 'http://'.$_SERVER['HTTP_HOST'].'/starfish/_examples/docs/');
+}
 
 // Add a connection to the database
 starfish::config('_starfish', 'databases', array(

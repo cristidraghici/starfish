@@ -1,48 +1,35 @@
 <?php
 /**
- * Starfish PHP Framework is a minimum Registry microframework primarily desiged to serve JSON content and use objects.
+ * Starfish PHP Framework - A minimum Registry microframework primarily desiged to serve JSON content and use objects.
  * 
- * Entry point of Starfish PHP Framework: this acts like a Registry for all the other objects used
+ * This file is the entry point of Starfish PHP Framework: this acts like a Registry for all the other objects used
  * 
  * @link        http://www.starfish.ml
- * 
- * @author  	Cristi DRAGHICI
- * @link    	http://blog.draghici.net
- * @version 	0.3a
- * 
- * @see     	Parts from Dispatch PHP micro-framework were used.
- * @link    	https://github.com/noodlehaus/dispatch
- *
- * @see         Simplon Router
- * @link    	https://github.com/fightbulc/simplon_router
- *
- * @see         http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage
+ * @version 	0.4a
  * 
  * @license 	MIT
  * @link    	http://opensource.org/licenses/MIT
  * 
- * @package starfish
- * @subpackage starfish
+ * @author  	Cristi DRAGHICI
+ * @link    	http://blog.draghici.net
+ * 
  * 
  * @todo The database system needs improvements
+ * 
+ * @package starfish
+ * @subpackage starfish
  */
 
 class starfish
 {
-	/**
-	 * Declare used variables
-	 *
-	 * $initialized - boolean Needs to be true for Starfish to run
-     *
-	 * $config    - configuration variables
-     * $constants - Starfish "constants": framework specific values for later use
-	 * $variables - variable values set throughout the application and accessible from anywhere
-	 * 
-	 * $objects 	- a list of objects 
-	 * $instances 	- a list of objects instantiated
+	/*
+	 * Boolean Needs to be true for Starfish to run. The value changes upon running the init() method
 	 */
 	private static $initialized = false;
 
+	/*
+	 * Default configuration variables
+	 */
 	public static $config = array(
 		'_starfish'=>array(
 			// Establish the default timezone
@@ -64,9 +51,20 @@ class starfish
 			'aliases' => array( 's', 'star', 'reg', 'registry')
 		)
 	);
+
+	/*
+	 * Starfish "constants": framework specific values for later use
+	 */
 	public static $constants;
+
+	/*
+	 * Variable values set throughout the application and accessible from anywhere
+	 */
 	public static $variables;
 
+	/*
+	 * The list of objects
+	 */
 	private static $objects = array(
 		'errors'=>array(
 			'path'	=> 'system/errors.php',
@@ -83,7 +81,12 @@ class starfish
 			'class'	=> 'routes'
 		)
 	);
+
+	/*
+	 * The list of instances
+	 */
 	private static $instances;
+
 
 	##################
 	# Framework functions
@@ -91,8 +94,8 @@ class starfish
 
 	/**
 	 * Init the framework
-	 * 
-	 * @param array $objects Objects to preload
+	 * @param  array [$objects=array()] List of objects to load
+	 * @return null  Returns nothing yet
 	 */
 	public static function init($objects=array())
 	{
@@ -139,7 +142,7 @@ class starfish
 		static::$constants['cli'] = ( php_sapi_name() == 'cli' ) ? true : false;
 
 		// Check if it is an ajax request
-        static::$constants['ajax'] = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? true : false;
+		static::$constants['ajax'] = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? true : false;
 
 		// Get and set client IP address
 		static::$constants['ip'] = static::get_client_ip();
@@ -197,8 +200,8 @@ class starfish
 	/**
 	 * Preload certain objects
 	 * This is useful for using the alias functions
-	 * 
-	 * @param array $objects List of objects to load
+	 * @param  array [$objects=array()] List of objects to load
+	 * @return null  Noting to return
 	 */
 	public static function preload($objects=array())
 	{
@@ -214,11 +217,11 @@ class starfish
 
 	/**
 	 * Configuration function
-	 *
-	 * @param string $module Module name
-	 * @param mixed  $names The names of the configuration options to return or to store
-	 * @param mixed  $values The values to store
-         * @param boolean $override Defaults to: true. If false, then the new value is not set if one already exists
+	 * @param  string  $module          Module name
+	 * @param  mixed   $names           The names of the configuration options to return or to store
+	 * @param  mixed   [$values=null]   The values to store
+	 * @param  boolean [$override=true] If false, then the new value is not set if one already exists
+	 * @return mixed   A list of all variables set
 	 */
 	public static function config($module, $names, $values=null, $override=true)
 	{
@@ -322,12 +325,13 @@ class starfish
 	}
 
 	/**
-	* Configuration array - Pass the configuration values through an array
-	*
-	* @param string $module Module name
-	* @param mixed  $array The array containing the values
-	* @param boolean $override Defaults to: true. If false, then the new value is not set if one already exists
-	*/
+	 * Configuration array
+	 * Pass the configuration values through an array
+	 * @param  string   $module          Module name
+	 * @param  mixed    [$array=array()] The array containing the values
+	 * @param  [[Type]] $override=true   [[Description]]
+	 * @return null     Noting to return
+	 */
 	public static function configArray($module, $array=array(), $override=true)
 	{
 		foreach ($array as $key=>$value)
@@ -335,7 +339,7 @@ class starfish
 			static::$config[$module][ $key ] = $value;
 		}
 
-		return true;
+		return null;
 	}
 
 	##################
@@ -344,9 +348,9 @@ class starfish
 
 	/**
 	 * Set a variable
-	 *
-	 * @param mixed $name The name of the value to store
-	 * @param mixed $value The value of the parameter to store
+	 * @param  mixed $name  The name of the value to store
+	 * @param  mixed $value The value of the parameter to store
+	 * @return mixed The value set
 	 */
 	public static function set($name, $value)
 	{
@@ -366,8 +370,8 @@ class starfish
 
 	/**
 	 * Get a variable
-	 *
-	 * @param string $name The name of the variable to retrive
+	 * @param  string $name The name of the variable to retrive
+	 * @return mixed  The value for the requested variable
 	 */
 	public static function get($name)
 	{
@@ -389,12 +393,13 @@ class starfish
 
 	/**
 	 * The main object function
-	 *
-	 * @param string $name The name of the object to access or create
-	 * @param array $configuration The configuration for the created object. Parameters: path, class
+	 * @param  string $name                    The name of the object to access or create
+	 * @param  array  [$configuration=array()] Configuration for the object
+	 * @return object The object iself
 	 */
 	public static function obj($name, $configuration=array())
 	{		
+		
 		// Check framework initialization
 		if (static::$initialized == false) { die('starfish::init() command must be run within your script!'); }
 
@@ -410,7 +415,7 @@ class starfish
 			{
 				$configuration = array_merge( static::$objects[$name], $configuration );
 			}
-
+			
 			// Name of the class
 			$class = isset( static::$objects[$name]['class'] ) ? static::$objects[$name]['class'] : $name;
 
@@ -461,9 +466,9 @@ class starfish
 
 	/**
 	 * Store an exising object inside the registry
-	 *
-	 * @param string $name The name of the object to access or create
-	 * @param array $configuration The configuration for the created object. Parameters: path, class
+	 * @param  string  $name   The name of the object to access or create
+	 * @param  object  $object The object to store
+	 * @return boolean True if the object exists and was stored, false on contrary
 	 */
 	public static function store($name, $object)
 	{
@@ -479,11 +484,9 @@ class starfish
 
 	/**
 	 * Just create an object, without storing it into the registry
-	 *
-	 * @param string $name The name of the object to store
-	 * @param object $object The object itself
-	 * 
-	 * @return boolean Returns whether the object has been stored or not
+	 * @param  string $name                    The name of the object to store
+	 * @param  array  [$configuration=array()] The configuration for the object
+	 * @return object The object itself
 	 */
 	public static function access($name, $configuration=array())
 	{
@@ -496,24 +499,20 @@ class starfish
 
 	/**
 	 * To a redirect
-	 *
-	 * @param string $path The path to redirect to
-	 * @param string $code Code of the redirect
-	 * @param string $condition True condition to make the redirect
+	 * @param string  $path             The path to redirect to
+	 * @param integer [$code=302]       Default error code
+	 * @param boolean [$condition=true] Condition to interpret before redirect
 	 */
-	public static function redirect($path, $code = 302, $condition = true) 
+	public static function redirect($path, $code=302, $condition=true) 
 	{
 		if (!$condition) { return; }
-
 		if (substr($path, 0, 2) == './') { $path = static::config('_starfish', 'site_url') . substr($path, 2); }
-
 		@header("Location: {$path}", true, $code);
 		exit;
 	}
 
 	/**
 	 * Get the internal memory usage
-	 * 
 	 * @return string String showing readable memory usage
 	 */
 	public static function memory_usage() 
@@ -538,10 +537,9 @@ class starfish
 	}
 
 	/**
-	* Get the execution time for the script
-	*
-	* @return string The execution time in human readable format
-	*/
+	 * Get the execution time for the script
+	 * @return string The execution time in human readable format
+	 */
 	public static function execution_time()
 	{
 		$difference = time() - static::$constants['execution_time_start'];
@@ -550,15 +548,14 @@ class starfish
 
 	/**
 	 * Get the IP address of the client
-	 * @see http://stackoverflow.com/questions/1634782/what-is-the-most-accurate-way-to-retrieve-a-users-correct-ip-address-in-php
-	 * 
+	 * See http://stackoverflow.com/questions/1634782/what-is-the-most-accurate-way-to-retrieve-a-users-correct-ip-address-in-php
 	 * @return string The ip addpress of the client
 	 */
 	public static function get_client_ip() 
 	{
 		$string = '';
 		$verify = array_values(array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'));
-		
+
 		for ($a=0; $a<count($verify) && $string == ''; $a++) 
 		{
 			if (isset($_SERVER[$verify[$a]]) && $value = trim($_SERVER[$verify[$a]]))
@@ -573,26 +570,48 @@ class starfish
 				}
 			}
 		}
-		
+
 		return $string;
 	}
+
+	##################
+	# Model/View/Controller support functions
+	#
+	# @todo Yet to be implemented and tested
+	##################
 	
-	/** 
-	 * Model/View/Controller support functions
-	 * 
-	 * @todo Yet to be implemented
+	/**
+	 * Controller
+	 * @param  string  $name Name of the controoler to access
+	 * @return boolean Temporary
 	 */
 	public static function c($name)
 	{
-		return true;
+		return obj($name, array(
+			'path'=>static::config('_starfish', 'app_objects') . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $name .'.php'
+		));
 	}
+	/**
+	 * Model
+	 * @param  string  $name Name of the model to access
+	 * @return boolean Temporary
+	 */
 	public static function m($name)
 	{
-		return true;
+		return obj($name, array(
+			'path'=>static::config('_starfish', 'app_objects') . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . $name .'.php'
+		));
 	}
+
+	/**
+	 * View
+	 * @param  string  $name           Name of the template
+	 * @param  array   [$data=array()] Values to interpret in the template
+	 * @return boolean Temporary
+	 */
 	public static function v($name, $data=array())
 	{
-		return true;
+		return static::obj('tpl')->view($name, $data);
 	}
 }
 

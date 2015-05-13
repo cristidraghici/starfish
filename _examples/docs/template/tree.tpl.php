@@ -1,5 +1,9 @@
 <?php /* Starfish Framework Template protection */ die(); ?>
+
+
+
 <?php if (count($list) > 0): ?>
+
 <ul class="tree">
 	<?php foreach ($list as $key=>$value): ?>
 	<li>

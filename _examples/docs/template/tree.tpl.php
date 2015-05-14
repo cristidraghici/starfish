@@ -8,7 +8,7 @@
 		<?php if ($value['type'] == 2): ?>
 		<a href="{/}class/<?php echo $value['_id']; ?>"><?php echo $value['title']; ?></a>
 		<?php elseif ($value['type'] == 3): ?>
-		<a href="{/}class/<?php echo $value['parent']; ?>#<?php echo $value['title']; ?>"><?php echo $value['title']; ?></a>
+		<a href="{/}class/<?php echo $value['parent']; ?>#<?php echo $value['anchor']; ?>"><?php echo $value['title']; ?></a>
 		<?php else: ?>
 		<?php echo $value['title']; ?>
 		<?php endif; ?>

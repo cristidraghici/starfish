@@ -29,7 +29,11 @@ class home
 
         // Select the list of files and append the methods
         $list = obj('db')->fetchAll( obj('db')->query("select * from tree order by type asc") );
-
+        foreach ($list as $key=>$value)
+        {
+            $list[$key]['anchor'] = $this->anchorLink($value['title']);
+        }
+        
         // Select clases
         $classes = obj('db')->fetchAll( obj('db')->query("select * from classes") );
         $classesIds = array();
@@ -37,15 +41,16 @@ class home
         {
             $classesIds[$value['_id']] = $value['file_id'];
         }
-        
+
         // Select the method names
         $methods = obj('db')->fetchAll( obj('db')->query("select * from classes_methods") );
-        
+
         foreach ($methods as $key=>$value) {
             $list[] = array(
                 '_id' => '#' . $value['title'],
                 'parent' => $classesIds[$value['class_id']],
                 'title' => $value['title'],
+                'anchor'=>$this->anchorLink($value['title']),
                 'type' => 3
             );
         }
@@ -97,6 +102,7 @@ class home
 
         return view('class', array(
             'title'=>$row['title'],
+            'anchor'=>$this->anchorLink($row['title']),
             'comments'=>$this->commentSyntaxHighlight($row['comments']),
 
             'methods'=>$methods
@@ -119,10 +125,22 @@ class home
 
         return view('method', array(
             'title'=>$title,
+            'anchor'=>$this->anchorLink($row['title']),
             'parameters'=>$row['parameters'],
             'comments'=>$this->commentSyntaxHighlight($row['comments']),
             'body'=>$body
         ));
+    }
+
+
+    /**
+     * Create the text for an anchor link
+     * @param  string   $text Text to transform
+     * @return string Transformed text
+     */
+    public function anchorLink($text) 
+    {
+        return strtolower(preg_replace("/[^A-Za-z0-9?!]/", '', $text));
     }
 }
 

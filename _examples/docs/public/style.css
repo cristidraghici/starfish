@@ -1,3 +1,7 @@
+.main {
+    overflow: hidden;
+}
+
 .title {
 	text-transform: capitalize;
 	padding-bottom: 10px;

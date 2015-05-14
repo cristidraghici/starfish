@@ -1,6 +1,6 @@
 <?php /* Starfish Framework Template protection */ die(); ?>
 
-<h2><a href="#<?php echo $title; ?>" name="<?php echo $title; ?>"><?php echo $title; ?></a>(<?php echo $parameters; ?>)</h2>
+<h2><a href="{./}#<?php echo $anchor; ?>" name="<?php echo $anchor; ?>" id="<?php echo $anchor; ?>"><?php echo $title; ?></a>(<?php echo $parameters; ?>)</h2>
 
 <div class="method">
 	

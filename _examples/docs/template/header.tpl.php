@@ -2,6 +2,7 @@
 <html lang="en">
 
 	<head>
+        <base href="{./}" />
 		<link rel="shortcut icon" href="starfish-small.png" />
 
 		<meta charset="utf-8">
@@ -25,4 +26,4 @@
 	</head>
 
 	<body>
-		<div class="container-fluid">
+		<div class="container-fluid main">

@@ -4,7 +4,7 @@ if (!class_exists('starfish')) { die(); }
 /*
  * @todo Add support for files other than php
  */
-class generator
+class codeparser
 {
 	public function generate()
 	{

@@ -31,7 +31,7 @@ on('get', '/generate', function(){
 	if (file_exists('ru.n') && is_writable('ru.n'))
 	{
 		set_time_limit(0);
-		obj('generator')->generate();
+		obj('codeparser')->generate();
 
 		echo 'Job done!';
 		

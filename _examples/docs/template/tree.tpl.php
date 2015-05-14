@@ -1,14 +1,14 @@
 <?php /* Starfish Framework Template protection */ die(); ?>
 
-
-
 <?php if (count($list) > 0): ?>
 
-<ul class="tree">
+<ul class="tree corner">
 	<?php foreach ($list as $key=>$value): ?>
 	<li>
 		<?php if ($value['type'] == 2): ?>
 		<a href="{/}class/<?php echo $value['_id']; ?>"><?php echo $value['title']; ?></a>
+		<?php elseif ($value['type'] == 3): ?>
+		<a href="{/}class/<?php echo $value['parent']; ?>#<?php echo $value['title']; ?>"><?php echo $value['title']; ?></a>
 		<?php else: ?>
 		<?php echo $value['title']; ?>
 		<?php endif; ?>

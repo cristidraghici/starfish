@@ -30,9 +30,9 @@ class parameters
 
 	/**
 	 * Sanitize string
-	 *
-	 * @param mixed $string The name of the variable to retrieve
-	 *
+	 * @param  mixed $mixed Name of the parameter(s) to be sanitized
+	 * @return mixed The sanitized content
+	 *                   
 	 * @todo Change the filtering function content if any database sanitization is available
 	 * @todo Maybe override this function project defined
 	 */
@@ -59,8 +59,9 @@ class parameters
 
 	/**
 	 * Reset already sanitized strings, for a new sanitization
+	 * @return boolean Noting
 	 */
-	public static function reset_sanitized($mixed)
+	public static function reset_sanitized()
 	{
 		// Unset stored variables
 		unset(static::$cache['get']);
@@ -70,12 +71,13 @@ class parameters
 		unset(static::$cache['head']);
 		unset(static::$cache['options']);
 
-		return true;
+		return null;
 	}
 
 
 	/**
-	 * Request method
+	 * Request method identification
+	 * @return string The identified method
 	 */
 	public static function method()
 	{
@@ -113,7 +115,8 @@ class parameters
 	}
 
 	/**
-	 * Request method
+	 * Request protocol
+	 * @return string The identified protocol
 	 */
 	public static function request_protocol()
 	{
@@ -129,6 +132,7 @@ class parameters
 
 	/**
 	 * Get the request content type
+	 * @return string The identified content type
 	 */
 	private static function request_content_type()
 	{
@@ -161,7 +165,8 @@ class parameters
 
 	/**
 	 * Get the request body
-	 *
+	 * @return array Identified parameters
+	 *               
 	 * @todo Add parsing for XML requests
 	 */
 	private static function request_body()
@@ -203,6 +208,7 @@ class parameters
 
 	/**
 	 * Request path
+	 * @return string The identified request path
 	 */
 	public static function path()
 	{
@@ -242,8 +248,8 @@ class parameters
 
 	/**
 	 * Get parameters
-	 *
-	 * @param string $name The name of the variable to retrieve
+	 * @param  mixed [$name=null] The name of the variable to retrieve
+	 * @return mixed  The content of the parameter requested
 	 */
 	public static function get($name=null)
 	{
@@ -261,8 +267,8 @@ class parameters
 
 	/**
 	 * Post parameters
-	 *
-	 * @param mixed $name The name of the variable to retrieve
+	 * @param  mixed [$name=null] The name of the variable to retrieve
+	 * @return mixed The content of the parameter requested
 	 */
 	public static function post($name=null)
 	{
@@ -300,8 +306,8 @@ class parameters
 
 	/**
 	 * Put parameters
-	 *
-	 * @param mixed $name The name of the variable to retrieve
+	 * @param  mixed [$name=null] The name of the variable to retrieve
+	 * @return mixed The content of the parameter requested
 	 */
 	public static function put($name=null)
 	{
@@ -319,8 +325,8 @@ class parameters
 
 	/**
 	 * Delete parameters
-	 *
-	 * @param mixed $name The name of the variable to retrieve
+	 * @param  mixed [$name=null] The name of the variable to retrieve
+	 * @return mixed The content of the parameter requested
 	 */
 	public static function delete($name=null)
 	{
@@ -339,8 +345,8 @@ class parameters
 
 	/**
 	 * Head parameters
-	 *
-	 * @param mixed $name The name of the variable to retrieve
+	 * @param  mixed [$name=null] The name of the variable to retrieve
+	 * @return mixed The content of the parameter requested
 	 */
 	public static function head($name=null)
 	{
@@ -358,8 +364,8 @@ class parameters
 
 	/**
 	 * Options parameters
-	 *
-	 * @param mixed $name The name of the variable to retrieve
+	 * @param  mixed [$name=null] The name of the variable to retrieve
+	 * @return mixed The content of the parameter requested
 	 */
 	public static function options($name=null)
 	{
@@ -377,17 +383,15 @@ class parameters
 
 	/**
 	 * Session parameters. session_write_close() used for speeding up asynchronous JSON content delivery
-	 *
+	 * 
 	 * 0 args - store the content of the session into the session variable cache
 	 * 1 args - return the content of the specified name
 	 * 2 args - set a value for the specified name
-	 *
-	 * @param string $name Name of the variable to retrieve or set
-	 * @param mixed $value Value of the variable to set
-	 *
-	 * @return mixed Value of the specified variable inside the session
+	 * @param  string [$name=null]  Name of the variable to retrieve or set
+	 * @param  mixed  [$value=null] Value of the variable to set
+	 * @return mixed  Value of the specified variable inside the session
 	 */
-	public static function session()
+	public static function session($name=null, $value=null)
 	{
 		$args = func_get_args();
 		$prefix = starfish::config('_starfish', 'project') . '-';
@@ -430,8 +434,8 @@ class parameters
 
 	/**
 	 * File parameters
-	 *
-	 * @param mixed $name The name of the variable to retrieve
+	 * @param  mixed $name The name of the variable to retrieve
+	 * @return mixed The content of the requested parameter
 	 */
 	public static function file($name)
 	{

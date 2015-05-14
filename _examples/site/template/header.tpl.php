@@ -66,6 +66,9 @@
 							<a href="#page-top"></a>
 						</li>
 						<li>
+							<a class="page-scroll" href="http://docs.starfish.ml">Docs</a>
+						</li>
+						<li>
 							<a class="page-scroll" href="#about">About</a>
 						</li>
 						<li>

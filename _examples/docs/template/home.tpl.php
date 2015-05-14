@@ -5,7 +5,19 @@
 		<?php echo $content; ?>
 	</div>
 	
-	<div class="col-md-4">
+	<div class="col-md-4">	
+		
+		<div class="tree-search" style="display: none;">
+			<form>
+				<div class="form-group">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="">
+						<div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+					</div>
+				</div>
+			</form>
+		</div>
+
 		<?php echo $tree; ?>
 	</div>
 	

@@ -15,25 +15,25 @@ class logs
 	public static $path = null;
 
 	/**
-	* Init
-	*
-	* @todo Check the size of the log file, clean it if too big
-	* @todo Establish the default date format
-	*/
+	 * Init
+	 * - todo Check the size of the log file, clean it if too big
+	 * - todo Establish the default date format
+	 * @return boolean Nothing
+	 */
 	public function init()
 	{
 		// Set the path to the storage files
 		static::$path = starfish::config('_starfish', 'storage') . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR;
 		if (!file_exists(static::$path)) { starfish::obj('files')->w(static::$path . 'index.html', 'Silence is golden.'); }
 
-		return true;
+		return null;
 	}
 
 	/**
 	 * Save information to the log file
-	 * 
-	 * @param string $file The name of the file which will store the logs
-	 * @param mixed $data The data to log
+	 * @param  string  $file The name of the file which will store the logs
+	 * @param  mixed   $data The data to log
+	 * @return boolean Nothing
 	 */
 	public static function saveLog($file, $data)
 	{
@@ -42,13 +42,13 @@ class logs
 		$data = @json_encode($data) . PHP_EOL;
 		static::add($file, $data . PHP_EOL, 'a');
 
-		return true;
+		return null;
 	}
 
 	/**
 	 * Reset the log file
-	 * 
-	 * @param string $file The name of the file which will store the logs
+	 * @param  string $file The name of the file which will store the logs
+	 * @return null   Nothing
 	 */
 	public static function resetLog($file)
 	{
@@ -56,15 +56,15 @@ class logs
 
 		starfish::obj('files')->w($file, "", 'w');
 
-		return true;
+		return null;
 	}
 
 	/**
-	* Write into a log file
-	*
-	* @param string $file The file where to write the content
-	* @param mixed $text The content to store
-	*/
+	 * Write into a log file
+	 * @param  string  $file The file where to write the content
+	 * @param  mixed   $text The content to store
+	 * @return boolean Nothing
+	 */
 	public static function add($file, $text)
 	{
 		$file = static::$path . $file;
@@ -76,7 +76,7 @@ class logs
 		starfish::obj('files')->w($file, $text, 'a');
 
 
-		return true;
+		return null;
 	}
 }
 

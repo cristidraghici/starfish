@@ -78,21 +78,34 @@ class generator
 				$list = $info['methods'];
 				foreach ($list as $k1=>$v1) 
 				{
-					obj('db')->query("insert into classes_methods(class_id, title, comments, body) values('{class_id}', '{title}', '{comments}', '{body}')", null, array(
+					$parameters = '';
+					foreach ($v1['parameters'] as $k2=>$v2)
+					{
+						$parameters .= '$' . $v2->name . ', ';
+					}
+					if (strlen($parameters) > 1) {
+						$parameters = substr($parameters, 0, -2);
+					}
+					$parameters .= '';
+					
+					obj('db')->query("insert into classes_methods(class_id, title, parameters, comments, body) values('{class_id}', '{title}', '{parameters}', '{comments}', '{body}')", null, array(
 						'class_id'=>$class_id,
 						'title'=>$v1['name'],
+						'parameters'=>$parameters,
 						'comments'=>$v1['comments'],
 						'body'=>$v1['body']
 					));
 					$method_id = obj('db')->insert_id();
 
+					/* // Not recommended for nonMYSQL database
 					foreach ($v1['parameters'] as $k2=>$v2)
 					{
 						obj('db')->query("insert into classes_methods_parameters(method_id, title) values('{method_id}', '{title}')", null, array(
 							'method_id'=>$method_id,
-							'title'=>$v1['name']
+							'title'=>$v2['name']
 						));
 					}
+					*/
 				}
 
 				// Aliases

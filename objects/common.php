@@ -11,16 +11,13 @@ class common
 {	
 	/**
 	 * Create a tree from a given array
-	 * 
+	 * - see http://stackoverflow.com/questions/4196157/create-array-tree-from-array-list
 	 * @param  array  $source                    Source of data
 	 * @param  string $columnIdentifier          Id of the column
 	 * @param  string $columnParent              Name of the column where the id of the father is saved
 	 * @param  string [$childrenName='children'] Name of the column where the children will move
-	 * @param  string [$parentValue='null']      Value for which to search for results
-	 *                                                                         
+	 * @param  string [$parentValue=null]        Value for which to search for results
 	 * @return array  Generated tree file
-	 * 
-	 * @see http://stackoverflow.com/questions/4196157/create-array-tree-from-array-list
 	 */
 	function treeze ($source, $columnIdentifier, $columnParent, $childrenName='children', $parentValue=null)
 	{

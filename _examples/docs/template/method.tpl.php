@@ -1,6 +1,6 @@
 <?php /* Starfish Framework Template protection */ die(); ?>
 
-<h2><?php echo $title; ?></h2>
+<h2><a href="#<?php echo $title; ?>" name="<?php echo $title; ?>"><?php echo $title; ?></a>(<?php echo $parameters; ?>)</h2>
 
 <div class="method">
 	
@@ -9,7 +9,7 @@
 	</div>
 	
 	<div class="body">
-		<h3>Code</h3>
+		<h3>Show code</h3>
 		
 		<div class="highlight">
 		<?php echo $body; ?>

@@ -24,7 +24,8 @@ class database
 	/**
 	 * Init the object. Connect to any database in the configuration, if needed
 	 * 
-	 * @todo Maybe add connections that start automatically
+	 * -todo Maybe add connections that start automatically
+	 * @return boolean Nothing
 	 */
 	public static function init()
 	{
@@ -38,20 +39,20 @@ class database
 			}
 		}
 
-		return true;
+		return null;
 	}
 
 	/**
 	 * Add a new connection
-	 * 
-	 * @param string $name Name of the connection
-	 * @param string $type Type of connection: pqsql, mysql, textdb
-	 * @param mixed $parameters Parameters for the connection
-	 *                              - host
-	 *                              - port
-	 *                              - user
-	 *                              - password
-	 *                              - database
+	 * @param  string  $name                 Name of the connection
+	 * @param  string  [$type='textdb']      Type of connection: pqsql, mysql, textdb
+	 * @param  mixed   [$parameters=array()] Parameters for the connection
+	 *                                       - host
+	 *                                       - port
+	 *                                       - user
+	 *                                       - password
+	 *                                       - database
+	 * @return boolean Nothing
 	 */
 	public static function add($name, $type='textdb', $parameters=array())
 	{
@@ -60,13 +61,12 @@ class database
 			'parameters' => $parameters
 		);
 
-		return true;
+		return null;
 	}
 
-	/** 
+	/**
 	 * Retrieve/create a connection
-	 * 
-	 * @param string $name Name of the connections
+	 * @param  string   [$name=null] Name of the connections
 	 * @return resource The connection requested
 	 */
 	public static function get($name=null)
@@ -133,10 +133,9 @@ class database
 		return null;
 	}
 
-	/** 
+	/**
 	 * Convert the connection string inside this object's methods into a connection resource
-	 * 
-	 * @param mixed $conn Name of the connections
+	 * @param  mixed    $conn Name of the connections
 	 * @return resource The connection requested
 	 */
 	private static function conn($conn)
@@ -156,11 +155,10 @@ class database
 		return null;
 	}
 
-	/** 
+	/**
 	 * Return the connection information for the given connection
-	 * 
-	 * @param string $name Name of the connection to return info about
-	 * @return array Information about the connection
+	 * @param  string $name Name of the connection to return info about
+	 * @return array  Information about the connection
 	 */
 	private static function connectionInfo($name)
 	{
@@ -172,13 +170,11 @@ class database
 		return null;
 	}
 
-	/** 
+	/**
 	 * Send a query to the connection
-	 * 
-	 * @param mixed $query Name of the connections
-	 * @param string $connection Name of the connection
-	 * @param array $parameters Parameters to replace in the query, after sanitization
-	 * 
+	 * @param  mixed    $query                Name of the connections
+	 * @param  string   [$connection=null]    Name of the connection
+	 * @param  array    [$parameters=array()] Parameters to replace in the query, after sanitization
 	 * @return resource The resource containing the result
 	 */
 	public static function query($query, $connection=null, $parameters=array() )
@@ -194,23 +190,21 @@ class database
 		return static::conn($connection)->query($query);
 	}
 
-	/*
+	/**
 	 * Retrieve the id of the last inserted value
-	 * 
-	 * @return int Numeric value of the last id
+	 * @param  mixed [$connection=null] Selected connection
+	 * @return int   Numeric value of the last id
 	 */
 	public static function insert_id($connection=null)
 	{
 		return static::conn($connection)->insert_id();
 	}
 
-	/** 
+	/**
 	 * Verify a query
-	 * 
-	 * @param mixed $query Name of the connections
-	 * @param string $connection Name of the connection
-	 * 
-	 * @return resource The resource containing the result
+	 * @param mixed  $query                Name of the connections
+	 * @param string [$connection=null]    Name of the connection
+	 * @param array  [$parameters=array()] Parameters to sanitize and insert in the given command
 	 */
 	public static function eecho($query, $connection=null, $parameters=array() )
 	{
@@ -226,14 +220,12 @@ class database
 		exit;
 	}
 
-	/** 
+	/**
 	 * Fetch a result from a returned query resource
-	 * 
-	 * @param resource $resource The resource to be interpreted
-	 * @param string $connection Name of the connection
-	 * @param array $parameters Parameters to escape as they will be sent to the browser
-	 * 
-	 * @return array An array containing the fetched result
+	 * @param  resource $resource             The resource to be interpreted
+	 * @param  string   [$connection=null]    Name of the connection
+	 * @param  array    [$parameters=array()] Parameters to escape as they will be sent to the browser
+	 * @return array    An array containing the fetched result
 	 */
 	public static function fetch($resource, $connection=null, $parameters=array())
 	{
@@ -250,14 +242,12 @@ class database
 		return $row;
 	}
 
-	/** 
+	/**
 	 * Fetch all results from a returned query resource
-	 * 
-	 * @param resource $resource The resource to be interpreted
-	 * @param string $connection Name of the connection
-	 * @param array $parameters Parameters to escape as they will be sent to the browser
-	 * 
-	 * @return array An array containing the fetched result
+	 * @param  resource $resource             The resource to be interpreted
+	 * @param  string   [$connection=null]    Name of the connection
+	 * @param  array    [$parameters=array()] Parameters to escape as they will be sent to the browser
+	 * @return array    An array containing the fetched result
 	 */
 	public static function fetchAll($resource, $connection=null, $parameters=array())
 	{
@@ -278,14 +268,12 @@ class database
 	}
 
 
-	/** 
+	/**
 	 * Fetch the json output from a database
-	 * 
-	 * @param resource $resource The resource to be interpreted
-	 * @param string $connection Name of the connection
-	 * @param array $parameters Parameters to escape as they will be sent to the browser
-	 * 
-	 * @return string The JSON string returned
+	 * @param  resource $resource             The resource to be interpreted
+	 * @param  string   [$connection=null]    Name of the connection
+	 * @param  array    [$parameters=array()] Parameters to escape as they will be sent to the browser
+	 * @return string   The JSON string returned
 	 */
 	public static function json($resource, $connection=null, $parameters=array())
 	{
@@ -300,34 +288,32 @@ class database
 		return $row[0];
 	}
 
-	/** 
+	/**
 	 * Count the results matching the given conditions
-	 * 
-	 * @param resource $resource The resource to be interpreted
-	 * @param string $connection Name of the connection
-	 * 
-	 * @return number The number of results
+	 * @param  resource $resource          The resource to be interpreted
+	 * @param  string   [$connection=null] Name of the connection
+	 * @return number   The number of results
 	 */
 	public static function numRows($resource, $connection=null)
 	{
 		return static::conn($connection)->numRows($resource);
 	}
 
-	/** 
+	/**
 	 * Free a resource
-	 * 
-	 * @param resource $resource The resource to be interpreted
-	 * @param string $connection Name of the connection
+	 * @param  resource $resource          The resource to be interpreted
+	 * @param  string   [$connection=null] Name of the connection
+	 * @return boolean  Result of the free command
 	 */
 	public static function free($resource, $connection=null)
 	{
 		return static::conn($connection)->free($resource);
 	}
 
-	/** 
+	/**
 	 * Disconnect a connection
-	 * 
-	 * @param string $name Name of the connections
+	 * @param  mixed   [$connection=null] Selected connection
+	 * @return boolean Nothing
 	 */
 	public static function disconnect($connection=null)
 	{
@@ -346,13 +332,13 @@ class database
 		// Destroy the object
 		unset($obj);
 
-		return true;
+		return null;
 	}
 
-	/** 
+	/**
 	 * Sanitize string
-	 * 
-	 * @param string $name String to alter
+	 * @param  string $string            String to sanitize
+	 * @param  mixed  [$connection=null] Connection to use
 	 * @return string String returned after processing
 	 */
 	public static function sanitize($string, $connection=null)
@@ -360,10 +346,10 @@ class database
 		return static::conn($connection)->sanitize($string);
 	}
 
-	/** 
+	/**
 	 * Escape string
-	 * 
-	 * @param string $name String to alter
+	 * @param  string $string            String to escape
+	 * @param  mixed  [$connection=null] Connection to use
 	 * @return string String returned after processing
 	 */
 	public static function escape($string, $connection=null)

@@ -12,11 +12,26 @@ if (!class_exists('starfish')) { die(); }
  */
 class email
 {
+	/**
+	 * Send email - shortcut function
+	 * @param string $to      Destination
+	 * @param string $subject Subject
+	 * @param string $message The message itself
+	 */
 	public function sendmail($to, $subject, $message)
 	{
 		$this->send($to, $subject, $message);
 	}
 
+	/**
+	 * Send email - original function
+	 * @param string $to_email                         Destination
+	 * @param string $subject                          Subject
+	 * @param string $message                          Message
+	 * @param string [$to_name=null]                   Name of the recipient
+	 * @param string [$from_name='no-reply']           Name of the sender
+	 * @param string [$from_email='no-reply@site.com'] Email of the sender
+	 */
 	public function send($to_email, $subject, $message, $to_name=null, $from_name='no-reply', $from_email='no-reply@site.com')
 	{
 		if ($to_name == null) { $to_name = $to_email; }

@@ -24,6 +24,7 @@ class routes
 	 * $routes - Routes stored
 	 * $wildcards - Formats that resource the parametes can take
 	 */
+	
 	private static $routes;
 	private static $wildcards = array(
 		'num' 		=> '([0-9]+)',
@@ -43,16 +44,11 @@ class routes
 
 	/**
 	 * Establish a route / Run the routing function
-	 *
-	 * @param string $method Method used to access the resource
-	 * @param string $path Resource path
-	 * @param mixed $callback What to do when the route has been accessed
-	 * 
-	 * or
-	 * 
-	 * no parametes at all
+	 * @param string [$method=null]   Method used to access the resource
+	 * @param string [$path=null]     Resource path
+	 * @param mixed  [$callback=null] What to do when the route has been accessed
 	 */
-	public static function on()
+	public static function on($method=null, $path=null, $callback=null)
 	{
 		$args = func_get_args();
 
@@ -72,6 +68,7 @@ class routes
 
 	/**
 	 * Run the routing
+	 * @return null Nothing to return
 	 */
 	public static function run()
 	{
@@ -106,13 +103,13 @@ class routes
 			}
 		}
 
-		return true;
+		return null;
 	}
 
 	/**
 	 * Compile the route
-	 *
-	 * @param string $path The path to compile into the routers memory
+	 * @param  string $path The path to compile into the routers memory
+	 * @return string Compiled path
 	 */
 	private static function compile($path)
 	{

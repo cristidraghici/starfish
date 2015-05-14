@@ -19,10 +19,9 @@ class files
 
 	/**
 	 * Make the tree for the specified path
-	 * 
-	 * @param string $path Path to the directory
-	 * @param array $except List of paths to except from the tree
-	 * @return array Directory tree
+	 * @param  string $path             Path to the directory
+	 * @param  array  [$except=array()] List of paths to except from the tree
+	 * @return array  Directory tree
 	 */
 	public function tree($path, $except=array())
 	{
@@ -57,9 +56,8 @@ class files
 
 	/**
 	 * Check if a directory path corresponds to the exception list
-	 * 
-	 * @param string $path Path to check
-	 * @param array $except List of exceptions
+	 * @param  string  $path   Path to check
+	 * @param  array   $except List of exceptions
 	 * @return boolean True if it is an exception
 	 */
 	public function is_directory_list_exception($path, $except)
@@ -90,9 +88,8 @@ class files
 
 	/**
 	 * Check if a file path corresponds to the exception list
-	 * 
-	 * @param string $path Path to check
-	 * @param array $except List of exceptions
+	 * @param  string  $path   Path to check
+	 * @param  array   $except List of exceptions
 	 * @return boolean True if it is an exception
 	 */
 	public function is_file_list_exception($path, $except)
@@ -123,8 +120,8 @@ class files
 
 	/**
 	 * Read the content of a directory
-	 *
-	 * @param string $path Path to the directory
+	 * @param  string $path Path to the directory
+	 * @return array  List of files
 	 */
 	public static function all($path)
 	{
@@ -157,7 +154,6 @@ class files
 
 	/**
 	 * Recursively remove a directory
-	 *
 	 * @param string $path Path to the directory
 	 */
 	public static function srmdir($path)
@@ -181,8 +177,8 @@ class files
 
 	/**
 	 * Walk line by line through the content of a file
-	 *
-	 * @param string $path Path to the file
+	 * @param  string [$path=null] Path to the file
+	 * @return null   Nothing
 	 */
 	public static function walk($path=null)
 	{
@@ -223,8 +219,8 @@ class files
 
 	/**
 	 * Read the content of a file
-	 *
-	 * @param string $path Path to the file
+	 * @param  string $path Path to the file
+	 * @return mixed  False if not available | String with content, if available
 	 */
 	public static function r($path)
 	{
@@ -249,10 +245,10 @@ class files
 
 	/**
 	 * Write to a file
-	 *
-	 * @param string $path Path to the file
-	 * @param string $content The content of the file
-	 * @param string $type The type of writing to execute
+	 * @param  string  $path       Path to the file
+	 * @param  string  $content    The content of the file
+	 * @param  string  [$type='w'] The type of writing to execute
+	 * @return boolean True if write is successful
 	 */
 	public static function w($path, $content, $type='w')
 	{
@@ -282,13 +278,11 @@ class files
 	}
 
 	/**
-	* This function is to replace PHP's extremely buggy realpath().
-	* 
-	* @param string The original path, can be relative etc.
-	* @return string The resolved path, it might not exist.
-	* 
-	* @link http://stackoverflow.com/questions/4049856/replace-phps-realpath
-	*/
+	 * This function is to replace PHP's extremely buggy realpath().
+	 * - link http://stackoverflow.com/questions/4049856/replace-phps-realpath
+	 * @param  string $path Path to analyze
+	 * @return string The resolved path, it might not exist.
+	 */
 	public static function truepath($path){
 		// whether $path is unix or not
 		$unipath=strlen($path)==0 || $path{0}!='/';
@@ -317,12 +311,10 @@ class files
 
 
 	/**
-	* Get the extension of a file
-	*
-	* @param string $file Path to the file or its name
-	* 
-	* @return string The extension
-	*/
+	 * Get the extension of a file
+	 * @param  string $file Path to the file or its name
+	 * @return string The extension
+	 */
 	public static function extension($file)
 	{
 		$extension  = strtolower(substr(strrchr($file, "."), 1));
@@ -332,8 +324,7 @@ class files
 
 	/**
 	 * Filename validator
-	 * 
-	 * @param string $name The initial name
+	 * @param  string $name The initial name
 	 * @return string The cleaned name
 	 */
 	public static function filename_validator($name)
@@ -343,9 +334,8 @@ class files
 
 	/**
 	 * Get the directory modification date
-	 * 
-	 * @param string $path The path of the directory
-	 * @return number The most recent filemtime value for the files inside 
+	 * @param  string $path The path of the directory
+	 * @return number The most recent filemtime value for the files inside
 	 */
 	public static function directorymtime($path)
 	{
@@ -366,15 +356,12 @@ class files
 	}
 
 	/**
-	* Copy remote file over HTTP one small chunk at a time.
-	*
-	* @see http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage
-	*
-	* @param string $infile The full URL to the remote file
-	* @param string $outfile The path where to save the file
-	*
-	* @return boolean Whether the downloaded file exists or not locally
-	*/
+	 * Copy remote file over HTTP one small chunk at a time.
+	 * - see http://stackoverflow.com/questions/4000483/how-download-big-file-using-php-low-memory-usage
+	 * @param  string  $infile  The full URL to the remote file
+	 * @param  string  $outfile The path where to save the file
+	 * @return boolean Whether the downloaded file exists or not locally
+	 */
 	public static function download($infile, $outfile) 
 	{
 		$chunksize = 10 * (1024 * 1024); // 10 Megs
@@ -465,18 +452,15 @@ class files
 
 
 	/**
-	* Simple handler for file upload
-	*
-	* @param string $name Name of the file
-	* @param number $size Allowed size in MB
-	* @param array $ext Allowed exensions
-	* @param array $types Allowed file types
-	*
-	* @return array The information about the file
-	* 
-	* @todo http://php.net//manual/ro/session.upload-progress.php
-	* @todo https://github.com/chemicaloliver/PHP-5.4-Upload-Progress-Example
-	*/
+	 * Simple handler for file upload
+	 * -todo http://php.net//manual/ro/session.upload-progress.php
+	 * -todo https://github.com/chemicaloliver/PHP-5.4-Upload-Progress-Example
+	 * @param  string $name         Name of the file
+	 * @param  number [$size=null]  Allowed size in MB
+	 * @param  array  [$ext=null]   Allowed exensions
+	 * @param  array  [$types=null] Allowed file types
+	 * @return array  The information about the file
+	 */
 	public function upload($name, $size=null, $ext=null, $types=null)
 	{
 		$file = $_FILES[$name]; 

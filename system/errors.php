@@ -31,11 +31,11 @@ class errors
 	 * Main message function
 	 * 
 	 * This function stores a message in the session if two parameters are specified, or retrieves one and deletes it from the session, when only one parameter is given.
-	 * 
-	 * @param string $location Location of the error
-	 * @param string $message Body of the error
+	 * @param  string [$location=null] Location of the error
+	 * @param  string [$message=null]  Body of the error
+	 * @return string The message
 	 */
-	public static function message()
+	public static function message($location=null, $message=null)
 	{
 		$args = func_get_args();
 		$message = '';
@@ -58,13 +58,11 @@ class errors
 
 	/**
 	 * Display the error message, if needed
-	 * 
-	 * @param string $location Location of the error
-	 * @param string $before HTML to show before the errors
-	 * @param string $after HTML to show after
-	 * @param boolean $echo If true, then the message is sent, otherwise returned
-	 * 
-	 * @return string HTML string with the result
+	 * @param  string  $location    Location of the error
+	 * @param  string  [$before=''] HTML to show before the errors
+	 * @param  string  [$after='']  HTML to show after
+	 * @param  boolean [$echo=true] If true, then the message is sent, otherwise returned
+	 * @return string  HTML string with the result
 	 */
 	public static function display($location, $before='', $after='', $echo=true)
 	{
@@ -87,9 +85,8 @@ class errors
 
 	/**
 	 * Main error function
-	 * 
-	 * @param string $code Code of the error
-	 * @param string $message Body of the error
+	 * @param string $code                   Code of the error
+	 * @param string [$message='Page error'] Body of the error
 	 */
 	public static function err($code, $message='Page error')
 	{
@@ -112,6 +109,7 @@ class errors
 
 	/**
 	 * Show the backtrace for the error
+	 * @return boolean Nothing
 	 */
 	public static function backtrace()
 	{
@@ -120,13 +118,12 @@ class errors
 		print_r(debug_backtrace());
 		echo '</pre>';
 
-		return true;
+		return null;
 	}
 
 	/**
 	 * Convert an array of errors to a single string
-	 * 
-	 * @param mixed $err The error/errors
+	 * @param  mixed  [$err=''] The error/errors
 	 * @return string The only error string
 	 */
 	public function toString($err='')

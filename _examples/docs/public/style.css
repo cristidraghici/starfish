@@ -2,6 +2,10 @@
 	text-transform: capitalize;
 	padding-bottom: 10px;
 }
+span.class-row-title {
+	font-weight: bold;
+	min-width: 300px;
+}
 
 .method {
 	border-left: 2px solid #aaa;
@@ -9,16 +13,37 @@
 
 .method .body {
 	margin: 10px 0px 20px 10px;
+	position: relative;
 }
+
+.method .body h3 {
+	font-size: 12px;
+	text-align: right;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
 .method .body .highlight {
 	/*background: #f9f2f4;*/
 }
 
 .method .comments {
 	margin: 10px 0px 10px 0px;
-	padding: 15px 5px 15px 5px;
+	padding: 10px 5px 10px 5px;
 	overflow: hidden;
 	background: #f1f1f1;
+}
+.method .comments p {
+	margin: 5px 0px 5px 0px;
+}
+
+/* Tree search */
+.tree-search {
+	margin: 1em;
+}
+.tree-search input {
+	width: 100% !important;
 }
 
 /* @see http://bootsnipp.com/snippets/featured/bootstrap-30-treeview */
@@ -53,6 +78,7 @@
     font-weight:700;
     position:relative
 }
+
 .tree ul li:before {
     content:"";
     display:block;
@@ -64,7 +90,9 @@
     top:1em;
     left:0
 }
-.tree ul li:last-child:before {
+
+.tree ul li.tree-li-last-child:before,
+.tree.corner ul li:last-child:before {
     background:#fff;
     height:auto;
     top:1em;

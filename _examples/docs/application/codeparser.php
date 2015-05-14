@@ -6,7 +6,7 @@ if (!class_exists('starfish')) { die(); }
  */
 class codeparser
 {
-	public function generate()
+	public function dogenerate()
 	{
 		$list = obj('files')->tree('../../', array(
 			'../../.git*',

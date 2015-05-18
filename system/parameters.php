@@ -437,7 +437,7 @@ class parameters
 	 * @param  mixed $name The name of the variable to retrieve
 	 * @return mixed The content of the requested parameter
 	 */
-	public static function file($name)
+	public static function files($name)
 	{
 		// If string exists in cache, return it
 		if (isset(static::$cache['file'][$name])) { return static::$cache['file'][$name]; }
@@ -462,4 +462,5 @@ function delete()	{ return call_user_func_array(array('parameters', 'delete'),  
 function head() 	{ return call_user_func_array(array('parameters', 'head'),    	func_get_args()); }
 function options()  	{ return call_user_func_array(array('parameters', 'options'),   func_get_args()); }
 function session()  	{ return call_user_func_array(array('parameters', 'session'),   func_get_args()); }
+function files()  	{ return call_user_func_array(array('parameters', 'files'),   func_get_args()); }
 ?>

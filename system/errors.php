@@ -66,7 +66,7 @@ class errors
 	 */
 	public static function display($location, $before='', $after='', $echo=true)
 	{
-        $html = @ob_get_clean();
+        //$html = @ob_get_clean();
 		if ($message = starfish::obj('errors')->message($location))
 		{
 			if ($echo == true)
@@ -79,7 +79,7 @@ class errors
 			}
 		}
         
-		if (strlen($html) > 0 ) { echo $html; }
+		//if (strlen($html) > 0 ) { echo $html; }
 		return true;
 	}
 

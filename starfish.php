@@ -146,7 +146,7 @@ class starfish
 
         // Get and set client IP address
         static::$constants['ip'] = static::get_client_ip();
-
+        
         // Register aliases
         if (static::config('_starfish', 'aliases') != null && is_array( static::config('_starfish', 'aliases') ))
         {
@@ -193,6 +193,9 @@ class starfish
         static::obj('email');
 
         static::preload($objects);
+
+        // Set the current url
+        static::$constants['current_url'] = starfish::config('_starfish', 'site_url') . substr( static::obj('parameters')->path() , 1);
 
         return null;
     }

@@ -431,6 +431,55 @@ class parameters
 			break; // for structure coding
 		}
 	}
+    
+	/**
+	 * Cookie parameters
+	 * 
+	 * 0 args - store the content of the session into the session variable cache
+	 * 1 args - return the content of the specified name
+	 * 2 args - set a value for the specified name
+	 * @param  string [$name=null]  Name of the variable to retrieve or set
+	 * @param  mixed  [$value=null] Value of the variable to set
+	 * @return mixed  Value of the specified variable inside the session
+	 */
+	public static function cookie($name=null, $value=null)
+	{
+		$args = func_get_args();
+		$prefix = starfish::config('_starfish', 'project') . '-';
+
+		switch (count($args))
+		{
+			case 0:
+			session_start();
+
+			foreach ($_COOKIE as $key=>$value)
+			{
+				if (substr($key, 0, strlen($prefix) ) == $prefix)
+				{
+					static::$cache['cookie'][ $key ] = $value;
+				}
+			}
+
+			session_write_close();
+
+			return isset(static::$cache['cookie']) ? static::$cache['cookie'] : null;
+
+			break; // for structured coding
+			case 1:
+			return isset( static::$cache['cookie'][ $prefix . $args[0] ] ) ? static::$cache['cookie'][ $prefix . $args[0] ] : null;
+
+			break; // for structure coding
+
+			case 2:
+			static::$cache['cookie'][ $prefix . $args[0] ] = $args[1];
+
+			$_COOKIE[ $prefix . $args[0] ] = $args[1];
+
+			return $args[1];
+
+			break; // for structure coding
+		}
+	}
 
 	/**
 	 * File parameters
@@ -458,9 +507,10 @@ function path()     	{ return call_user_func_array(array('parameters', 'path'), 
 function get()      	{ return call_user_func_array(array('parameters', 'get'),       func_get_args()); }
 function post()     	{ return call_user_func_array(array('parameters', 'post'),      func_get_args()); }
 function put()      	{ return call_user_func_array(array('parameters', 'put'),       func_get_args()); }
-function delete()	{ return call_user_func_array(array('parameters', 'delete'),    func_get_args()); }
+function delete()	  { return call_user_func_array(array('parameters', 'delete'),    func_get_args()); }
 function head() 	{ return call_user_func_array(array('parameters', 'head'),    	func_get_args()); }
 function options()  	{ return call_user_func_array(array('parameters', 'options'),   func_get_args()); }
 function session()  	{ return call_user_func_array(array('parameters', 'session'),   func_get_args()); }
+function cookie()  	{ return call_user_func_array(array('parameters', 'cookie'),   func_get_args()); }
 function files()  	{ return call_user_func_array(array('parameters', 'files'),   func_get_args()); }
 ?>

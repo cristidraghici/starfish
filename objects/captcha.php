@@ -10,7 +10,7 @@ if (!class_exists('starfish')) { die(); }
 class captcha
 {	
 	// Config the captcha
-	var $captcha_number_of_chars    = 5; // number of chars in the captcha string
+	public $captcha_number_of_chars    = 5; // number of chars in the captcha string
 
 	/**
 	 * Init the object

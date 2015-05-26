@@ -115,6 +115,9 @@ class tpl
 
 			// Include predefined variables
 			$tplContent = $this->variables($tplContent);
+            
+			// Translate content, if needed
+			$tplContent = $this->translate($tplContent);
 
 			// Remove spaces for SWITCH to work properly
 			$tplContent = preg_replace('#\?>([\s]+)<\?php#is', '?><?php', $tplContent);
@@ -179,6 +182,26 @@ class tpl
 		}
 		return $html;
 	}
+    
+    /**
+     * Translate the content, if object is loaded
+     * @param  string $html String to translate
+     * @return string Translated string
+     */
+    private function translate($html)
+    {
+        if (starfish::exists('localization'))
+        {
+            preg_match_all('#{__([A-Za-z0-9_^}\w]+)}#i', $html, $matches, PREG_SET_ORDER);
+            
+            foreach ($matches as $key=>$value)
+            {
+                $html = str_replace($value[0], starfish::obj('localization')->translate($value[1]), $html);
+            }
+        }
+        
+        return $html;
+    }
 }
 
 /**

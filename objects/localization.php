@@ -56,7 +56,6 @@ class localization
         if (cookie('language') != null && isset($this->translations[cookie('language')]))
         {
             $this->language = cookie('language');
-
         }
     }
 

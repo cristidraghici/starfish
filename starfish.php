@@ -484,7 +484,21 @@ class starfish
 
         return false;
     }
-
+    
+    /**
+     * Check if an object exists
+     * @param  strin   $name Name of the object
+     * @return boolean Whether the object exists or not
+     */
+    public static function exists($name)
+    {
+        if (isset( static::$instances[ $name ] )) {
+            return true;
+        }
+        
+        return false;
+    }
+    
     /**
 	 * Just create an object, without storing it into the registry
 	 * @param  string $name                    The name of the object to store

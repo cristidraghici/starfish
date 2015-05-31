@@ -192,12 +192,7 @@ class tpl
     {
         if (starfish::exists('localization'))
         {
-            preg_match_all('#{__([A-Za-z0-9_^}\w]+)}#i', $html, $matches, PREG_SET_ORDER);
-            
-            foreach ($matches as $key=>$value)
-            {
-                $html = str_replace($value[0], starfish::obj('localization')->translate($value[1]), $html);
-            }
+            $html = obj('localization')->parse($html, true);
         }
         
         return $html;

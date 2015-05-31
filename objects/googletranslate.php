@@ -23,16 +23,34 @@ class googletranslate
 		return true;
 	}
 
-	function translate($word, $from, $to)
+	function translate($word, $from, $to, $repeat = true)
 	{
 		$word = @urlencode($word);
-		$url = "http://translate.google.com/translate_a/t?client=t&text=$word&hl=".$to."&sl=".$from."&tl=".$to."&ie=UTF-8&oe=UTF-8&multires=1&otf=1&pc=1&trs=1&ssel=3&tsel=6&sc=1";
-
+		$url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" . $from . "&tl=" . $to . "&dt=t&q=" . ($word) . "&ie=UTF-8&oe=UTF-8";
+        
 		$html = obj('curl')->single(
 			obj('curl')->get($url)
 		);
-
+        
+        // Check if captcha is needed
+        if (stristr($html, 'http://translate.google.com/translate_a'))
+        {
+            if ($repeat == true)
+            {
+                $this->translate($word, $from, $to, false);
+            }
+            else
+            {
+                die('Captcha is needed: <a href="'.$url.'">enter it here</a>');
+            }
+        }
+        elseif (isset($parts[17]) && trim($parts[17]) === 'https://www.google.com')
+        {
+            die('Requests blocked by google.');
+        }
+        
 		$parts = explode('"', $html);
+        
 		return  $parts[1];
 	}
 }

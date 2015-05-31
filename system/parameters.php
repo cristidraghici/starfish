@@ -26,6 +26,7 @@ class parameters
 		static::request_body();
 
 		static::session();
+		static::cookie();
 	}
 
 	/**
@@ -70,6 +71,7 @@ class parameters
 		unset(static::$cache['delete']);
 		unset(static::$cache['head']);
 		unset(static::$cache['options']);
+		unset(static::$cache['cookie']);
 
 		return null;
 	}
@@ -450,8 +452,6 @@ class parameters
 		switch (count($args))
 		{
 			case 0:
-			session_start();
-
 			foreach ($_COOKIE as $key=>$value)
 			{
 				if (substr($key, 0, strlen($prefix) ) == $prefix)
@@ -459,9 +459,6 @@ class parameters
 					static::$cache['cookie'][ $key ] = $value;
 				}
 			}
-
-			session_write_close();
-
 			return isset(static::$cache['cookie']) ? static::$cache['cookie'] : null;
 
 			break; // for structured coding
@@ -473,8 +470,8 @@ class parameters
 			case 2:
 			static::$cache['cookie'][ $prefix . $args[0] ] = $args[1];
 
-			$_COOKIE[ $prefix . $args[0] ] = $args[1];
-
+            //$_COOKIE[ $prefix . $args[0] ] = $args[1];
+            setcookie ($prefix . $args[0], $args[1], strtotime( '+30 days' ));
 			return $args[1];
 
 			break; // for structure coding

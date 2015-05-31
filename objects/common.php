@@ -64,7 +64,7 @@ class common
             else
             {
                 //plain key->value case
-                $out .= "$k=$v" . PHP_EOL;
+                $out .= $k .'="' . (string)$v . '"' . PHP_EOL;
             }
         }
         return $out;

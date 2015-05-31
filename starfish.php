@@ -146,7 +146,7 @@ class starfish
 
         // Get and set client IP address
         static::$constants['ip'] = static::get_client_ip();
-        
+
         // Register aliases
         if (static::config('_starfish', 'aliases') != null && is_array( static::config('_starfish', 'aliases') ))
         {
@@ -197,6 +197,9 @@ class starfish
         // Set the current url
         static::$constants['current_url'] = starfish::config('_starfish', 'site_url') . substr( static::obj('parameters')->path() , 1);
 
+        // Set the current url php based only
+        static::$constants['current_url_raw'] = "http".(isset($_SERVER['HTTPS']) ? 's' : '')."://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+
         return null;
     }
 
@@ -219,14 +222,14 @@ class starfish
     }
 
     /**
-	 * Configuration function
-	 * @param  string  $module          Module name
-	 * @param  mixed   $names           The names of the configuration options to return or to store
-	 * @param  mixed   [$values=null]   The values to store
-	 * @param  boolean [$override=true] If false, then the new value is not set if one already exists
-	 * @return mixed   A list of all variables set
-	 */
-    public static function config($module, $names, $values=null, $override=true)
+     * Configuration function
+     * @param  string  $module          Module name
+     * @param  mixed   [$names=null]    The names of the configuration options to return or to store
+     * @param  mixed   [$values=null]   The values to store
+     * @param  boolean [$override=true] If false, then the new value is not set if one already exists
+     * @return mixed   A list of all variables set
+     */
+    public static function config($module, $names=null, $values=null, $override=true)
     {
         // Initial values to work with
         $return = null;
@@ -237,11 +240,22 @@ class starfish
             'values'=> gettype($values)
         );
 
-        // Return values
-        if ($type['values'] == 'NULL')
+        // Bulk set in modules
+        if ($type['names'] == 'array' && $values == true)
         {
+            static::$config[$module] = $names;
+            $return = $names;
+        }
+        // Return values
+        elseif ($type['values'] == 'NULL')
+        {
+            // No name
+            if ($type['names'] == 'NULL')
+            {
+                $return = $config;
+            }
             // One name
-            if ($type['names'] == 'string' && isset($config[ $names ]) )
+            elseif ($type['names'] == 'string' && isset($config[ $names ]) )
             {
                 $return = $config[ $names ];
             }
@@ -484,7 +498,7 @@ class starfish
 
         return false;
     }
-    
+
     /**
      * Check if an object exists
      * @param  strin   $name Name of the object
@@ -495,10 +509,10 @@ class starfish
         if (isset( static::$instances[ $name ] )) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
 	 * Just create an object, without storing it into the registry
 	 * @param  string $name                    The name of the object to store

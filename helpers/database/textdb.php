@@ -46,6 +46,12 @@ class textdb
                 'scramble' => $scramble,
                 'encrypt' => $encrypt
             );
+            
+            // Check if database folder exists
+            if (!file_exists(starfish::config('_starfish', 'storage') . $this->connection['name']))
+            {
+                mkdir(starfish::config('_starfish', 'storage') . $this->connection['name'], 777);
+            }
         }
 
         return $this;

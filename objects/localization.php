@@ -43,6 +43,7 @@ class localization
                 if ((isset($config['default']) && $config['default'] === true) || $count === 0)
                 {
                     $this->language = $name;
+                    $this->default = $name;
                 }
 
                 // Load the file
@@ -79,9 +80,12 @@ class localization
             $content = parse_ini_file( $file, true);
 
             // Load the translation
-            foreach ($content as $key=>$value)
+            if ($content)
             {
-                $this->words[$name][$key] = $value;
+                foreach ($content as $key=>$value)
+                {
+                    $this->words[$name][$key] = $value;
+                }
             }
         }
     }
@@ -115,9 +119,10 @@ class localization
 
     /**
      * Add new text in the translation files
-     * @param string $text Text to be added
+     * @param string $text             Text to be added
+     * @param string [$translation=''] Translated string
      */
-    public function add($text)
+    public function add($text, $translation='')
     {
         // Check if the localization folder exists
         if (!file_exists($this->path))
@@ -138,6 +143,7 @@ class localization
                     $this->words[$name][$text] = $text;
                 }
 
+                ksort($this->words[$name]);
                 w($file, starfish::obj('common')->arr2ini($this->words[$name]));
             }
         }
@@ -145,15 +151,38 @@ class localization
 
     /**
      * Change the current language of the script
-     * @param string $name Name of the language, as specified in the key of the language list
+     * @param string  $name           Name of the language, as specified in the key of the language list
+     * @param boolean [$cookie=false] Save the value in cookie?
      */
-    public function change($name)
+    public function change($name, $cookie=false)
     {
         if (isset($this->translations[$name]))
         {
             $this->language = $name;
-            cookie('language', $name);
+            if ($cookie == true)
+            {
+                cookie('language', $name);
+            }
         }
+    }
+
+    public function parse($html, $addslashes=false)
+    {
+        preg_match_all('#{__(.*)}#i', $html, $matches, PREG_SET_ORDER);
+
+        foreach ($matches as $key=>$value)
+        {
+            if ($addslashes == false)
+            {
+                $html = str_replace($value[0], starfish::obj('localization')->translate($value[1]), $html);
+            }
+            else
+            {
+                $html = str_replace($value[0], addslashes(starfish::obj('localization')->translate($value[1])), $html);
+            }
+        }
+
+        return $html;
     }
 }
 

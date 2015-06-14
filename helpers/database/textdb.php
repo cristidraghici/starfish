@@ -50,7 +50,7 @@ class textdb
             // Check if database folder exists
             if (!file_exists(starfish::config('_starfish', 'storage') . $this->connection['name']))
             {
-                mkdir(starfish::config('_starfish', 'storage') . $this->connection['name'], 777);
+                @mkdir(starfish::config('_starfish', 'storage') . $this->connection['name'], 0777);
             }
         }
 

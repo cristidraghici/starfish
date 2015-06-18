@@ -436,17 +436,19 @@ class starfish
 			// Complete the configuration
 			if (!isset($configuration['path']))
 			{
-				$core	 	= static::config('_starfish', 'core_objects') . DIRECTORY_SEPARATOR . $name .'.php';
-				$objects 	= static::config('_starfish', 'root_objects') . DIRECTORY_SEPARATOR . $name .'.php';
-				$application 	= static::config('_starfish', 'app_objects') . DIRECTORY_SEPARATOR . $name .'.php';
+				$core	 	= static::config('_starfish', 'core_objects')  . $name .'.php';
+				$objects 	= static::config('_starfish', 'root_objects')  . $name .'.php';
+				$application 	= static::config('_starfish', 'app_objects')  . $name .'.php';
 
 				if (file_exists($core)) 
 				{ 
 					$configuration['path'] = $core;
-				} else if (file_exists($objects)) 
+				} 
+				else if (file_exists($objects)) 
 				{ 
 					$configuration['path'] = $objects;
-				} else if (file_exists($application)) 
+				} 
+				else if (file_exists($application)) 
 				{ 
 					$configuration['path'] = $application;
 				}
@@ -462,6 +464,7 @@ class starfish
 			// Include the files, if needed
 			if (!class_exists($configuration['class']))
 			{
+				
 				if ($configuration['path'] != null)
 				{
 					require_once( $configuration['path'] );
@@ -478,10 +481,10 @@ class starfish
 						if (method_exists($object, 'routes')) { $object->routes(); }
 
 						// Store the object
-						static::$instances[$configuration['class']] = $object;
+						static::$instances[$name] = $object;
 						
 						// Store the configuration in the objects list
-						static::$objects[$configuration['class']] = $configuration;
+						static::$objects[$name] = $configuration;
 						
 						// Return the object
 						return $object;
@@ -489,7 +492,6 @@ class starfish
 				}
 			}
 		}
-
 		return null;
 	}
 

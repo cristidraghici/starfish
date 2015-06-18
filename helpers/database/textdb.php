@@ -564,7 +564,8 @@ class textdb
     {
         $string = $this->connection['scramble']->decode( $string );
         $string = $this->connection['encrypt']->decode( $string );
-        $string = obj('encrypt')->safe_b64decode( $string );
+		
+        $string = $this->connection['encrypt']->safe_b64decode( $string );
 
         return $string;
     }

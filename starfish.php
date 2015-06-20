@@ -37,8 +37,9 @@ class starfish
 
 			// Set the default debug value
 			'debug' => false,
-			// Set the development status
-			'development' => false,
+			
+			// If true, all used system objects are stored in a file in the app root .starfish
+			'deployment' => true,
 
 			// Set the path for the application
 			'app' => './',

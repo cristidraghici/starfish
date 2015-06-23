@@ -233,7 +233,7 @@ class files
 				$size = "32";
 			}
 			$data = @fread($file, $size);
-
+			@fclose($file);
 
 			return $data;
 		}

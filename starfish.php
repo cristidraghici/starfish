@@ -36,10 +36,10 @@ class starfish
 			'date_default_timezone' => 'UTC',
 
 			// Set the default debug value
-			'debug' => false,
+			'debug' => true,
 			
 			// If true, all used system objects are stored in a file in the app root .starfish
-			'deployment' => true,
+			'deployment' => false,
 
 			// Set the path for the application
 			'app' => './',
@@ -113,12 +113,12 @@ class starfish
 		if (starfish::config('_starfish', 'debug') == false)
 		{
 			error_reporting(0);
-			@ini_set('display_errors', false);
+			@ini_set('display_errors', 'off');
 		}
 		else
 		{
-			error_reporting(E_ALL | E_STRICT);
-			@ini_set('display_errors', true);
+			error_reporting(E_ALL);
+			@ini_set('display_errors', 'on');
 		}
 
 		// Establish the default timezone
@@ -444,10 +444,12 @@ class starfish
 				if (file_exists($core)) 
 				{ 
 					$configuration['path'] = $core;
+					static::storeUsedModule($name, $core);
 				} 
 				else if (file_exists($objects)) 
 				{ 
 					$configuration['path'] = $objects;
+					static::storeUsedModule($name, $objects);
 				} 
 				else if (file_exists($application)) 
 				{ 
@@ -622,9 +624,6 @@ class starfish
 
 	##################
 	# Model/View/Controller support functions
-	#
-	# @todo Yet to be implemented and tested
-	# @todo Use namespaces to store the controllers / models
 	##################
 
 	/**
@@ -661,6 +660,41 @@ class starfish
 	public static function v($name, $data=array())
 	{
 		return static::obj('tpl')->view($name, $data);
+	}
+	
+	
+	##################
+	# Store the used Starfish modules in a list, in order to build a one-file script with the framework
+	##################
+	
+	public static function storeUsedModule($name, $path)
+	{
+		if (static::config('_starfish', 'deployment') == true && static::config('_starfish', 'root_app') != null)
+		{
+			$file = static::config('_starfish', 'root_app') . '.starfish';
+			$json = '';
+			
+			// Read the existing contents
+			if (file_exists($file))
+			{
+				$handler = @fopen($file, "r");
+				$size = filesize($file);
+				if ($size == 0)
+				{
+					$size = "32";
+				}
+				$content = @fread($handler, $size);
+			
+				$json = @json_decode($content, true);
+			}
+			// Store the object
+			$json[$name] = $path;
+			
+			// Write the file
+			$handler = @fopen($file, 'w');
+			@fwrite($handler, @json_encode($json));
+			@fclose($handler);
+		}
 	}
 }
 

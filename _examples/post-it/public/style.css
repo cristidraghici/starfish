@@ -109,6 +109,40 @@ ul.stories * {
 	}
 }
 /** Other important elements */
+ul.stories a.del {
+	padding: 2px 10px 2px 10px;
+	background: #ff0000;
+	font-size: 14px;
+	text-decoration: none;
+	display: block;
+	color: #fff;
+}
+
+ul.stories p.note,
+ul.stories a.note {
+	text-decoration:none;
+	color: #262626;
+	display:block;
+
+	word-wrap:break-word;
+}
+ul.stories li {
+	list-style: none;
+	list-style-type: none;
+	position: relative;
+	overflow: hidden;
+
+	min-height: 2em;
+	-moz-box-shadow:-8px -2px 19px rgba(33,33,33,1);
+	-webkit-box-shadow: -2px 19px 7px rgba(33,33,33,.7);
+	box-shadow: -2px 5px 19px rgba(33,33,33,.7);
+	-moz-transition:-moz-transform .3s linear;
+	-o-transition:-o-transform .3s linear;
+	-webkit-transition:-webkit-transform .3s linear;
+
+	background: #fff;
+}
+
 @media (min-width: 600px) {
 	ul.stories {
 		margin: 0;
@@ -116,40 +150,17 @@ ul.stories * {
 	}
 
 	ul.stories li {
-		list-style: none;
-		list-style-type: none;
 		float: left;
-		position: relative;
-		overflow: hidden;
-
-		min-height: 2em;
-		-moz-box-shadow:-8px -2px 19px rgba(33,33,33,1);
-		-webkit-box-shadow: -2px 19px 7px rgba(33,33,33,.7);
-		box-shadow: -2px 5px 19px rgba(33,33,33,.7);
-		-moz-transition:-moz-transform .3s linear;
-		-o-transition:-o-transform .3s linear;
-		-webkit-transition:-webkit-transform .3s linear;
-
-		background: #fff;
 	}
+	
 	ul.stories p.note,
 	ul.stories a.note {
-		text-decoration:none;
-		color: #262626;
-		display:block;
-		padding: 1em 1em 1em 2em;
-
-		word-wrap:break-word;
+		padding: 1em 1em 1.5em 2em;
 	}
 	ul.stories a.del {
-		padding: 2px 7px 2px 7px;
-		background: #ff0000;
-		font-size: 11px;
-		text-decoration: none;
-
 		position: absolute;
 		bottom: 0 !important;
-		left: 0 !important;
+		right: 0 !important;
 		color: #fff !important;
 	}
 	ul.stories a.del small {
@@ -183,6 +194,24 @@ ul.stories * {
 	}
 }
 
+@media (max-width: 600px) {
+	ul.stories {
+		padding: 0;
+		margin: 0;
+	}
+	ul.stories li.story {
+		position: relative;
+		min-height: 30px;
+		list-style: none;
+		padding: 10px;
+		margin: 0;
+	}
+	ul.stories a.del {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+	}
+}
 
 /* General Demo Style */
 body, html { font-size: 100%; padding: 0; margin: 0;}

@@ -459,9 +459,9 @@ class starfish
 			// Complete the configuration
 			if (!isset($configuration['path']))
 			{
-				$core	 	= static::config('_starfish', 'core_objects')  . $name .'.php';
-				$objects 	= static::config('_starfish', 'root_objects')  . $name .'.php';
-				$application 	= static::config('_starfish', 'app_objects')  . $name .'.php';
+				$core	 	= static::config('_starfish', 'core_objects')  . DIRECTORY_SEPARATOR . $name .'.php';
+				$objects 	= static::config('_starfish', 'root_objects')  . DIRECTORY_SEPARATOR . $name .'.php';
+				$application 	= static::config('_starfish', 'app_objects') . DIRECTORY_SEPARATOR . $name .'.php';
 
 				if (file_exists($core)) 
 				{ 
@@ -481,6 +481,7 @@ class starfish
 				{
 					$configuration['path'] = null;
 				}
+				
 			}
 			elseif (stristr($configuration['path'], starfish::config('_starfish', 'root')))
 			{

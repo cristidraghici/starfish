@@ -1,2 +1,2 @@
 <?php /* Starfish TextDB storage protection */ die(); ?>
-a:3:{s:3:"_id";s:43:"efc4Da624DX3n2hzTn_68Rdju5dZrWzPpM7u0EYyJyg";s:4:"name";s:43:"7VRBq8bfktf7yfHkoiADItIRhriEnhXlNWqTJtoQxe0";s:4:"pass";s:43:"4-0sZL1GsWPStmS7IYlJ0md_KUCk-UefPLvjo4bcfJI";}
+a:3:{s:3:"_id";s:43:"YznJKrBc9M9ahK9S!cJDZ_Acw4KC2mvv4l7qPLrJIlE";s:4:"name";s:43:"zSNZbMAbW8GADnGK$E,IwkQNXER,bS2DRN_yMKJVElV";s:4:"pass";s:86:"q0.KAIRb25L_rlDjG1s4,u8.3qc.4LXEZwDYS4erSCdnc!laZKg!T5ugnGbazxn2Z9mUURKQAq6Alc*YxHy.eA";}

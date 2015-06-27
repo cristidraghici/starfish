@@ -56,6 +56,9 @@ class categories
 			$list[] = $row;
 		}
 
+		// Ensure the is at least one category
+		if (count($list) == 0) { $this->add('Default'); $list = $this->all(); }
+
 		$this->list = $list;
 
 		return $list;

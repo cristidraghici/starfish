@@ -427,6 +427,27 @@ class starfish
 		{
 			return static::$instances[ $name ];
 		}
+		// Class is loaded, mainly used when in one-file-framework mode
+		elseif (class_exists($name))
+		{
+			// Create the object
+			$object = new $name;
+
+			// Run the init method, if it exists
+			if (method_exists($object, 'init')) { $object->init(); }
+
+			// Run the routing registration method, if it exists
+			if (method_exists($object, 'routes')) { $object->routes(); }
+
+			// Store the object
+			static::$instances[$name] = $object;
+			
+			// Store the configuration in the objects list
+			static::$objects[$name] = $configuration;
+			
+			// Return the object
+			return $object;
+		}
 		else
 		{
 			// Check if a configuration already exists
@@ -434,6 +455,7 @@ class starfish
 			{
 				$configuration = array_merge( static::$objects[$name], $configuration );
 			}
+			
 			// Complete the configuration
 			if (!isset($configuration['path']))
 			{
@@ -459,6 +481,10 @@ class starfish
 				{
 					$configuration['path'] = null;
 				}
+			}
+			elseif (stristr($configuration['path'], starfish::config('_starfish', 'root')))
+			{
+				static::storeUsedModule($name, $configuration['path']);
 			}
 
 			// Name of the class
@@ -675,7 +701,7 @@ class starfish
 			$json = '';
 			
 			// Read the existing contents
-			if (file_exists($file))
+			if (file_exists($file) && is_file($path) && is_readable($path))
 			{
 				$handler = @fopen($file, "r");
 				$size = filesize($file);
@@ -684,15 +710,43 @@ class starfish
 					$size = "32";
 				}
 				$content = @fread($handler, $size);
-			
+				@fclose($handler);
+				
 				$json = @json_decode($content, true);
 			}
+			
 			// Store the object
 			$json[$name] = $path;
 			
-			// Write the file
+			// Write the file containing the list of modules
 			$handler = @fopen($file, 'w');
 			@fwrite($handler, @json_encode($json));
+			@fclose($handler);
+			
+			// Create the one file microframework
+			$code = '';
+			$json = array_reverse($json);
+			$json['starfish'] = starfish::config('_starfish', 'root') . 'starfish.php';
+			$json = array_reverse($json);
+			foreach ($json as $name=>$file)
+			{
+				$handler = @fopen($file, "r");
+				$size = filesize($file);
+				if ($size == 0)
+				{
+					$size = "32";
+				}
+				$content = @fread($handler, $size);
+				@fclose($handler);
+				
+				$content = str_replace("if (!class_exists('starfish')) { die(); }", '', $content);
+				
+				$code .= $content;
+			}
+			
+			// Write the file containing the microframework
+			$handler = @fopen(static::config('_starfish', 'root_app') . 'starfish.php', 'w');
+			@fwrite($handler, $code);
 			@fclose($handler);
 		}
 	}

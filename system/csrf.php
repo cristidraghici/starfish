@@ -79,19 +79,19 @@ class csrf
 
 		switch (method()) 
 		{
-			'post':
+			case 'post':
 			$checked = post( $this->parameter );
 			break;
-			'put':
+			case 'put':
 			$checked = put( $this->parameter );
 			break;
-			'head':
+			case 'head':
 			$checked = head( $this->parameter );
 			break;
-			'options':
+			case 'options':
 			$checked = options( $this->parameter );
 			break;
-			'get':
+			case 'get':
 			$checked = get( $this->parameter );
 			break;
 		}

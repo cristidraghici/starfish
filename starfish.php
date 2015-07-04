@@ -744,6 +744,7 @@ class starfish
 				
 				$code .= $content;
 			}
+			$code = str_replace('?'.'><'.'?php', '', $code);
 			
 			// Write the file containing the microframework
 			$handler = @fopen(static::config('_starfish', 'root_app') . 'starfish.php', 'w');

@@ -124,7 +124,14 @@ class tpl
 
 			ob_start();
 			eval(' ?>'.$tplContent.'<?php ');
+			
 			$html = ob_get_clean();
+			
+			// Add csrf protection, if needed
+			if (session('csrf_token') != null)
+			{
+				$html = starfish::obj('csrf')->alterForms($html);
+			}
 		}
 
 		return $html;

@@ -56,7 +56,7 @@ class csrf
 	 */
 	public function generate($force=false) 
 	{
-		if (session('csrf_token') == null || $fprce == true)
+		if (session('csrf_token') == null || $force == true)
 		{
 			session('csrf_token', md5(md5(time()) . time()));
 		}

@@ -103,17 +103,33 @@
 					</div>
 				</div>
 			</li>
+			
 			<li class="timeline-inverted">
 				<div class="timeline-image">
 					<img class="img-circle img-responsive" src="public/images/history.jpg" alt="">
 				</div>
 				<div class="timeline-panel">
 					<div class="timeline-heading">
-						<h4>25 October 2014</h4>
+						<h4>04 July 2015</h4>
 						<h4 class="subheading">The first version was launched</h4>
 					</div>
 					<div class="timeline-body">
 						<p class="text-muted">We are looking forward to support and comments from those willing to help build a powerful and useful PHP tool.</p>
+					</div>
+				</div>
+			</li>
+			
+			<li>
+				<div class="timeline-image">
+					<img class="img-circle img-responsive" src="public/images/history.jpg" alt="">
+				</div>
+				<div class="timeline-panel">
+					<div class="timeline-heading">
+						<h4>Present</h4>
+					</div>
+					<div class="timeline-body">
+						<p class="text-muted">We are currently investing time in making Starfish more user-friendly and popular.</p>
+						<p class="text-muted">New features are postponed. For now, the effort will be put in consolidating the exiting functionality.</p>
 					</div>
 				</div>
 			</li>

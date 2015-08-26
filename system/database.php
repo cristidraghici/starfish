@@ -356,6 +356,30 @@ class database
 	{
 		return static::conn($connection)->escape($string);
 	}
+	
+	/**
+	 * Escape all the rows resulted from a query
+	 * @param  array $rows              The target rows
+	 * @param  mixed [$connection=null] Connection to use
+	 * @return array The escaped target rows
+	 */
+	public static function escapeAll($rows, $connection=null) 
+	{
+		$output = array();
+		
+		foreach ($rows as $key=>$value) 
+		{
+			$row = array();
+			foreach ($value as $k=>$v) 
+			{
+				$row[$k] = static::escape($v, $connection);
+			}
+			
+			$output[] = $row;
+		}
+		
+		return $output;
+	}
 }
 
 /**

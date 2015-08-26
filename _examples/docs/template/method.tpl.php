@@ -9,7 +9,7 @@
 	</div>
 	
 	<div class="body">
-		<h3>Show code</h3>
+		<h3><i class="glyphicon glyphicon-cog"></i> <a href="">Show code</a></h3>
 		
 		<div class="highlight">
 		<?php echo $body; ?>

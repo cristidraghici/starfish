@@ -5,7 +5,7 @@ if (!class_exists('starfish')) { die(); }
  * Templating system
  *
  * @package starfish
- * @subpackage starfish.objects.mysql
+ * @subpackage starfish.objects.tpl
  */
 
 class tpl
@@ -46,15 +46,13 @@ class tpl
 		$this->set('site_description', starfish::config('_starfish', 'site_description') );
 		$this->set('/', starfish::config('_starfish', 'site_url') );
 		$this->set('./', $current );
-
-		return true;
 	}
 
-	/*
+	/**
 	 * Set a variable for the templating system
-	 * 
-	 * @param string $variable Name of the variable
-	 * @param string $value Value for the variable
+	 * @param  string $variable Name of the variable
+	 * @param  string $value    Value for the variable
+	 * @return mixed  The value set
 	 */
 	public function set($variable, $value)
 	{
@@ -64,11 +62,10 @@ class tpl
 		return starfish::set('_starfish_templates', $list);
 	}
 
-	/*
+	/**
 	 * Get the value of a variable
-	 * 
-	 * @param string $variable Name of the variable to retrive
-	 * @return mixed Value of the variable
+	 * @param  string $variable Name of the variable to retrive
+	 * @return mixed  Value of the variable
 	 */
 	public function get($variable)
 	{
@@ -77,11 +74,11 @@ class tpl
 		return isset( $list[$variable] ) ?  $list[$variable] : null;
 	}
 
-	/*
+	/**
 	 * Get a view
-	 * 
-	 * @param string $file - File to load
-	 * @param mixed $variables - Variables to insert into the code
+	 * @param  string $file             - File to load
+	 * @param  mixed  [$variables=null] - Variables to insert into the code
+	 * @return string HTML generated string
 	 */
 	public function view($file, $variables=null)
 	{
@@ -138,7 +135,7 @@ class tpl
 
 	}
 
-	/*
+	/**
 	 * Dump the template in the browser
 	 */
 	public function dump()
@@ -173,10 +170,9 @@ class tpl
 		}
 	}
 
-	/*
+	/**
 	 * Insert the stored variables into the template
-	 * 
-	 * @param string $html HTML code to alter
+	 * @param  string $html HTML code to alter
 	 * @return string The new HTML code
 	 */
 	private function variables($html)

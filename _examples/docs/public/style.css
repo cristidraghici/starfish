@@ -13,30 +13,38 @@ span.class-row-title {
 
 .method {
 	border-left: 2px solid #aaa;
+	position: relative;
 }
 
 .method .body {
-	margin: 10px 0px 20px 10px;
-	position: relative;
+	margin: 0px 0px 20px 0px;
+	max-width: 100%;
 }
 
 .method .body h3 {
 	font-size: 12px;
 	text-align: right;
 	position: absolute;
-	right: 0;
-	top: 0;
+	right: 10px;
+	top: -10px;
+}
+.method .body a {
+	color: #000;
 }
 
 .method .body .highlight {
-	/*background: #f9f2f4;*/
+	background: #f9f2f4;
+	padding: 10px;
+	
+	overflow: auto;
 }
 
 .method .comments {
-	margin: 10px 0px 10px 0px;
+	margin: 10px 0px 0px 0px;
 	padding: 10px 5px 10px 5px;
 	overflow: hidden;
 	background: #f1f1f1;
+	min-height: 35px;
 }
 .method .comments p {
 	margin: 5px 0px 5px 0px;

@@ -42,13 +42,15 @@ $(document).ready(function () {
 
     /* hide code body */
     $('.method .body .highlight').css('display', 'none');
-    $('.method .body h3').click(function () {
-        var target = $(this).parent().find('.highlight');
+    $('.method .body h3 a').click(function () {
+        var target = $(this).parent().parent().find('.highlight');
 
         if (target.css('display') == 'none') {
             target.css('display', 'block');
         } else {
             target.css('display', 'none');
         }
+		
+		return false;
     });
 });

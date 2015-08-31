@@ -3,6 +3,12 @@ if (!class_exists('starfish')) { die(); }
 
 /**
  * Basic captcha for forms
+ * to use this form:
+ * 1. copy the captcha folder in ./helpers in your application's ./storage folder
+ * 2. add the following route in your app:
+ * on('get', '/captcha.png', function () {
+ * include( config('_starfish', 'storage') . 'captcha/captcha.php' );
+ * });
  *
  * @package starfish
  * @subpackage starfish.objects.captcha
@@ -86,7 +92,7 @@ class captcha
 		imageline($captcha,0,0,39,29,$line);
 		imageline($captcha,40,0,64,29,$line);
 
-		imagestring($captcha, 10, 15, 10, $string, $black);
+		imagestring($captcha, 12, 19, 12, $string, $black);
 
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
 		header( 'Cache-Control: post-check=0, pre-check=0', false );

@@ -65,7 +65,36 @@ class routes
 			static::run();
 		}
 	}
-
+	
+	/**
+	 * Clean a certain category of requests - useful for building demos
+	 * @param string   $method          The target method
+	 * @param mixed    $matching        Function - if returns true, cleanup is performed, has one parameter path; if null, all matches
+	 * @param [[Type]] [$callback=null] [[Description]]
+	 */
+	public static function clean($method, $matching=null, $callback=null) 
+	{
+		$method = strtoupper($method);
+		
+		if (isset(static::$routes[$method])) 
+		{
+			foreach (static::$routes[$method] as $path => $function) 
+			{
+				if ($matching === null || (gettype($matching) === 'object' && call_user_func_array($matching, array('path'=>$path)) === true)) 
+				{
+					// Change the callback
+					if ($callback === null) 
+					{
+						unset(static::$routes[$method][$path]);
+					}
+					else
+					{
+						static::$routes[$method][$path] = $callback;
+					}
+				}
+			}
+		}
+	}
 	/**
 	 * Run the routing
 	 * @return null Nothing to return

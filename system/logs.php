@@ -37,8 +37,6 @@ class logs
 	 */
 	public static function saveLog($file, $data)
 	{
-		$file = static::$path . $file;
-
 		$data = @json_encode($data) . PHP_EOL;
 		static::add($file, $data . PHP_EOL, 'a');
 
@@ -52,8 +50,6 @@ class logs
 	 */
 	public static function resetLog($file)
 	{
-		$file = static::$path . $file;
-
 		starfish::obj('files')->w($file, "", 'w');
 
 		return null;
@@ -71,7 +67,7 @@ class logs
 
 		// Make sure we are dealign with a string
 		if (gettype($text) != 'string') { $text = @serialize($text); }
-
+		
 		// write the data
 		starfish::obj('files')->w($file, $text, 'a');
 

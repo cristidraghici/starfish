@@ -332,6 +332,19 @@ class files
 
 		return $extension;
 	}
+	
+	/**
+	 * Return the name of a file from a path
+	 * @param  string $path The path
+	 * @return string The filename
+	 */
+	public static function name($path) 
+	{
+		$file = basename($path);
+		$file = basename($path, '.' . static::extension($path));
+		
+		return $file;
+	}
 
 	/**
 	 * Filename validator

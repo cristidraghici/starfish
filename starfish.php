@@ -5,7 +5,7 @@
  * This file is the entry point of Starfish PHP Framework: this acts like a Registry for all the other objects used
  * 
  * @link        http://www.starfish.ml
- * @version 	0.4a
+ * @version 	1.0
  * 
  * @license 	MIT
  * @link    	http://opensource.org/licenses/MIT

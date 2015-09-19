@@ -693,7 +693,13 @@ class starfish
 	##################
 	# Store the used Starfish modules in a list, in order to build a one-file script with the framework
 	##################
-	
+	/**
+	 * Function which stores the used starfish objects in one file
+	 * If the name has ^ in the .starfish file, then it will be excluded from the generated file
+	 * 
+	 * @param string $name The name of the object
+	 * @param string $path The path to the object
+	 */
 	public static function storeUsedModule($name, $path)
 	{
 		if (static::config('_starfish', 'deployment') == true && static::config('_starfish', 'root_app') != null)
@@ -731,18 +737,22 @@ class starfish
 			$json = array_reverse($json);
 			foreach ($json as $name=>$file)
 			{
-				$handler = @fopen($file, "r");
-				$size = filesize($file);
-				if ($size == 0)
+				
+				if (substr($name, 0, 1) !== '^')
 				{
-					$size = "32";
+					$handler = @fopen($file, "r");
+					$size = filesize($file);
+					if ($size == 0)
+					{
+						$size = "32";
+					}
+					$content = @fread($handler, $size);
+					@fclose($handler);
+
+					$content = str_replace("if (!class_exists('starfish')) { die(); }", '', $content);
+
+					$code .= $content;
 				}
-				$content = @fread($handler, $size);
-				@fclose($handler);
-				
-				$content = str_replace("if (!class_exists('starfish')) { die(); }", '', $content);
-				
-				$code .= $content;
 			}
 			$code = str_replace('?'.'><'.'?php', '', $code);
 			

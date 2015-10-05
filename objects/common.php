@@ -10,6 +10,74 @@ if (!class_exists('starfish')) { die(); }
 class common
 {	
 	/**
+	 * Extract the domain from a url
+	 * See: http://stackoverflow.com/questions/16027102/get-domain-name-from-full-url
+	 * 
+	 * @param  string  $url The whole url to parse
+	 * @return string The domain, if available
+	 */
+	function get_domain($url)
+	{
+		$pieces = parse_url($url);
+		$domain = isset($pieces['host']) ? $pieces['host'] : '';
+		if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+			return $regs['domain'];
+		}
+		
+		return '';
+	}
+
+	/**
+	 * Creates a compressed zip file
+	 * See: http://davidwalsh.name/create-zip-php
+	 * 
+	 * @param  array   [$files            = array()] The list of files to add
+	 * @param  string  $destination       = ''  The destination
+	 * @param  boolean $overwrite         = false Overwrite the destination, if it already exists
+	 * @return boolean True if the archive has been created
+	 */
+	function create_zip($files = array(),$destination = '',$overwrite = false) {
+		//if the zip file already exists and overwrite is false, return false
+		if(file_exists($destination) && !$overwrite) { return false; }
+		//vars
+		$valid_files = array();
+		//if files were passed in...
+		if(is_array($files)) {
+			//cycle through each file
+			foreach($files as $file) {
+				//make sure the file exists
+				if(file_exists($file)) {
+					$valid_files[] = $file;
+				}
+			}
+		}
+		//if we have good files...
+		if(count($valid_files)) {
+			//create the archive
+			$zip = new ZipArchive();
+			if($zip->open($destination,$overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
+				return false;
+			}
+			//add the files
+			foreach($valid_files as $file) {
+				$zip->addFile($file,$file);
+			}
+			//debug
+			//echo 'The zip archive contains ',$zip->numFiles,' files with a status of ',$zip->status;
+
+			//close the zip -- done!
+			$zip->close();
+
+			//check to make sure the file exists
+			return file_exists($destination);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
 	 * Create a tree from a given array
 	 * - see http://stackoverflow.com/questions/4196157/create-array-tree-from-array-list
 	 * @param  array  $source                    Source of data

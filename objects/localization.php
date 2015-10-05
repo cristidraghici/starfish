@@ -77,7 +77,7 @@ class localization
         if (file_exists($file))
         {
             // Get the content
-            $content = parse_ini_file( $file, true);
+            $content = @parse_ini_file( $file, true);
 
             // Load the translation
             if ($content)

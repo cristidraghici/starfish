@@ -135,7 +135,7 @@ class files
 				{
 					if ($file != '.' && $file != '..')
 					{
-						if (filetype($path . $file) == 'file')
+						if (is_file($path . $file))
 						{
 							$files['files'][] = $file;
 						}

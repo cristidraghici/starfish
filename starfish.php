@@ -783,7 +783,8 @@ function v()   { return call_user_func_array(array('starfish', 'v'),    func_get
 /**
  * Instantiate the framework. Minimum PHP 5.3 required.
  */
-if (PHP_VERSION_ID <= 50300)
+//if (PHP_VERSION_ID <= 50300)
+if (version_compare(phpversion(), '5.3.0', '<='))
 {
 	die("Starfish PHP Framework minimum requirements: PHP 5.3");
 }

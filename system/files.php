@@ -37,14 +37,14 @@ class files
 					{
 						if (filetype($path . $file) == 'file')
 						{
-							if ( !$this->is_file_list_exception($path . $file, $except) ) 
+							if ( !$this->is_file_list_exception($path . '/' . $file, $except) ) 
 							{
-								$list[] = array('name'=>$file, 'type'=>'file', 'path'=> $path . $file);
+								$list[] = array('name'=>$file, 'type'=>'file', 'path'=> $path . '/' . $file);
 							}
 						}
-						elseif ( !$this->is_directory_list_exception($path . $file, $except) )
+						elseif ( !$this->is_directory_list_exception($path . '/' . $file, $except) )
 						{
-							$list[] = array('name'=>$file, 'type'=>'folder', 'path'=> $path . $file, 'content'=> $this->tree($path . $file . '/', $except) );
+							$list[] = array('name'=>$file, 'type'=>'folder', 'path'=> $path  . '/' .  $file, 'content'=> $this->tree($path  . '/' .  $file . '/', $except) );
 						}
 					}
 				}
@@ -52,6 +52,46 @@ class files
 		}
 
 		return $list;
+	}
+	
+	/**
+	 * Get a list of files 
+	 * @param  string  $path             Path of the directory to analyze
+	 * @param  boolean [$recursive=true] Should the search be recursive?
+	 * @param  array   [$except=array()] List of directories to except
+	 * @return array   List of paths of the files contained
+	 */
+	public function getFilesAsList($path, $recursive=true, $except=array())
+	{
+		$list = array();
+
+		if (file_exists($path) && is_dir($path) && is_readable($path) && !$this->is_directory_list_exception($path, $except))
+		{
+			if ($dir_handler = opendir($path)) 
+			{
+				while (($file = readdir($dir_handler)) !== false) 
+				{
+					if ($file != '.' && $file != '..')
+					{
+						if (filetype($path . '/' . $file) == 'file')
+						{
+							if ( !$this->is_file_list_exception($path . '/' . $file, $except) ) 
+							{
+								$list[$path . '/' . $file] = $this->truepath($path . '/' . $file);
+							}
+						}
+						elseif ( !$this->is_directory_list_exception($path . '/' . $file, $except) )
+						{
+							if ($recursive === true) {
+								$list = array_merge($list, $this->getFilesAsList($path .'/'. $file, $recursive, $except) );
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return array_values($list);
 	}
 
 	/**

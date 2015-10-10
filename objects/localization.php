@@ -42,8 +42,13 @@ class localization
                 // The default language - if not specified otherwise, the first language is the default one
                 if ((isset($config['default']) && $config['default'] === true) || $count === 0)
                 {
-                    $this->language = $name;
                     $this->default = $name;
+                }
+				
+				// The current language - if not specified otherwise, the first language is the default one
+                if ((isset($config['current']) && $config['current'] === true) || $count === 0)
+                {
+                    $this->language = $name;
                 }
 
                 // Load the file
@@ -52,7 +57,7 @@ class localization
                 $count++;
             }
         }
-
+		
         // Check for previously set language in cookies
         if (cookie('language') != null && isset($this->translations[cookie('language')]))
         {
@@ -73,20 +78,27 @@ class localization
         // Init the translation
         $this->translations[$name] = $file;
         $this->words[$name] = array();
-
-        if (file_exists($file))
+		
+        if (file_exists($file) && is_readable($file))
         {
-            // Get the content
-            $content = @parse_ini_file( $file, true);
+			if (filesize($file) > 0) 
+			{
+				// Get the content
+				$content = json_decode(obj('files')->r($file), true);
 
-            // Load the translation
-            if ($content)
-            {
-                foreach ($content as $key=>$value)
-                {
-                    $this->words[$name][$key] = $value;
-                }
-            }
+				// Load the translation
+				if ($content)
+				{
+					foreach ($content as $key=>$value)
+					{
+						$this->words[$name][$key] = $value;
+					}
+				}
+			} 
+			else
+			{
+				$this->words[$name] = array();
+			}
         }
     }
 
@@ -129,14 +141,14 @@ class localization
         {
             @mkdir($this->path, '0777');
         }
-
+		
         foreach ($this->translations as $name=>$file)
         {
             if (!isset($this->words[$name][$text]) || strlen($this->words[$name][$text]) == 0)
             {
                 if ($name != $this->default)
                 {
-                    $this->words[$name][$text] = '""';
+                    $this->words[$name][$text] = '';
                 }
                 else
                 {
@@ -144,7 +156,8 @@ class localization
                 }
 
                 ksort($this->words[$name]);
-                w($file, starfish::obj('common')->arr2ini($this->words[$name]));
+				
+                w($file, json_encode($this->words[$name], 128));
             }
         }
     }

@@ -175,7 +175,7 @@ class files
 				{
 					if ($file != '.' && $file != '..')
 					{
-						if (is_file($path . $file))
+						if (!is_dir($path . $file))
 						{
 							$files['files'][] = $file;
 						}

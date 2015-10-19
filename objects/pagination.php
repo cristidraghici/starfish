@@ -29,7 +29,7 @@ class pagination
 	public function init()
 	{
 		// Load the default language (en) from the helper folder
-		require_once( starfish::config('_starfish', 'root') . 'helpers/pagination/language/en.php' );
+		require_once(  starfish::obj('helpers')->getPath('pagination/language/en.php') );
 
 		return true;
 	}
@@ -133,7 +133,7 @@ class pagination
 	{
 		if (count($strings) == 0)
 		{
-			$file = starfish::config('_starfish', 'root') . 'helpers/pagination/language/'.$name.'.php';
+			$file =  starfish::obj('helpers')->getPath('pagination/language/'.$name.'.php');
 			if (file_exists($file))
 			{
 				$this->language = $name;
@@ -179,6 +179,8 @@ class pagination
 		$max = $limits['max'];
 
 		// Alter the link form
+		$link = str_replace(array('{/}'), starfish::config('_starfish', 'site_url'), $link);
+		
 		if (substr($link, 0, 2) == './')
 		{
 			$link = starfish::config('_starfish', 'site_url') . substr($link, 2);
@@ -301,11 +303,11 @@ class pagination
 		switch ($this->template)
 		{
 			case 'helpers-bootstrap':
-			$file = starfish::config('_starfish', 'root') . 'helpers/pagination/themes/bootstrap/pagination.tpl.php';
+			$file = starfish::obj('helpers')->getPath('pagination/themes/bootstrap/pagination.tpl.php');
 			break;
 
 			case 'helpers-clean':
-			$file = starfish::config('_starfish', 'root') . 'helpers/pagination/themes/clean/pagination.tpl.php';
+			$file =  starfish::obj('helpers')->getPath('pagination/themes/clean/pagination.tpl.php');
 			break;
 
 			default:
@@ -314,7 +316,7 @@ class pagination
 		}
 
 		// Load the template file                
-		return reg::obj('tpl')->view($file, array(
+		return starfish::obj('tpl')->view($file, array(
 			'data'=>$links
 		));
 	}

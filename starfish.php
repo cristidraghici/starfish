@@ -58,12 +58,12 @@ class starfish
 	/*
 	 * Starfish "constants": framework specific values for later use
 	 */
-	public static $constants;
+	public static $constants = array();
 
 	/*
 	 * Variable values set throughout the application and accessible from anywhere
 	 */
-	public static $variables;
+	public static $variables = array();
 
 	/*
 	 * The list of objects
@@ -88,7 +88,7 @@ class starfish
 	/*
 	 * The list of instances
 	 */
-	private static $instances;
+	private static $instances = array();
 
 
 	##################
@@ -190,7 +190,7 @@ class starfish
 		static::obj('parameters');
 		static::obj('files');
 		static::obj('routes');
-		static::obj('databases');
+		static::obj('database');
 		static::obj('errors');
 		static::obj('logs');
 		static::obj('email');
@@ -483,7 +483,7 @@ class starfish
 				}
 				
 			}
-			elseif (stristr($configuration['path'], starfish::config('_starfish', 'root')))
+			elseif (stristr($configuration['path'], starfish::config('_starfish', 'root')) && starfish::config('_starfish', 'root_app') !== starfish::config('_starfish', 'root'))
 			{
 				static::storeUsedModule($name, $configuration['path']);
 			}
@@ -492,34 +492,29 @@ class starfish
 			$configuration['class'] = isset( $configuration['class'] ) ? $configuration['class'] : $name;
 
 			// Include the files, if needed
-			if (!class_exists($configuration['class']))
+			if (!class_exists($configuration['class']) && $configuration['path'] != null) 
 			{
-				
-				if ($configuration['path'] != null)
-				{
-					require_once( $configuration['path'] );
-					
-					if (class_exists($configuration['class']))
-					{
-						// Create the object
-						$object = new $configuration['class'];
+				require_once( $configuration['path'] );
+			}
+			if (class_exists($configuration['class']) && !in_array($name, static::$instances))
+			{
+				// Create the object
+				$object = new $configuration['class'];
 
-						// Run the init method, if it exists
-						if (method_exists($object, 'init')) { $object->init(); }
+				// Run the init method, if it exists
+				if (method_exists($object, 'init')) { $object->init(); }
 
-						// Run the routing registration method, if it exists
-						if (method_exists($object, 'routes')) { $object->routes(); }
+				// Run the routing registration method, if it exists
+				if (method_exists($object, 'routes')) { $object->routes(); }
 
-						// Store the object
-						static::$instances[$name] = $object;
-						
-						// Store the configuration in the objects list
-						static::$objects[$name] = $configuration;
-						
-						// Return the object
-						return $object;
-					}
-				}
+				// Store the object
+				static::$instances[$name] = $object;
+
+				// Store the configuration in the objects list
+				static::$objects[$name] = $configuration;
+
+				// Return the object
+				return $object;
 			}
 		}
 		return null;

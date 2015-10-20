@@ -9,6 +9,25 @@ if (!class_exists('starfish')) { die(); }
  */
 class epoch
 {	
+	// Convert a mysql datetime column to the default site date format
+	function sitedate($string)
+	{
+		if (strlen(starfish::config('_starfish', 'default_date_format')) > 0) 
+		{
+			return $this->convert('Y-m-d H:i:s', starfish::config('_starfish', 'default_date_format'), $string);
+		}
+		else 
+		{
+			return $string;
+		}
+	}
+	
+	// Return the datetime column format for mysql
+	function datetime()
+	{
+		return date('Y-m-d H:i:s');
+	}
+
 	/**
 	* Convert date
 	*/
@@ -18,7 +37,7 @@ class epoch
 		if ($d === false) {
 			return false;
 		}
-		echo $d->format($to_format);
+		return $d->format($to_format);
 	}
 	
 	/**

@@ -99,7 +99,7 @@ class mysql
 	 */
 	function fetch($resource)
 	{
-		$row = @mysqli_fetch_assoc($resource);
+		$row = mysqli_fetch_assoc($resource);
 		return $row;
 	}
 	/*
@@ -117,7 +117,7 @@ class mysql
 			$result[] = $row;
 		}
 
-		$resource->close();
+		@$resource->close();
 
 		return $result;
 	}

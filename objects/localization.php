@@ -181,7 +181,7 @@ class localization
 
     public function parse($html, $addslashes=false)
     {
-        preg_match_all('#{__(.*)}#i', $html, $matches, PREG_SET_ORDER);
+        preg_match_all('#{__([^}]*)}#im', $html, $matches, PREG_SET_ORDER);
 
         foreach ($matches as $key=>$value)
         {

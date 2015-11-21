@@ -576,7 +576,17 @@ class starfish
 	public static function redirect($path, $code=302, $condition=true) 
 	{
 		if (!$condition) { return; }
-		if (substr($path, 0, 2) == './') { $path = static::config('_starfish', 'site_url') . substr($path, 2); }
+		if (substr($path, 0, 2) == './') 
+		{
+			if (strlen($path) > 2)
+			{
+				$path = static::config('_starfish', 'site_url') . substr($path, 2); 
+			}
+			else
+			{
+				$path = static::$constants['current_url'];
+			}
+		}
 		@header("Location: {$path}", true, $code);
 		exit;
 	}

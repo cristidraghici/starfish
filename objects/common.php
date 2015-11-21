@@ -9,6 +9,30 @@ if (!class_exists('starfish')) { die(); }
  */
 class common
 {	
+
+	/**
+	 * Get an empty row from the given table
+	 *
+	 * @param  string table The table name
+	 * @param  object [$override=null]     Values used to override the default null value for each of the columns
+	 * @param  object [$conn=null]     The connection to use
+	 * @return array An array containing the table structure
+	 */
+	public function get_mysql_default_row($table, $override=array(), $conn=null)
+	{
+		$output = array();
+		
+		$resource = starfish::obj('database')->query('select * from `'.$table.'`', $conn);
+		$info = $resource->fetch_fields();
+		
+		foreach ($info as $key=>$value) 
+		{
+			$output[$value->name] = null;
+		}
+		
+		return $output;
+	}
+
 	/**
 	 * Backup the data in a mysql database
 	 * https://dl.dropboxusercontent.com/u/18434517/mysql_backup.php

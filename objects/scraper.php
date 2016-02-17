@@ -42,8 +42,9 @@ class scraper
 	private $scraper_storage_path = '';
 
 	/**
-         * The init function
-         */
+	 * The init function
+	 * @return boolean True
+	 */
 	public function init()
 	{
 		// Unlimited resources
@@ -86,10 +87,10 @@ class scraper
 	}
 
 	/**
-         * Set the connection to the database
-         * 
-         * @param string $name Name of the connection
-         */
+	 * Set the connection to the database
+	 * @param  string  $name Name of the connection
+	 * @return boolean True
+	 */
 	public function setConnection($name)
 	{
 		// Change the connection name
@@ -102,8 +103,9 @@ class scraper
 	}
 
 	/**
-         * Check the parser install
-         */
+	 * Check the parser install
+	 * @return boolean True
+	 */
 	private function checkInstall()
 	{
 		// check the connection to the mysql database
@@ -123,10 +125,10 @@ class scraper
 	}
 
 	/**
-         * Get the project id by name
-         * 
-         * @param string $name Name of the project
-         */
+	 * Get the project id by name
+	 * @param  string  $name Name of the project
+	 * @return integer ID of the project
+	 */
 	public function getProject($name)
 	{
 		$resource = starfish::obj('database')->query("select nr_crt from projects where title='".$name."';", $this->connectionName);
@@ -143,13 +145,29 @@ class scraper
 
 		return $row['nr_crt'];
 	}
-
+	
 	/**
-         * Reset the download and process queue for a project
-         * 
-         * @param number $project_id Id of the project in use
-         * @param number $group_id Group of urls inside the project
-         */
+	 * Delete all data regarding a project
+	 * @param number $project_id Id of the project in use
+	 */
+	public function resetProject($project_id)
+	{		
+		$resource = starfish::obj('database')->query("delete from url_download where url_id in (select nr_crt from urls where project_id='".$project_id."');", $this->connectionName);
+		starfish::obj('database')->free( $resource );
+		
+		$resource = starfish::obj('database')->query("delete from url_processed where url_id in (select nr_crt from urls where project_id='".$project_id."');", $this->connectionName);
+		starfish::obj('database')->free( $resource );
+		
+		$resource = starfish::obj('database')->query("delete from urls where project_id='".$project_id."';", $this->connectionName);
+		starfish::obj('database')->free( $resource );
+	}
+	
+	/**
+	 * Reset the download and process queue for a project
+	 * @param  number  $project_id      Id of the project in use
+	 * @param  number  [$group_id=null] Group of urls inside the project
+	 * @return boolean True
+	 */
 	public function resetQueue($project_id, $group_id=null)
 	{
 		// Build where clause
@@ -168,11 +186,11 @@ class scraper
 	}
 
 	/**
-         * Reset the download queue for a project
-         * 
-         * @param number $project_id Id of the project in use
-         * @param number $group_id Group of urls inside the project
-         */
+	 * Reset the download queue for a project
+	 * @param  number  $project_id      Id of the project in use
+	 * @param  number  [$group_id=null] Group of urls inside the project
+	 * @return boolean True
+	 */
 	public function resetDownloadQueue($project_id, $group_id=null)
 	{
 		// Build where clause
@@ -186,11 +204,11 @@ class scraper
 	}
 
 	/**
-         * Reset the process queue for a project
-         * 
-         * @param number $project_id Id of the project in use
-         * @param number $group_id Group of urls inside the project
-         */
+	 * Reset the process queue for a project
+	 * @param  number  $project_id      Id of the project in use
+	 * @param  number  [$group_id=null] Group of urls inside the project
+	 * @return boolean True
+	 */
 	public function resetProcessQueue($project_id, $group_id=null)
 	{
 		// Build where clause
@@ -204,11 +222,10 @@ class scraper
 	}
 
 	/**
-         * Stop the queue execution
-         * 
-         * @param number $project_id Id of the project in use
-         * @param number $group_id Group of urls inside the project
-         */
+	 * Stop the queue execution
+	 * @param number $project_id      Id of the project in use
+	 * @param number [$group_id=null] Group of urls inside the project
+	 */
 	public function stopQueue($project_id, $group_id=null)
 	{
 		// Build where clause
@@ -220,20 +237,18 @@ class scraper
 	}
 
 	/**
-         * Add urls to the list
-         * 
-         * @param number $project_id Id of the project in use
-         * @param number $group_id Group of urls inside the project
-         * $param number $type 
-         *                      1 - download every type the parser runs
-         *                      2 - permanent
-         * @param string $url URL to download
-         * @param string $method Method to use for downloading the urls
-         * @param array $parameters Parameters used in the request
-         * @param array $data Data to send with the request
-         * @param array $storage Data to use when parsing this url
-         * @param array $options Options to use in the request configuration
-         */
+	 * Add urls to the list
+	 * @param  number  $project_id           Id of the project in use
+	 * @param  number  $group_id             Group of urls inside the project
+	 * @param  string  $type                 Type of request: 1 - download every type the parser runs, 2 - permanent
+	 * @param  string  $url                  URL to download
+	 * @param  string  [$method='get']       Method to use for downloading the urls
+	 * @param  array   [$parameters=array()] Parameters used in the request
+	 * @param  array   $data=array()         Data to send
+	 * @param  array   $storage=array()      Data to store
+	 * @param  array   $options=array()      Options for the request
+	 * @return boolean True
+	 */
 	public function addUrl($project_id, $group_id, $type, $url, $method='get', $parameters=array(), $data=array(), $storage=array(), $options=array())
 	{
 		// Alter the parameters for storage
@@ -264,16 +279,82 @@ class scraper
 
 		return true;
 	}
+	
+	
+	/**
+	 * Get the id of an inserted url by its data
+	 * @param  number  $project_id           Id of the project in use
+	 * @param  number  $group_id             Group of urls inside the project
+	 * @param  string  $type                 Type of request: 1 - download every type the parser runs, 2 - permanent
+	 * @param  string  $url                  URL to download
+	 * @param  string  [$method='get']       Method to use for downloading the urls
+	 * @param  array   [$parameters=array()] Parameters used in the request
+	 * @param  array   $data=array()         Data to send
+	 * @param  array   $storage=array()      Data to store
+	 * @param  array   $options=array()      Options for the request
+	 * @return integer The ID of the requested url
+	 */
+	public function getUrlID($project_id, $group_id, $type, $url, $method='get', $parameters=array(), $data=array(), $storage=array(), $options=array())
+	{
+		// Alter the parameters for storage
+		@ksort($parameters);
+		$parameters = @serialize($parameters);
+		@ksort($data);
+		$data = @serialize($data);
+		@ksort($storage);
+		$storage = @serialize($storage);
+		@ksort($options);
+		$options = @serialize($options);
+
+		// Sanitize the data
+		$project_id = starfish::obj('database')->sanitize($project_id);
+		$group_id = starfish::obj('database')->sanitize($group_id);
+		$type = starfish::obj('database')->sanitize($type);
+		$url = starfish::obj('database')->sanitize($url);
+		$method = starfish::obj('database')->sanitize($method);
+		$parameters = starfish::obj('database')->sanitize($parameters);
+		$data = starfish::obj('database')->sanitize($data);
+		$storage = starfish::obj('database')->sanitize($storage);
+		$options = starfish::obj('database')->sanitize($options);
+
+		// Get the link id
+		$resource = starfish::obj('database')->query("select nr_crt from urls where project_id='".$project_id."' and group_id='".$group_id."' and url='".$url."' and method='".$method."' and parameters='".$parameters."' and data='".$data."'", $this->connectionName);
+		$row = starfish::obj('database')->fetch( $resource );
+		starfish::obj('database')->free( $resource );
+		
+
+		return $row['nr_crt'];
+	}
+	
+	/**
+	 * Add the result of the parsing
+	 * @param integer $url_id ID of the url to store
+	 * @param array   $data   Data to add
+	 */
+	public function addUrlResult($url_id, $data)
+	{
+		// Update the status
+		$resource = starfish::obj('database')->query("update urls set status_download=3 where nr_crt='".$url_id."'", $this->connectionName);
+		starfish::obj('database')->free( $resource );
+		// Update the content
+		$resource = starfish::obj('database')->query("insert into url_download(url_id, content) values('{url_id}', '{content}') on duplicate key update content='{content}'", $this->connectionName,
+			array(
+				'url_id'=>$url_id,
+				'content'=>$data
+			)
+		);
+		starfish::obj('database')->free( $resource );
+	}
 
 	/**
 	 * Remove a url from the list
-	 * 
-	 * @param number $project_id Id of the project in use
-	 * @param number $group_id Group of urls inside the project
-	 * @param string $url URL to download
-	 * @param string $method Method to use for downloading the urls
-	 * @param array $parameters Parameters used in the request
-	 * @param array $data Data to use when parsing this url
+	 * @param  number  $project_id           Id of the project in use
+	 * @param  number  $group_id             Group of urls inside the project
+	 * @param  string  $url                  URL to download
+	 * @param  string  [$method='get']       Method to use for downloading the urls
+	 * @param  array   [$parameters=array()] Parameters used in the request
+	 * @param  array   $data=array()         Data to send
+	 * @return boolean True
 	 */
 	public function removeUrl($project_id, $group_id, $url, $method='get', $parameters=array(), $data=array())
 	{
@@ -293,7 +374,7 @@ class scraper
 		$parameters = starfish::obj('database')->sanitize($parameters);
 		$data = starfish::obj('database')->sanitize($data);
 
-		// Add the url to the database
+		// Remove the url from the database
 		$resource = starfish::obj('database')->query("delete from urls where project_id='".$project_id."' and group_id='".$group_id."' and url='".$url."' and method='".$method."' and parameters='".$parameters."' and data='".$data."'", $this->connectionName);
 		starfish::obj('database')->free( $resource );
 

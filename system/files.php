@@ -385,6 +385,18 @@ class files
 		
 		return $file;
 	}
+	
+	/**
+	 * Return the name of a file from a path and the extension
+	 * @param  string $path The path
+	 * @return string The filename
+	 */
+	public static function nameext($path) 
+	{
+		$file = basename($path);
+		
+		return $file;
+	}
 
 	/**
 	 * Filename validator

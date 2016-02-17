@@ -259,7 +259,7 @@ class curl
 		$options = (is_array($config)) ? $config + $this->config : $this->config;
 
 		$options[CURLOPT_POST] = true;
-		$options[CURLOPT_POSTFIELDS] = $data;
+		$options[CURLOPT_POSTFIELDS] = http_build_query($data);
 
 		$return = array(
 			'method'   => 'post',

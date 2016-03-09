@@ -587,6 +587,13 @@ class starfish
 				$path = static::$constants['current_url'];
 			}
 		}
+		
+		// Override the path with a post parameter
+		if (strlen(post('starfish-redirect')) > 0) {
+			$path = post('starfish-redirect');
+		}
+		
+		// Redirect
 		@header("Location: {$path}", true, $code);
 		exit;
 	}
@@ -701,15 +708,36 @@ class starfish
 	/**
 	 * Function which stores the used starfish objects in one file
 	 * If the name has ^ in the .starfish file, then it will be excluded from the generated file
+	 * The deployment parameter in the config file is an array formed from: status - true, false for activation, source - the path to the json file, dest - the destionation for the merged framework file
 	 * 
 	 * @param string $name The name of the object
 	 * @param string $path The path to the object
 	 */
 	public static function storeUsedModule($name, $path)
 	{
-		if (static::config('_starfish', 'deployment') == true && static::config('_starfish', 'root_app') != null)
-		{
-			$file = static::config('_starfish', 'root_app') . '.starfish';
+		$deployment = static::config('_starfish', 'deployment');
+		
+		if (
+			is_array($deployment) && 
+			$deployment['status'] == true && 
+			(static::config('_starfish', 'root_app') !== null || isset($deployment['source'])) && 
+			(static::config('_starfish', 'root_app') !== null || isset($deployment['dest']))
+		) {
+			// Set the path to the json file
+			if (isset($deployment['source'])) {
+				$file = $deployment['source'] . '.starfish';
+			} else {
+				$file = static::config('_starfish', 'root_app') . '.starfish';
+			}
+			
+			// Set the path to the starfish file
+			if (isset($deployment['dest'])) {
+				$dest = $deployment['dest'] . 'starfish.php';
+			} else {
+				$dest = static::config('_starfish', 'root_app') . 'starfish.php';
+			}
+			
+			// Reset the content of the json file
 			$json = '';
 			
 			// Read the existing contents
@@ -731,7 +759,7 @@ class starfish
 			$json[$name] = $path;
 			
 			// Write the file containing the list of modules
-			$handler = @fopen($file, 'w');
+			$handler = fopen($file, 'w');
 			@fwrite($handler, @json_encode($json));
 			@fclose($handler);
 			
@@ -759,10 +787,11 @@ class starfish
 					$code .= $content;
 				}
 			}
+			
 			$code = str_replace('?'.'><'.'?php', '', $code);
 			
 			// Write the file containing the microframework
-			$handler = @fopen(static::config('_starfish', 'root_app') . 'starfish.php', 'w');
+			$handler = @fopen($dest, 'w');
 			@fwrite($handler, $code);
 			@fclose($handler);
 		}

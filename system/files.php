@@ -175,7 +175,7 @@ class files
 				{
 					if ($file != '.' && $file != '..')
 					{
-						if (!is_dir($path . $file))
+						if (!is_dir($path . DIRECTORY_SEPARATOR . $file))
 						{
 							$files['files'][] = $file;
 						}
@@ -193,25 +193,31 @@ class files
 	}
 
 	/**
-	 * Recursively remove a directory
-	 * @param string $path Path to the directory
+	 * Recursively remove a directory or a file
+	 * @param string $path Path to the directory/file
+	 * @param string $removeTarget Remove the first directory
 	 */
-	public static function srmdir($path)
+	public static function srmdir($path, $removeTarget = true)
 	{
-		if (file_exists($path) && !is_file($path) && is_readable($path))
-		{
-			foreach(glob($path . '/*') as $file)
-			{
-				if(is_dir($file))
-				{
-					static::rrmdir($file);
-				}
-				else
-				{
-					@unlink($file);
-				}
+		$it = new RecursiveDirectoryIterator($path);
+		$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+		
+		foreach($it as $file) {
+			if ('.' === $file->getBasename() || '..' ===  $file->getBasename()) {
+				continue;
 			}
-			@rmdir($dir);
+			if ($file->isDir())
+			{
+				static::srmdir($file->getPathname(), true);
+			}
+			else
+			{
+				unlink($file->getPathname());
+			}
+		}
+		if ($removeTarget === true)
+		{
+			rmdir($path);
 		}
 	}
 
@@ -266,6 +272,7 @@ class files
 	{
 		if (file_exists($path) && is_file($path) && is_readable($path))
 		{
+			/*
 			$file = @fopen($path, "r");
 			$size = filesize($path);
 			if ($size == 0)
@@ -276,6 +283,9 @@ class files
 			@fclose($file);
 
 			return $data;
+			*/
+			
+			return @file_get_contents($path);
 		}
 		else
 		{

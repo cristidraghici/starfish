@@ -43,18 +43,27 @@ class common
 	 */
 	public function backup_mysql_data($filename=null, $conn=null)
 	{
-		$output = '';
-		obj('files')->w($filename, '');
+		
+		if ($filename === null)
+		{
+			$output = '';
+		}
+		else
+		{
+			obj('files')->w($filename, '');
+		}
 		
 		// Select the tables
 		$tablesResource = starfish::obj('database')->query('show tables', $conn);
 		while ($table = starfish::obj('database')->fetch($tablesResource))
 		{
-			$table = $table['Tables_in_registry'];
+			$table = array_values($table);
+			$table = $table[0];
 			
 			// Select the rows
 			$rowsResource = starfish::obj('database')->query('select * from `'.$table.'`', $conn);
-			while ($row = starfish::obj('database')->fetch($rowsResource)) {
+			while ($row = starfish::obj('database')->fetch($rowsResource)) 
+			{
 				$nor = count($row);
 				$datas = array();
 				foreach($row as $r){
@@ -103,7 +112,68 @@ class common
 			}
 		}
 		
-		return $output;
+		if ($filename === null)
+		{
+			return $output;
+		}
+		else
+		{
+			return true;
+		}
+		
+	}
+	
+	/**
+	 * Backup the structure in a mysql database
+	 * https://dl.dropboxusercontent.com/u/18434517/mysql_backup.php
+	 * 
+	 * @param  string [$filename=null] The filename where to save the data (reccommended). If not specified, the backup will be returned as a string.
+	 * @param  object [$conn=null]     The connection to use
+	 * @return string The output text
+	 */
+	public function backup_mysql_structure($filename=null, $conn=null)
+	{
+		
+		if ($filename === null)
+		{
+			$output = '';
+		}
+		else
+		{
+			obj('files')->w($filename, '');
+		}
+		
+		// Select the tables
+		$tablesResource = starfish::obj('database')->query('show tables', $conn);
+		while ($table = starfish::obj('database')->fetch($tablesResource))
+		{
+			$table = array_values($table);
+			$table = $table[0];
+			
+			// Select the rows
+			$rowsResource = starfish::obj('database')->query('SHOW CREATE TABLE `'.$table.'`', $conn);
+			while ($row = starfish::obj('database')->fetch($rowsResource)) 
+			{						
+				if ($filename === null)
+				{
+					$output .= $row['Create Table'] . PHP_EOL . PHP_EOL;
+				}
+				else
+				{
+					obj('files')->w($filename, $row['Create Table'] . PHP_EOL . PHP_EOL, 'a');
+				}
+			}
+		}
+		
+		if ($filename === null)
+		{
+			return $output;
+		}
+		else
+		{
+			return true;
+		}
+		
 	}
 	
 	/**
@@ -136,6 +206,7 @@ class common
 	public function create_zip($files = array(), $path='', $destination = '', $overwrite = false) {
 		//if the zip file already exists and overwrite is false, return false
 		if(file_exists($destination) && !$overwrite) { return false; }
+		
 		//vars
 		$valid_files = array();
 		//if files were passed in...
@@ -155,6 +226,7 @@ class common
 			if($zip->open($destination, $overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
 				return false;
 			}
+			
 			//add the files
 			foreach($valid_files as $file) {
 				$filename = substr($file, strlen($path));

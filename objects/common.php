@@ -160,7 +160,7 @@ class common
 				}
 				else
 				{
-					obj('files')->w($filename, $row['Create Table'] . PHP_EOL . PHP_EOL, 'a');
+					obj('files')->w($filename, $row['Create Table'] .'; ' . PHP_EOL . PHP_EOL, 'a');
 				}
 			}
 		}

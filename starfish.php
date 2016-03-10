@@ -705,6 +705,7 @@ class starfish
 	##################
 	# Store the used Starfish modules in a list, in order to build a one-file script with the framework
 	##################
+	
 	/**
 	 * Function which stores the used starfish objects in one file
 	 * If the name has ^ in the .starfish file, then it will be excluded from the generated file
@@ -716,84 +717,114 @@ class starfish
 	public static function storeUsedModule($name, $path)
 	{
 		$deployment = static::config('_starfish', 'deployment');
+		$root_app = static::config('_starfish', 'root_app');
+		$path = @realpath($path);
 		
 		if (
-			is_array($deployment) && 
-			$deployment['status'] == true && 
+			((is_array($deployment) && $deployment['status'] == true) || $deployment === true) && 
 			(static::config('_starfish', 'root_app') !== null || isset($deployment['source'])) && 
 			(static::config('_starfish', 'root_app') !== null || isset($deployment['dest']))
 		) {
 			// Set the path to the json file
-			if (isset($deployment['source'])) {
+			if (isset($deployment['source'])) 
+			{
 				$file = $deployment['source'] . '.starfish';
-			} else {
-				$file = static::config('_starfish', 'root_app') . '.starfish';
+			} 
+			else 
+			{
+				$file = $root_app . '.starfish';
 			}
 			
 			// Set the path to the starfish file
-			if (isset($deployment['dest'])) {
+			if (isset($deployment['dest'])) 
+			{
 				$dest = $deployment['dest'] . 'starfish.php';
-			} else {
-				$dest = static::config('_starfish', 'root_app') . 'starfish.php';
+			} 
+			else 
+			{
+				$dest = $root_app . 'starfish.php';
 			}
 			
-			// Reset the content of the json file
-			$json = '';
+			/*
+			// DEPRECATED FUNCTION DUE TO BAD FILE_PUT_CONTENTS BEHAVIOR
+			// Check the existence of the file
+			if (!file_exists($file) || !is_file($file))
+			{
+				@file_put_contents($file, '');
+			}
 			
 			// Read the existing contents
-			if (file_exists($file) && is_file($path) && is_readable($path))
+			if (is_readable($file) && is_writable($file))
 			{
-				$handler = @fopen($file, "r");
-				$size = filesize($file);
-				if ($size == 0)
-				{
-					$size = "32";
-				}
-				$content = @fread($handler, $size);
-				@fclose($handler);
-				
+				$content = @file_get_contents($file);
 				$json = @json_decode($content, true);
+				
+				if (strlen($content) > 0 && $json === null)
+				{
+					die("Error reading the .starfish file:<br>\n" . $content);
+				}
+				
+				if ($json === null)
+				{
+					$json = array();
+				}
+				
+				// Store the object
+				if (!isset($json['^' . $name]) && !isset($json[$name]))
+				{
+					$json[$name] = $path;
+				}
+				@ksort($json);
+				
+				// Write the file containing the list of modules
+				@file_put_contents($file, @json_encode($json, JSON_PRETTY_PRINT));
+			}
+			*/
+			// Check the existence of the file
+			if (file_exists($file) && is_file($file))
+			{
+				@unlink($file);
+			}
+			if (!file_exists($file))
+			{
+				mkdir($file, 0777);
 			}
 			
-			// Store the object
-			$json[$name] = $path;
+			// Save the module in the list
+			if (!file_exists($file . DIRECTORY_SEPARATOR . $name) || !file_exists($file . DIRECTORY_SEPARATOR . '-' . $name))
+			{
+				file_put_contents($file . DIRECTORY_SEPARATOR . $name, $path);
+			}
 			
-			// Write the file containing the list of modules
-			$handler = fopen($file, 'w');
-			@fwrite($handler, @json_encode($json));
-			@fclose($handler);
+			// Read the module list
+			$json = array();
+			if ($handle = opendir($file . DIRECTORY_SEPARATOR)) 
+			{
+				while (false !== ($entry = readdir($handle))) 
+				{
+					if ($entry != "." && $entry != "..") 
+					{
+						$json[$entry] = file_get_contents($file . DIRECTORY_SEPARATOR . $entry);
+					}
+				}
+
+				closedir($handle);
+			}
 			
 			// Create the one file microframework
-			$code = '';
-			$json = array_reverse($json);
-			$json['starfish'] = starfish::config('_starfish', 'root') . 'starfish.php';
-			$json = array_reverse($json);
+			$code = @file_get_contents(starfish::config('_starfish', 'root') . 'starfish.php');
 			foreach ($json as $name=>$file)
 			{
-				
 				if (substr($name, 0, 1) !== '^')
 				{
-					$handler = @fopen($file, "r");
-					$size = filesize($file);
-					if ($size == 0)
-					{
-						$size = "32";
-					}
-					$content = @fread($handler, $size);
-					@fclose($handler);
-
-					$content = str_replace("if (!class_exists('starfish')) { die(); }", '', $content);
-
-					$code .= $content;
+					$code .= @file_get_contents($file);
 				}
 			}
-			
+			$code = str_replace("if (!class_exists('starfish')) { die(); }", '', $code);
 			$code = str_replace('?'.'><'.'?php', '', $code);
 			
 			// Write the file containing the microframework
-			$handler = @fopen($dest, 'w');
-			@fwrite($handler, $code);
-			@fclose($handler);
+			@file_put_contents($dest, $code);
 		}
 	}
 }

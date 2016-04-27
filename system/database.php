@@ -20,7 +20,8 @@ class database
 	 */
 	private static $connections = array();
 	private static $resources = array();
-
+	private static $count = 0;
+	
 	/**
 	 * Init the object. Connect to any database in the configuration, if needed
 	 * 
@@ -175,9 +176,10 @@ class database
 	 * @param  mixed    $query                Name of the connections
 	 * @param  string   [$connection=null]    Name of the connection
 	 * @param  array    [$parameters=array()] Parameters to replace in the query, after sanitization
+	 * @param  boolean  [$cache=false] 		  Use cache for future requests of the same query?
 	 * @return resource The resource containing the result
 	 */
-	public static function query($query, $connection=null, $parameters=array() )
+	public static function query($query, $connection=null, $parameters=array())
 	{
 		if (count($parameters) > 0)
 		{
@@ -186,7 +188,9 @@ class database
 				$query = str_replace('{'. $key . '}', static::sanitize( $parameters[$key], $connection ), $query );
 			}
 		}
-
+		
+		static::$count++;
+		
 		return static::conn($connection)->query($query);
 	}
 
@@ -379,6 +383,11 @@ class database
 		}
 		
 		return $output;
+	}
+	
+	public static function getCount()
+	{
+		return static::$count;
 	}
 }
 

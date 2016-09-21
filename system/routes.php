@@ -110,7 +110,7 @@ class routes
 			{
 				$regex = $key;
 				$callback = $value;
-
+				
 				// called path() from ./system/parameters.php
 				if (preg_match('/' . $regex . '/ui', path(), $matched))
 				{
@@ -125,7 +125,7 @@ class routes
 
 					// callback home with found params
 					call_user_func_array($callback, $matched);
-
+					
 					// and we stop
 					return true;
 				}

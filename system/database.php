@@ -21,6 +21,7 @@ class database
 	private static $connections = array();
 	private static $resources = array();
 	private static $count = 0;
+	private static $queries = array();
 	
 	/**
 	 * Init the object. Connect to any database in the configuration, if needed
@@ -190,6 +191,11 @@ class database
 		}
 		
 		static::$count++;
+		
+		if (starfish::config('_starfish', 'debug') === true)
+		{
+			static::$queries[] = $query;
+		}
 		
 		return static::conn($connection)->query($query);
 	}
@@ -388,6 +394,11 @@ class database
 	public static function getCount()
 	{
 		return static::$count;
+	}
+	
+	public static function getQueries()
+	{
+		return static::$queries;
 	}
 }
 

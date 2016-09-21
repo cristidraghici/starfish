@@ -1,1 +1,0 @@
-# Text storage with SQL

@@ -1,6 +1,9 @@
 {
     "name": "starfish/starfish",
+	"type": "framework",
     "description": "The Starfish PHP Microframework",
+	"homepage": "http://starfish.ml",
+	"license": "MIT",
     "authors": [
         {
             "name": "Cristi DRAGHICI",
